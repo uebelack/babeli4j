@@ -1,11 +1,12 @@
 package dev.uebelacker.babeli.core.writers;
 
-import dev.uebelacker.babeli.core.model.TranslationFile;
+import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
+import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 
 public interface FileWriter {
-    String extension();
+  String extension();
 
-    void writeFile(TranslationFile file);
+  void writeFile(SingleLanguageTranslationFile file);
 
-
+  void writeFile(MultiLanguageTranslationFile file);
 }

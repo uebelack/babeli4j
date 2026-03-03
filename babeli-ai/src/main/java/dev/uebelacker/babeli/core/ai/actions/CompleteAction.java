@@ -1,18 +1,18 @@
 package dev.uebelacker.babeli.core.ai.actions;
 
+import dev.uebelacker.babeli.core.actions.MissingAction;
+import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 import java.util.List;
 
-import dev.uebelacker.babeli.core.actions.MissingAction;
-import dev.uebelacker.babeli.core.model.TranslationFile;
-
 public class CompleteAction extends MissingAction {
-    @Override
-    public String name() {
-        return "complete-ai";
-    }
+  @Override
+  public String name() {
+    return "complete-ai";
+  }
 
-    @Override
-    public List<TranslationFile> update(List<TranslationFile> translationFiles) {
-        return super.update(translationFiles);
-    }
+  @Override
+  public List<SingleLanguageTranslationFile> update(
+      List<SingleLanguageTranslationFile> translationFiles) {
+    return super.update(translationFiles);
+  }
 }
