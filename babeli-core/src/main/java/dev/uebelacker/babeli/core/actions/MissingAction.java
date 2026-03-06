@@ -40,7 +40,7 @@ public class MissingAction implements Action {
                             name(),
                             translationFile.language(),
                             key,
-                            "Missing key '%s' in file %s"
+                            "Missing translation for '%s' in file %s"
                                 .formatted(key, translationFile.file().getName())))
                 .toList());
       }
@@ -50,6 +50,28 @@ public class MissingAction implements Action {
 
   @Override
   public List<Error> validate(MultiLanguageTranslationFile translationFile) {
-    return List.of();
+    var keyLanguageMap = translationFile.toKeyLanguageMap();
+    var languages =
+        translationFile.translations().stream().map(Translation::language).distinct().toList();
+    var errors = new ArrayList<Error>();
+
+    keyLanguageMap
+        .keySet()
+        .forEach(
+            key -> {
+              languages.forEach(
+                  language -> {
+                    if (!keyLanguageMap.get(key).containsKey(language)) {
+                      errors.add(
+                          new Error(
+                              name(),
+                              language,
+                              key,
+                              "Missing translation for '%s'".formatted(key)));
+                    }
+                  });
+            });
+
+    return errors;
   }
 }

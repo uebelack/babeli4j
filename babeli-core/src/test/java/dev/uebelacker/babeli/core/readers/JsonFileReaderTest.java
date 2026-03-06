@@ -1,23 +1,23 @@
 package dev.uebelacker.babeli.core.readers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import dev.uebelacker.babeli.core.model.Translation;
-import java.io.File;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class PropertiesFileReaderTest {
+class JsonFileReaderTest {
+
+  private final JsonFileReader jsonFileReader = new JsonFileReader();
 
   @Test
-  @DisplayName("should read properties files")
-  void shouldReadPropertiesFiles() {
-    var propertiesFileReader = new PropertiesFileReader();
+  @DisplayName("should read multi language json file")
+  void shouldReadMultiLanguageJsonFile() {
     var translationFile =
-        propertiesFileReader.readFile(
-            "de", new File("src/test/resources/properties/test_de.properties"));
+        jsonFileReader.readFile(new java.io.File("src/test/resources/json/test.json"));
 
-    assertThat(translationFile.translations()).hasSize(3);
+    assertThat(translationFile.translations()).hasSize(10);
 
     var translation =
         translationFile.translations().stream()

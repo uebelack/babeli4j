@@ -1,0 +1,20 @@
+{
+  "common.button.perhaps": {
+    "de": "Vielleicht",
+    "fr": "Peut-être"
+  },
+  "error.message.notfound": {
+    "de": "Die angeforderte Ressource wurde nicht gefunden.",
+    "en": "The requested resource was not found.",
+    "fr": "La ressource demandée n\u0027a pas été trouvée."
+  },
+  "common.button.yes": {
+    "de": "Ja",
+    "en": "Yes",
+    "fr": "Oui"
+  },
+  "common.button.no": {
+    "en": "No",
+    "fr": "Non"
+  }
+}
