@@ -20,12 +20,12 @@ class MissingActionTest {
                     "missing",
                     "de",
                     "common.button.no",
-                    "Missing key 'common.button.no' in file test_de.properties"),
+                    "Missing translation for 'common.button.no' in file test_de.properties"),
                 new Error(
                     "missing",
                     "en",
                     "common.button.perhaps",
-                    "Missing key 'common.button.perhaps' in file test_en.properties")));
+                    "Missing translation for 'common.button.perhaps' in file test_en.properties")));
   }
 
   @Test
@@ -37,13 +37,13 @@ class MissingActionTest {
             List.of(
                 new Error(
                     "missing",
-                    "de",
-                    "common.button.no",
-                    "Missing key 'common.button.no' in file test_de.properties"),
-                new Error(
-                    "missing",
                     "en",
                     "common.button.perhaps",
-                    "Missing key 'common.button.perhaps' in file test_en.properties")));
+                    "Missing translation for key 'common.button.perhaps' and language 'en' in file 'test.json'"),
+                new Error(
+                    "missing",
+                    "de",
+                    "common.button.no",
+                    "Missing translation for key 'common.button.no' and language 'de' in file 'test.json'")));
   }
 }

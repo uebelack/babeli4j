@@ -67,7 +67,8 @@ public class MissingAction implements Action {
                               name(),
                               language,
                               key,
-                              "Missing translation for '%s'".formatted(key)));
+                              "Missing translation for key '%s' and language '%s' in file '%s'"
+                                  .formatted(key, language, translationFile.file().getName())));
                     }
                   });
             });
