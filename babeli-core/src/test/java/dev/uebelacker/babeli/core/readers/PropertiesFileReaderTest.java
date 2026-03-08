@@ -1,18 +1,26 @@
 package dev.uebelacker.babeli.core.readers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import dev.uebelacker.babeli.core.model.Translation;
 import java.io.File;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class PropertiesFileReaderTest {
 
+  private PropertiesFileReader propertiesFileReader;
+
+  @BeforeEach
+  void setUp() {
+    propertiesFileReader = new PropertiesFileReader();
+  }
+
   @Test
   @DisplayName("should read properties files")
   void shouldReadPropertiesFiles() {
-    var propertiesFileReader = new PropertiesFileReader();
     var translationFile =
         propertiesFileReader.readFile(
             "de", new File("src/test/resources/properties/test_de.properties"));
@@ -28,5 +36,25 @@ class PropertiesFileReaderTest {
     assertThat(translation.map(Translation::key).orElse(null)).isEqualTo("error.message.notfound");
     assertThat(translation.map(Translation::value).orElse(null))
         .isEqualTo("Die angeforderte Ressource wurde nicht gefunden.");
+  }
+
+  @Test
+  @DisplayName("should throw exception when file is not found")
+  void shouldThrowExceptionWhenFileIsNotFound() {
+    assertThatExceptionOfType(FileReaderException.class)
+        .isThrownBy(
+            () ->
+                propertiesFileReader.readFile(
+                    "de", new File("src/test/resources/properties/nonexistent.properties")));
+  }
+
+  @Test
+  @DisplayName("should throw when trying to read multi-language file")
+  void shouldThrowWhenTryingToReadMultiLanguageFile() {
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(
+            () ->
+                propertiesFileReader.readFile(
+                    new File("src/test/resources/properties/nonexistent.properties")));
   }
 }

@@ -6,17 +6,9 @@ import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 
 public class JsonFileWriter implements FileWriter {
-
-  @Override
-  public String extension() {
-    return "json";
-  }
-
   @Override
   public void writeFile(SingleLanguageTranslationFile file) {
-    if (!file.file().getParentFile().exists()) {
-      file.file().getParentFile().mkdirs();
-    }
+    ensureDirectory(file.file());
 
     try (var writer = new java.io.FileWriter(file.file())) {
       var jsonObject = new JsonObject();
@@ -30,9 +22,7 @@ public class JsonFileWriter implements FileWriter {
 
   @Override
   public void writeFile(MultiLanguageTranslationFile file) {
-    if (!file.file().getParentFile().exists()) {
-      file.file().getParentFile().mkdirs();
-    }
+    ensureDirectory(file.file());
 
     try (var writer = new java.io.FileWriter(file.file())) {
       new GsonBuilder().setPrettyPrinting().create().toJson(file.toKeyLanguageMap(), writer);

@@ -8,11 +8,6 @@ import java.util.Properties;
 
 public class PropertiesFileReader implements FileReader {
   @Override
-  public String extension() {
-    return "properties";
-  }
-
-  @Override
   public SingleLanguageTranslationFile readFile(String language, File file) {
     Properties properties = new Properties();
     try (var inputStream = file.toURI().toURL().openStream()) {

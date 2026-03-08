@@ -9,11 +9,6 @@ import java.util.Map;
 
 public class JsonFileReader implements FileReader {
   @Override
-  public String extension() {
-    return "json";
-  }
-
-  @Override
   public SingleLanguageTranslationFile readFile(String language, File file) {
     try {
       var gson = new Gson();

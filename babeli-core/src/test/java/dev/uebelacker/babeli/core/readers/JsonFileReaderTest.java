@@ -1,9 +1,11 @@
 package dev.uebelacker.babeli.core.readers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
 
 import dev.uebelacker.babeli.core.model.Translation;
+import java.io.File;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +30,20 @@ class JsonFileReaderTest {
     assertThat(translation.map(Translation::key).orElse(null)).isEqualTo("error.message.notfound");
     assertThat(translation.map(Translation::value).orElse(null))
         .isEqualTo("Die angeforderte Ressource wurde nicht gefunden.");
+  }
+
+  @Test
+  @DisplayName("should throw exception when file does not exist")
+  void shouldThrowExceptionWhenFileDoesNotExist() {
+    assertThatExceptionOfType(FileReaderException.class)
+        .isThrownBy(
+            () ->
+                jsonFileReader.readFile(
+                    "de", new File("src/test/resources/json/nonexistent_de.json")));
+
+    assertThatExceptionOfType(FileReaderException.class)
+        .isThrownBy(
+            () -> jsonFileReader.readFile(new File("src/test/resources/json/nonexistent.json")));
   }
 
   @Test

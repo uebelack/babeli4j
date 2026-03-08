@@ -11,10 +11,11 @@ import org.junit.jupiter.api.Test;
 
 class PropertiesFileWriterTest {
 
+  private PropertiesFileWriter propertiesFileWriter;
+
   @Test
   @DisplayName("should write properties file")
   void shouldWritePropertiesFile() {
-    var propertiesFileWriter = new PropertiesFileWriter();
     var translations =
         List.of(
             new Translation(
