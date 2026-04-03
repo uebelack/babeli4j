@@ -1,9 +1,7 @@
 package dev.uebelacker.babeli.core.actions;
 
+import dev.uebelacker.babeli.core.model.*;
 import dev.uebelacker.babeli.core.model.Error;
-import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
-import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
-import dev.uebelacker.babeli.core.model.Translation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +12,8 @@ public class MissingAction implements Action {
   }
 
   @Override
-  public List<Error> validate(List<SingleLanguageTranslationFile> translationFiles) {
+  public List<Error> validateSingleLanguageTranslationFile(
+      List<SingleLanguageTranslationFile> translationFiles) {
     var keys =
         translationFiles.stream()
             .flatMap(tf -> tf.translations().stream())
@@ -50,7 +49,7 @@ public class MissingAction implements Action {
 
   @Override
   public List<Error> validate(MultiLanguageTranslationFile translationFile) {
-    var keyLanguageMap = translationFile.toKeyLanguageMap();
+    var keyLanguageMap = Translations.fromTranslations(translationFile.translations()).getKeyLanguageMap();
     var languages =
         translationFile.translations().stream().map(Translation::language).distinct().toList();
     var errors = new ArrayList<Error>();

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
+import dev.uebelacker.babeli.core.model.Translations;
 import java.io.File;
 import java.util.Map;
 
@@ -27,7 +28,9 @@ public class JsonFileReader implements FileReader {
       var type = new TypeToken<Map<String, Map<String, String>>>() {}.getType();
       Map<String, Map<String, String>> keyLanguageMap =
           gson.fromJson(new java.io.FileReader(file), type);
-      return MultiLanguageTranslationFile.fromKeyLanguageMap(file, keyLanguageMap);
+
+      return new MultiLanguageTranslationFile(
+          file, Translations.fromKeyLanguageMap(keyLanguageMap).getTranslations());
     } catch (Exception e) {
       throw new FileReaderException(file, e);
     }

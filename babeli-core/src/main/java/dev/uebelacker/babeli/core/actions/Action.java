@@ -8,7 +8,8 @@ import java.util.List;
 public interface Action {
   String name();
 
-  List<Error> validate(List<SingleLanguageTranslationFile> translationFiles);
+  List<Error> validateSingleLanguageTranslationFile(
+      List<SingleLanguageTranslationFile> translationFiles);
 
   default List<SingleLanguageTranslationFile> update(
       List<SingleLanguageTranslationFile> translationFiles) {

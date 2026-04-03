@@ -13,7 +13,8 @@ class MissingActionTest {
   @DisplayName("should return a list of all missing keys in single translation files")
   void shouldReturnAListOfAllMissingKeysInSingleLanguageTranslationFiles() {
     var action = new MissingAction();
-    assertThat(action.validate(Fixtures.singleLanguageTranslationFiles()))
+    assertThat(
+            action.validateSingleLanguageTranslationFile(Fixtures.singleLanguageTranslationFiles()))
         .isEqualTo(
             List.of(
                 new Error(

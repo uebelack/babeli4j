@@ -10,14 +10,14 @@ import org.junit.jupiter.api.Test;
 
 class GlossaryActionTest {
 
-  private Configuration configuration;
-
   private GlossaryAction glossaryAction;
 
   @BeforeEach
   void setUp() {
-    configuration =
+    var configuration =
         new Configuration(
+            "en",
+            "test",
             new GlossaryConfiguration(new File("target/test/glossary/glossary.json")));
     glossaryAction = new GlossaryAction(configuration);
   }

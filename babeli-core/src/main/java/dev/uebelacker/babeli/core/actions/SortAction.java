@@ -19,7 +19,8 @@ public class SortAction implements Action {
   }
 
   @Override
-  public List<Error> validate(List<SingleLanguageTranslationFile> translationFiles) {
+  public List<Error> validateSingleLanguageTranslationFile(
+      List<SingleLanguageTranslationFile> translationFiles) {
     var errors = new ArrayList<Error>();
 
     for (SingleLanguageTranslationFile translationFile : translationFiles) {
