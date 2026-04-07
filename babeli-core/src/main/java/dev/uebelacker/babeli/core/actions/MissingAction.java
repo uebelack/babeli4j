@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MissingAction implements Action {
-  @Override
-  public String name() {
-    return "missing";
+
+  private static final String NAME = "missing";
+
+  static {
+    ActionRegistry.registerAction(NAME, MissingAction.class);
   }
 
   @Override
@@ -36,7 +38,7 @@ public class MissingAction implements Action {
                 .map(
                     key ->
                         new Error(
-                            name(),
+                            NAME,
                             translationFile.language(),
                             key,
                             "Missing translation for '%s' in file %s"
@@ -49,7 +51,8 @@ public class MissingAction implements Action {
 
   @Override
   public List<Error> validate(MultiLanguageTranslationFile translationFile) {
-    var keyLanguageMap = Translations.fromTranslations(translationFile.translations()).getKeyLanguageMap();
+    var keyLanguageMap =
+        Translations.fromTranslations(translationFile.translations()).getKeyLanguageMap();
     var languages =
         translationFile.translations().stream().map(Translation::language).distinct().toList();
     var errors = new ArrayList<Error>();
@@ -63,7 +66,7 @@ public class MissingAction implements Action {
                     if (!keyLanguageMap.get(key).containsKey(language)) {
                       errors.add(
                           new Error(
-                              name(),
+                              NAME,
                               language,
                               key,
                               "Missing translation for key '%s' and language '%s' in file '%s'"

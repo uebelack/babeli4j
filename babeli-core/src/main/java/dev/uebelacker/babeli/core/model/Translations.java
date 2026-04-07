@@ -59,6 +59,10 @@ public class Translations {
                         .formatted(key, baseLanguage)));
   }
 
+  public Map<String, String> getTranslations(String key) {
+    return keyLanguageMap.get(key);
+  }
+
   public List<Translation> getTranslations() {
     return keyLanguageMap.keySet().stream()
         .map(
@@ -70,5 +74,21 @@ public class Translations {
                     .toList())
         .flatMap(List::stream)
         .toList();
+  }
+
+  public Optional<Translation> findTranslation(String word, String language) {
+    return keyLanguageMap.keySet().stream()
+        .filter(
+            key ->
+                keyLanguageMap.get(key).get(language) != null
+                    && keyLanguageMap.get(key).get(language).equals(word))
+        .findFirst()
+        .map(key -> new Translation(language, key, word));
+  }
+
+  public Translation add(String key, String language, String value) {
+    var translation = new Translation(language, key, value);
+
+    return translation;
   }
 }

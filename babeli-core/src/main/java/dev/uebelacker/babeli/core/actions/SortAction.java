@@ -9,13 +9,11 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SortAction implements Action {
-  static {
-    ActionRegistry.registerAction(new SortAction());
-  }
 
-  @Override
-  public String name() {
-    return "sort";
+  private static final String NAME = "sort";
+
+  static {
+    ActionRegistry.registerAction(NAME, SortAction.class);
   }
 
   @Override
@@ -31,7 +29,7 @@ public class SortAction implements Action {
       if (!translationFile.translations().equals(sortedTranslations)) {
         errors.add(
             new Error(
-                name(),
+                NAME,
                 translationFile.language(),
                 translationFile.file().toString(),
                 "Translations in file " + translationFile.file().getName() + " are not sorted."));
@@ -68,7 +66,7 @@ public class SortAction implements Action {
     if (!translationFile.translations().equals(sortedTranslations)) {
       errors.add(
           new Error(
-              name(),
+              NAME,
               null,
               translationFile.file().toString(),
               "Translations in file " + translationFile.file().getName() + " are not sorted."));

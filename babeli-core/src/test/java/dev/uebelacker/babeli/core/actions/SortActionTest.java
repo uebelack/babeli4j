@@ -11,13 +11,6 @@ import org.junit.jupiter.api.Test;
 class SortActionTest {
 
   @Test
-  @DisplayName("should return name sort")
-  void shouldReturnNameSort() {
-    var action = new SortAction();
-    assertThat(action.name()).isEqualTo("sort");
-  }
-
-  @Test
   @DisplayName("should validate unsorted single language translation files")
   void validateUnsortedSingleLanguageTranslationFiles() {
     var action = new SortAction();
