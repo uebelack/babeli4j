@@ -14,8 +14,7 @@ public class MissingAction implements Action {
   }
 
   @Override
-  public List<Error> validateSingleLanguageTranslationFile(
-      List<SingleLanguageTranslationFile> translationFiles) {
+  public List<Error> validate(List<SingleLanguageTranslationFile> translationFiles) {
     var keys =
         translationFiles.stream()
             .flatMap(tf -> tf.translations().stream())
@@ -60,20 +59,19 @@ public class MissingAction implements Action {
     keyLanguageMap
         .keySet()
         .forEach(
-            key -> {
-              languages.forEach(
-                  language -> {
-                    if (!keyLanguageMap.get(key).containsKey(language)) {
-                      errors.add(
-                          new Error(
-                              NAME,
-                              language,
-                              key,
-                              "Missing translation for key '%s' and language '%s' in file '%s'"
-                                  .formatted(key, language, translationFile.file().getName())));
-                    }
-                  });
-            });
+            key ->
+                languages.forEach(
+                    language -> {
+                      if (!keyLanguageMap.get(key).containsKey(language)) {
+                        errors.add(
+                            new Error(
+                                NAME,
+                                language,
+                                key,
+                                "Missing translation for key '%s' and language '%s' in file '%s'"
+                                    .formatted(key, language, translationFile.file().getName())));
+                      }
+                    }));
 
     return errors;
   }

@@ -14,8 +14,7 @@ class SortActionTest {
   @DisplayName("should validate unsorted single language translation files")
   void validateUnsortedSingleLanguageTranslationFiles() {
     var action = new SortAction();
-    assertThat(
-            action.validateSingleLanguageTranslationFile(Fixtures.singleLanguageTranslationFiles()))
+    assertThat(action.validate(Fixtures.singleLanguageTranslationFiles()))
         .isEqualTo(
             List.of(
                 new Error(
@@ -41,8 +40,7 @@ class SortActionTest {
     var action = new SortAction();
     var translationFiles = Fixtures.singleLanguageTranslationFiles();
 
-    assertThat(
-            action.validateSingleLanguageTranslationFile(Fixtures.singleLanguageTranslationFiles()))
+    assertThat(action.validate(Fixtures.singleLanguageTranslationFiles()))
         .isEqualTo(
             List.of(
                 new Error(
@@ -63,6 +61,6 @@ class SortActionTest {
 
     var sortedTranslationFiles = action.update(translationFiles);
 
-    assertThat(action.validateSingleLanguageTranslationFile(sortedTranslationFiles)).isEmpty();
+    assertThat(action.validate(sortedTranslationFiles)).isEmpty();
   }
 }

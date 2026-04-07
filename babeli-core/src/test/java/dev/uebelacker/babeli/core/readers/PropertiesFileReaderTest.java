@@ -40,6 +40,7 @@ class PropertiesFileReaderTest {
 
   @Test
   @DisplayName("should throw exception when file is not found")
+  @SuppressWarnings("java:S5778")
   void shouldThrowExceptionWhenFileIsNotFound() {
     assertThatExceptionOfType(FileReaderException.class)
         .isThrownBy(
@@ -50,6 +51,7 @@ class PropertiesFileReaderTest {
 
   @Test
   @DisplayName("should throw when trying to read multi-language file")
+  @SuppressWarnings("java:S5778")
   void shouldThrowWhenTryingToReadMultiLanguageFile() {
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(

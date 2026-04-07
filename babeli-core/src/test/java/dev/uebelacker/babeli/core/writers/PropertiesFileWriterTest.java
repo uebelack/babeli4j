@@ -39,6 +39,7 @@ class PropertiesFileWriterTest {
 
   @Test
   @DisplayName("should throw exception when writing multi language properties file")
+  @SuppressWarnings("java:S5778")
   void shouldThrowExceptionWhenWritingMultiLanguagePropertiesFile() {
     assertThatThrownBy(
             () ->

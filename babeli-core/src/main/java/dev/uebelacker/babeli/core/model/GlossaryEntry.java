@@ -1,3 +1,5 @@
 package dev.uebelacker.babeli.core.model;
 
-public record GlossaryEntry() {}
+import java.util.Map;
+
+public record GlossaryEntry(String key, Map<String, String> translations, String description) {}

@@ -6,8 +6,7 @@ import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 import java.util.List;
 
 public interface Action {
-  List<Error> validateSingleLanguageTranslationFile(
-      List<SingleLanguageTranslationFile> translationFiles);
+  List<Error> validate(List<SingleLanguageTranslationFile> translationFiles);
 
   default List<SingleLanguageTranslationFile> update(
       List<SingleLanguageTranslationFile> translationFiles) {

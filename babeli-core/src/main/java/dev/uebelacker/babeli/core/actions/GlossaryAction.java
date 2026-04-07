@@ -22,8 +22,7 @@ public class GlossaryAction implements Action {
   }
 
   @Override
-  public List<Error> validateSingleLanguageTranslationFile(
-      List<SingleLanguageTranslationFile> translationFiles) {
+  public List<Error> validate(List<SingleLanguageTranslationFile> translationFiles) {
     return List.of();
   }
 

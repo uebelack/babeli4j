@@ -2,7 +2,6 @@ package dev.uebelacker.babeli.core.readers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.*;
 
 import dev.uebelacker.babeli.core.model.Translation;
 import java.io.File;
@@ -34,6 +33,7 @@ class JsonFileReaderTest {
 
   @Test
   @DisplayName("should throw exception when file does not exist")
+  @SuppressWarnings("java:S5778")
   void shouldThrowExceptionWhenFileDoesNotExist() {
     assertThatExceptionOfType(FileReaderException.class)
         .isThrownBy(

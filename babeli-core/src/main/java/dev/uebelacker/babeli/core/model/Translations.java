@@ -8,9 +8,9 @@ public class Translations {
   private final List<String> languages;
 
   private Translations(List<Translation> translations) {
-    this.languages = translations.stream().map(Translation::language).distinct().toList();
+    this.languages = translations.stream().map(Translation::language).distinct().sorted().toList();
 
-    keyLanguageMap = new LinkedHashMap<String, Map<String, String>>();
+    keyLanguageMap = new LinkedHashMap<>();
     for (var translation : translations) {
       var key = translation.key();
       var language = translation.language();
@@ -76,19 +76,9 @@ public class Translations {
         .toList();
   }
 
-  public Optional<Translation> findTranslation(String word, String language) {
-    return keyLanguageMap.keySet().stream()
-        .filter(
-            key ->
-                keyLanguageMap.get(key).get(language) != null
-                    && keyLanguageMap.get(key).get(language).equals(word))
-        .findFirst()
-        .map(key -> new Translation(language, key, word));
-  }
-
   public Translation add(String key, String language, String value) {
     var translation = new Translation(language, key, value);
-
+    keyLanguageMap.computeIfAbsent(key, k -> new LinkedHashMap<>()).put(language, value);
     return translation;
   }
 }

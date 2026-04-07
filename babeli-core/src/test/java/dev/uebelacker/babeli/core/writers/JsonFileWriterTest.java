@@ -35,6 +35,7 @@ class JsonFileWriterTest {
 
   @Test
   @DisplayName("should throw exception when writing single language json file fails")
+  @SuppressWarnings("java:S5778")
   void shouldThrowExceptionWhenWritingSingleLanguageJsonFileFails() {
     assertThatExceptionOfType(FileWriterException.class)
         .isThrownBy(
@@ -59,6 +60,7 @@ class JsonFileWriterTest {
 
   @Test
   @DisplayName("should throw exception when writing multi language json file fails")
+  @SuppressWarnings("java:S5778")
   void shouldThrowExceptionWhenWritingMultiLanguageJsonFileFails() {
     assertThatExceptionOfType(FileWriterException.class)
         .isThrownBy(
