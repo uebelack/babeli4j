@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="common.button.yes">Ja</string>
+    <string name="common.button.perhaps">Vielleicht</string>
+    <string name="error.message.notfound">Die angeforderte Ressource wurde nicht gefunden.</string>
+</resources>

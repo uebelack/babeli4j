@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="common.button.perhaps">
+        <language code="de">Vielleicht</language>
+        <language code="fr">Peut-être</language>
+    </string>
+    <string name="common.button.yes">
+        <language code="de">Ja</language>
+        <language code="en">Yes</language>
+        <language code="fr">Oui</language>
+    </string>
+    <string name="common.button.no">
+        <language code="en">No</language>
+        <language code="fr">Non</language>
+    </string>
+    <string name="error.message.notfound">
+        <language code="de">Die angeforderte Ressource wurde nicht gefunden.</language>
+        <language code="en">The requested resource was not found.</language>
+        <language code="fr">La ressource demandée n'a pas été trouvée.</language>
+    </string>
+</resources>
