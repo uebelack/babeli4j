@@ -1,0 +1,50 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+}
+
+group = 'dev.uebelacker.babeli'
+version = '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'dev.uebelacker.babeli:babeli-core:1.0-SNAPSHOT'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.13.0'
+    testImplementation 'org.assertj:assertj-core:3.27.6'
+}
+
+gradlePlugin {
+    plugins {
+        babeli {
+            id = 'dev.uebelacker.babeli'
+            implementationClass = 'dev.uebelacker.babeli.gradle.BabeliPlugin'
+        }
+    }
+}
+
+testing {
+    suites {
+        functionalTest(JvmTestSuite) {
+            useJUnitJupiter('5.13.0')
+            dependencies {
+                implementation 'org.assertj:assertj-core:3.27.6'
+            }
+        }
+    }
+}
+
+gradlePlugin.testSourceSets.add(sourceSets.functionalTest)
+
+tasks.named('check') {
+    dependsOn testing.suites.functionalTest
+}
