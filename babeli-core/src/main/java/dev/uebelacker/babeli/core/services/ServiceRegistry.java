@@ -35,9 +35,9 @@ public class ServiceRegistry {
   }
 
   public static TranslationService getTranslationService(Configuration configuration) {
-    var name = configuration.translationService();
+    var name = configuration.getTranslationService();
     return translationServices.computeIfAbsent(
-        configuration.identifier(),
+        configuration.getIdentifier(),
         k ->
             createServiceInstance(
                 configuration,
@@ -47,9 +47,9 @@ public class ServiceRegistry {
   }
 
   public static GlossaryService getGlossaryService(Configuration configuration) {
-    var name = configuration.glossary().service();
+    var name = configuration.getGlossary().getService();
     return glossaryServices.computeIfAbsent(
-        configuration.identifier(),
+        configuration.getIdentifier(),
         k ->
             createServiceInstance(
                 configuration, glossaryServiceClasses.get(name), name, GlossaryService.class));

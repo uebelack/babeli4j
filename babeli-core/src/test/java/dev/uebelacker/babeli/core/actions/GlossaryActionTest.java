@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import dev.uebelacker.babeli.core.ConfigurationFactory;
+import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.Fixtures;
 import dev.uebelacker.babeli.core.mocks.GlossaryServiceMock;
 import dev.uebelacker.babeli.core.services.ServiceRegistry;
@@ -21,8 +21,8 @@ class GlossaryActionTest {
   @BeforeEach
   void setUp() {
     ServiceRegistry.clearCache();
-    ServiceRegistry.registerGlossaryService("test", GlossaryServiceMock.class);
-    glossaryAction = new GlossaryAction(ConfigurationFactory.createConfiguration());
+    ServiceRegistry.registerGlossaryService("ai", GlossaryServiceMock.class);
+    glossaryAction = new GlossaryAction(new Configuration());
   }
 
   @Test

@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 
-import dev.uebelacker.babeli.core.ConfigurationFactory;
+import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.mocks.GlossaryServiceMock;
 import dev.uebelacker.babeli.core.mocks.TranslationServiceMock;
 import java.util.Map;
@@ -17,14 +17,14 @@ class ServiceRegistryTest {
   @BeforeEach
   void setUp() {
     ServiceRegistry.clearCache();
-    ServiceRegistry.registerGlossaryService("test", GlossaryServiceMock.class);
-    ServiceRegistry.registerTranslationService("test", TranslationServiceMock.class);
+    ServiceRegistry.registerGlossaryService("ai", GlossaryServiceMock.class);
+    ServiceRegistry.registerTranslationService("ai", TranslationServiceMock.class);
   }
 
   @Test
   @DisplayName("should return translation service")
   void shouldReturnTranslationService() {
-    var service = ServiceRegistry.getTranslationService(ConfigurationFactory.createConfiguration());
+    var service = ServiceRegistry.getTranslationService(new Configuration());
     assertThat(service).isNotNull();
 
     service.translate("test", "en", "de");
@@ -34,7 +34,7 @@ class ServiceRegistryTest {
   @Test
   @DisplayName("should return glossary service")
   void shouldReturnGlossaryService() {
-    var service = ServiceRegistry.getGlossaryService(ConfigurationFactory.createConfiguration());
+    var service = ServiceRegistry.getGlossaryService(new Configuration());
     assertThat(service).isNotNull();
     service.findRelevantEntries("test", "en", 100);
     service.updateWith("test", Map.of("en", "test"));
@@ -47,10 +47,12 @@ class ServiceRegistryTest {
   @DisplayName("should throw exception if translation service class is not registered")
   @SuppressWarnings("java:S5778")
   void shouldThrowExceptionIfTranslationServiceClassIsNotRegistered() {
+    var configuration = new Configuration();
+    configuration.setTranslationService("unknown");
+
     assertThatThrownBy(
             () ->
-                ServiceRegistry.getTranslationService(
-                    ConfigurationFactory.createConfigurationWithTranslationService("unknown")))
+                ServiceRegistry.getTranslationService(configuration))
         .isInstanceOf(RuntimeException.class)
         .hasMessageContaining("Failed to create TranslationService instance for unknown");
   }
