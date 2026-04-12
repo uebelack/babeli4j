@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.Map;
 
 public class JsonFileReader implements FileReader {
+
   @Override
   public SingleLanguageTranslationFile readFile(String language, File file) {
     try {
@@ -30,7 +31,7 @@ public class JsonFileReader implements FileReader {
           gson.fromJson(new java.io.FileReader(file), type);
 
       return new MultiLanguageTranslationFile(
-          file, Translations.fromKeyLanguageMap(keyLanguageMap).getTranslations());
+          file, Translations.fromKeyLanguageMap(keyLanguageMap).getTranslationsMapForKey());
     } catch (Exception e) {
       throw new FileReaderException(file, e);
     }

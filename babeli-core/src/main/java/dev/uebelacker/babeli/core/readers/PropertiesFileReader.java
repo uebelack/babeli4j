@@ -4,12 +4,12 @@ import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.Translation;
 import java.io.File;
-import java.util.Properties;
+import org.apache.commons.collections4.properties.OrderedProperties;
 
 public class PropertiesFileReader implements FileReader {
   @Override
   public SingleLanguageTranslationFile readFile(String language, File file) {
-    Properties properties = new Properties();
+    var properties = new OrderedProperties();
     try (var inputStream = file.toURI().toURL().openStream()) {
       properties.load(inputStream);
     } catch (Exception e) {

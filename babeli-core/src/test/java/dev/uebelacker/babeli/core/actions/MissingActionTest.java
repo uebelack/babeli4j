@@ -2,6 +2,7 @@ package dev.uebelacker.babeli.core.actions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.Fixtures;
 import dev.uebelacker.babeli.core.model.Error;
 import java.util.List;
@@ -12,7 +13,7 @@ class MissingActionTest {
   @Test
   @DisplayName("should return a list of all missing keys in single translation files")
   void shouldReturnAListOfAllMissingKeysInSingleLanguageTranslationFiles() {
-    var action = new MissingAction();
+    var action = new MissingAction(new Configuration());
     assertThat(action.validate(Fixtures.singleLanguageTranslationFiles()))
         .isEqualTo(
             List.of(
@@ -31,7 +32,7 @@ class MissingActionTest {
   @Test
   @DisplayName("should return a list of all missing keys in multi language translation files")
   void shouldReturnAListOfAllMissingKeysInMultiLanguageTranslationFiles() {
-    var action = new MissingAction();
+    var action = new MissingAction(new Configuration());
     assertThat(action.validate(Fixtures.multiLanguageTranslationFile()))
         .isEqualTo(
             List.of(

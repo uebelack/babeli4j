@@ -1,6 +1,7 @@
 package dev.uebelacker.babeli.core.services;
 
 import dev.uebelacker.babeli.core.Configuration;
+import dev.uebelacker.babeli.core.exceptions.UnexpectedErrorException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class ServiceRegistry {
         return serviceClass.getConstructor().newInstance();
       }
     } catch (Exception e) {
-      throw new RuntimeException(
+      throw new UnexpectedErrorException(
           "Failed to create " + serviceInterface.getSimpleName() + " instance for " + serviceName,
           e);
     }

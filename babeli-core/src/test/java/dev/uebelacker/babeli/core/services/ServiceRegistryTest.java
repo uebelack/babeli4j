@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 
 import dev.uebelacker.babeli.core.Configuration;
+import dev.uebelacker.babeli.core.exceptions.UnexpectedErrorException;
 import dev.uebelacker.babeli.core.mocks.GlossaryServiceMock;
 import dev.uebelacker.babeli.core.mocks.TranslationServiceMock;
 import java.util.Map;
@@ -50,10 +51,8 @@ class ServiceRegistryTest {
     var configuration = new Configuration();
     configuration.setTranslationService("unknown");
 
-    assertThatThrownBy(
-            () ->
-                ServiceRegistry.getTranslationService(configuration))
-        .isInstanceOf(RuntimeException.class)
+    assertThatThrownBy(() -> ServiceRegistry.getTranslationService(configuration))
+        .isInstanceOf(UnexpectedErrorException.class)
         .hasMessageContaining("Failed to create TranslationService instance for unknown");
   }
 }

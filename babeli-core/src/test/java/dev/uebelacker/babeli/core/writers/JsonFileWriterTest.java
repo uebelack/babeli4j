@@ -23,7 +23,6 @@ class JsonFileWriterTest {
   @Test
   @DisplayName("should write single language json file")
   void shouldWriteSingleLanguageJsonFile() {
-
     jsonFileWriter.writeFile(
         new SingleLanguageTranslationFile(
             "de",

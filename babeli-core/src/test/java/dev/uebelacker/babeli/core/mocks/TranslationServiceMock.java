@@ -1,13 +1,12 @@
 package dev.uebelacker.babeli.core.mocks;
 
-import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.services.TranslationService;
 import org.mockito.Mockito;
 
 public class TranslationServiceMock implements TranslationService {
   private static TranslationService mock;
 
-  public TranslationServiceMock(Configuration configuration) {
+  public TranslationServiceMock() {
     mock = Mockito.mock(TranslationService.class);
   }
 

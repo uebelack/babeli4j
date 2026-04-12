@@ -9,11 +9,7 @@ import dev.uebelacker.babeli.core.services.ServiceRegistry;
 import java.util.List;
 
 public class GlossaryAction implements Action {
-  private static final String NAME = "glossary";
-
-  static {
-    ActionRegistry.registerAction(NAME, GlossaryAction.class);
-  }
+  public static final String NAME = "glossary";
 
   private Configuration configuration;
 
@@ -51,6 +47,7 @@ public class GlossaryAction implements Action {
 
     translations
         .getKeys()
-        .forEach(key -> glossaryService.updateWith(key, translations.getTranslations(key)));
+        .forEach(
+            key -> glossaryService.updateWith(key, translations.getTranslationsMapForKey(key)));
   }
 }

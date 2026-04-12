@@ -10,11 +10,7 @@ import java.util.List;
 
 public class SortAction implements Action {
 
-  private static final String NAME = "sort";
-
-  static {
-    ActionRegistry.registerAction(NAME, SortAction.class);
-  }
+  public static final String NAME = "sort";
 
   @Override
   public List<Error> validate(List<SingleLanguageTranslationFile> translationFiles) {

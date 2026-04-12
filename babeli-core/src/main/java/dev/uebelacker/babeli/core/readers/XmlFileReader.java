@@ -4,16 +4,32 @@ import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.Translation;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class XmlFileReader implements FileReader {
+
+  private static Document parseDocument(File file)
+      throws ParserConfigurationException, IOException, SAXException {
+    var factory = DocumentBuilderFactory.newInstance();
+    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+    factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+    factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+    return factory.newDocumentBuilder().parse(file);
+  }
+
   @Override
   public SingleLanguageTranslationFile readFile(String language, File file) {
     try {
-      var document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
+
+      var document = parseDocument(file);
       var nodeList = document.getElementsByTagName("string");
       var translations = new ArrayList<Translation>();
 
@@ -33,7 +49,7 @@ public class XmlFileReader implements FileReader {
   @Override
   public MultiLanguageTranslationFile readFile(File file) {
     try {
-      var document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
+      var document = parseDocument(file);
       var stringNodes = document.getElementsByTagName("string");
       var translations = new ArrayList<Translation>();
 

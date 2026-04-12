@@ -1,0 +1,19 @@
+package dev.uebelacker.babeli.core;
+
+import dev.uebelacker.babeli.core.model.GlossaryEntry;
+import dev.uebelacker.babeli.core.services.GlossaryService;
+import java.util.List;
+import java.util.Map;
+
+public class TestGlossaryService implements GlossaryService {
+
+  @Override
+  public void updateWith(String key, Map<String, String> languageMap) {
+    // just for testing
+  }
+
+  @Override
+  public List<GlossaryEntry> findRelevantEntries(String term, String language, int maxResults) {
+    return List.of();
+  }
+}
