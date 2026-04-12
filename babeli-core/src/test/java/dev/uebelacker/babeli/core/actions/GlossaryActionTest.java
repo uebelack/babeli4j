@@ -6,10 +6,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import dev.uebelacker.babeli.core.BabeliContext;
 import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.Fixtures;
 import dev.uebelacker.babeli.core.mocks.GlossaryServiceMock;
-import dev.uebelacker.babeli.core.services.ServiceRegistry;
+import dev.uebelacker.babeli.core.mocks.TranslationServiceMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,9 +21,8 @@ class GlossaryActionTest {
 
   @BeforeEach
   void setUp() {
-    ServiceRegistry.clearCache();
-    ServiceRegistry.registerGlossaryService("ai", GlossaryServiceMock.class);
-    glossaryAction = new GlossaryAction(new Configuration());
+    glossaryAction =
+        new GlossaryAction(new BabeliContext(new Configuration(), new TranslationServiceMock(), new GlossaryServiceMock()));
   }
 
   @Test

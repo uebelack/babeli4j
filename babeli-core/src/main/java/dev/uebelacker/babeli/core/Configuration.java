@@ -1,38 +1,22 @@
 package dev.uebelacker.babeli.core;
 
 import dev.uebelacker.babeli.core.actions.ActionRegistry;
-import dev.uebelacker.babeli.core.configuration.GlossaryConfiguration;
 import dev.uebelacker.babeli.core.configuration.LanguageFileConfiguration;
 import dev.uebelacker.babeli.core.exceptions.ConfigurationException;
 import java.io.File;
 import java.util.Set;
 
 public class Configuration {
-  public static final String DEFAULT = "default";
-
-  private String identifier = DEFAULT;
   private Operation operation;
   private String baseLanguage = "en";
-  private String fileReader = DEFAULT;
-  private String fileWriter = DEFAULT;
   private File file;
   private Set<LanguageFileConfiguration> files;
   private Set<String> actions;
-  private String translationService = "ai";
-  private GlossaryConfiguration glossary;
+  private File glossaryFile = new File("glossary.json");
 
   public Configuration() {
     this.actions = ActionRegistry.getActionNames();
-    this.glossary = new GlossaryConfiguration();
     this.operation = System.getenv("CI") != null ? Operation.VALIDATE : Operation.UPDATE;
-  }
-
-  public String getIdentifier() {
-    return identifier;
-  }
-
-  public void setIdentifier(String identifier) {
-    this.identifier = identifier;
   }
 
   public String getBaseLanguage() {
@@ -65,38 +49,6 @@ public class Configuration {
 
   public void setActions(Set<String> actions) {
     this.actions = actions;
-  }
-
-  public String getTranslationService() {
-    return translationService;
-  }
-
-  public void setTranslationService(String translationService) {
-    this.translationService = translationService;
-  }
-
-  public GlossaryConfiguration getGlossary() {
-    return glossary;
-  }
-
-  public void setGlossary(GlossaryConfiguration glossary) {
-    this.glossary = glossary;
-  }
-
-  public String getFileReaderType() {
-    return fileReader;
-  }
-
-  public void setFileReader(String fileReader) {
-    this.fileReader = fileReader;
-  }
-
-  public String getFileWriterType() {
-    return fileWriter;
-  }
-
-  public void setFileWriter(String fileWriter) {
-    this.fileWriter = fileWriter;
   }
 
   public String getFileExtension() {

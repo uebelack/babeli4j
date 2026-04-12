@@ -1,20 +1,19 @@
 package dev.uebelacker.babeli.core.actions;
 
-import dev.uebelacker.babeli.core.Configuration;
+import dev.uebelacker.babeli.core.BabeliContext;
 import dev.uebelacker.babeli.core.model.Error;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.Translations;
-import dev.uebelacker.babeli.core.services.ServiceRegistry;
 import java.util.List;
 
 public class GlossaryAction implements Action {
   public static final String NAME = "glossary";
 
-  private Configuration configuration;
+  private final BabeliContext context;
 
-  public GlossaryAction(Configuration configuration) {
-    this.configuration = configuration;
+  public GlossaryAction(BabeliContext context) {
+    this.context = context;
   }
 
   @Override
@@ -43,7 +42,7 @@ public class GlossaryAction implements Action {
   }
 
   private void update(Translations translations) {
-    var glossaryService = ServiceRegistry.getGlossaryService(configuration);
+    var glossaryService = context.getGlossaryService();
 
     translations
         .getKeys()

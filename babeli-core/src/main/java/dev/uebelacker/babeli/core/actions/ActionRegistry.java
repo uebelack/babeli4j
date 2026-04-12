@@ -1,6 +1,6 @@
 package dev.uebelacker.babeli.core.actions;
 
-import dev.uebelacker.babeli.core.Configuration;
+import dev.uebelacker.babeli.core.BabeliContext;
 import dev.uebelacker.babeli.core.exceptions.ActionNotFoundException;
 import dev.uebelacker.babeli.core.exceptions.UnexpectedErrorException;
 import java.util.HashMap;
@@ -26,13 +26,13 @@ public class ActionRegistry {
     return actionClasses.keySet();
   }
 
-  public static Action createAction(String name, Configuration configuration) {
+  public static Action createAction(String name, BabeliContext context) {
     var actionClass = actionClasses.get(name);
     if (actionClass == null) {
       throw new ActionNotFoundException(name);
     }
     try {
-      return actionClass.getConstructor(Configuration.class).newInstance(configuration);
+      return actionClass.getConstructor(BabeliContext.class).newInstance(context);
     } catch (Exception e) {
       try {
         return actionClass.getConstructor().newInstance();
