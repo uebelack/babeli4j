@@ -9,20 +9,29 @@ import static org.mockito.Mockito.verify;
 import dev.uebelacker.babeli.core.BabeliContext;
 import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.Fixtures;
-import dev.uebelacker.babeli.core.mocks.GlossaryServiceMock;
-import dev.uebelacker.babeli.core.mocks.TranslationServiceMock;
+import dev.uebelacker.babeli.core.services.GlossaryService;
+import dev.uebelacker.babeli.core.services.TranslationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class GlossaryActionTest {
+
+  @Mock TranslationService translationService;
+
+  @Mock GlossaryService glossaryService;
 
   GlossaryAction glossaryAction;
 
   @BeforeEach
   void setUp() {
     glossaryAction =
-        new GlossaryAction(new BabeliContext(new Configuration(), new TranslationServiceMock(), new GlossaryServiceMock()));
+        new GlossaryAction(
+            new BabeliContext(new Configuration(), translationService, glossaryService));
   }
 
   @Test
@@ -41,13 +50,13 @@ class GlossaryActionTest {
   @DisplayName("should update glossary with single language translation files")
   void shouldUpdateGlossaryWithSingleLanguageTranslationFiles() {
     glossaryAction.update(Fixtures.singleLanguageTranslationFiles());
-    verify(GlossaryServiceMock.getMock(), times(4)).updateWith(anyString(), anyMap());
+    verify(glossaryService, times(4)).updateWith(anyString(), anyMap());
   }
 
   @Test
   @DisplayName("should update glossary with multi language translation file")
   void shouldUpdateGlossaryWithMultiLanguageTranslationFiles() {
     glossaryAction.update(Fixtures.multiLanguageTranslationFile());
-    verify(GlossaryServiceMock.getMock(), times(4)).updateWith(anyString(), anyMap());
+    verify(glossaryService, times(4)).updateWith(anyString(), anyMap());
   }
 }

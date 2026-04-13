@@ -1,11 +1,14 @@
 package dev.uebelacker.babeli.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.lenient;
 
 import dev.uebelacker.babeli.core.configuration.LanguageFileConfiguration;
 import dev.uebelacker.babeli.core.model.Error;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
+import dev.uebelacker.babeli.core.services.GlossaryService;
+import dev.uebelacker.babeli.core.services.TranslationService;
 import dev.uebelacker.babeli.core.writers.JsonFileWriter;
 import dev.uebelacker.babeli.core.writers.PropertiesFileWriter;
 import java.io.File;
@@ -14,7 +17,11 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class BabeliTest {
   static final File FILE = new File("target/test/test.json");
   static final Set<LanguageFileConfiguration> FILES =
@@ -22,6 +29,10 @@ class BabeliTest {
           new LanguageFileConfiguration("en", new File("target/test/properties/en.properties")),
           new LanguageFileConfiguration("fr", new File("target/test/properties/fr.properties")),
           new LanguageFileConfiguration("de", new File("target/test/properties/de.properties")));
+
+  @Mock TranslationService translationService;
+
+  @Mock GlossaryService glossaryService;
 
   Configuration configuration;
   BabeliContext babeliContext;
@@ -52,7 +63,11 @@ class BabeliTest {
         new MultiLanguageTranslationFile(
             FILE, Fixtures.multiLanguageTranslationFile().translations()));
     configuration = new Configuration();
-    babeliContext = BabeliContextTestFactory.createBabeliContext(configuration);
+    babeliContext = new BabeliContext(configuration, translationService, glossaryService);
+
+    lenient().when(translationService.translate("No", "en", "de")).thenReturn("Nein");
+    lenient().when(translationService.translate("Peut-être", "fr", "en")).thenReturn("perhaps");
+    lenient().when(translationService.translate("Vielleicht", "de", "en")).thenReturn("perhaps");
   }
 
   @Test
