@@ -31,7 +31,6 @@ class BabeliTest {
           new LanguageFileConfiguration("de", new File("target/test/properties/de.properties")));
 
   @Mock TranslationService translationService;
-
   @Mock GlossaryService glossaryService;
 
   Configuration configuration;

@@ -13,6 +13,7 @@ public class Configuration {
   private Set<LanguageFileConfiguration> files;
   private Set<String> actions;
   private File glossaryFile = new File("glossary.json");
+  private String modelProvider;
 
   public Configuration() {
     this.actions = ActionRegistry.getActionNames();
@@ -70,6 +71,14 @@ public class Configuration {
 
   public void setOperation(Operation operation) {
     this.operation = operation;
+  }
+
+  public String getModelProvider() {
+    return modelProvider;
+  }
+
+  public void setModelProvider(String modelProvider) {
+    this.modelProvider = modelProvider;
   }
 
   public void validate() throws ConfigurationException {
