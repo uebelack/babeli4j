@@ -2,12 +2,12 @@ package dev.uebelacker.babeli.core.services;
 
 import dev.langchain4j.model.chat.ChatModel;
 import dev.uebelacker.babeli.core.Configuration;
-import dev.uebelacker.babeli.core.ai.ModelProvider;
+import dev.uebelacker.babeli.core.ai.ChatModelProvider;
 import dev.uebelacker.babeli.core.exceptions.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 
 public class ModelService {
-  private ModelProvider modelProvider;
+  private ChatModelProvider modelProvider;
 
   public ModelService(Configuration configuration) {
     var modelProviderName = configuration.getModelProvider();
@@ -17,7 +17,7 @@ public class ModelService {
             : "dev.uebelacker.ai." + StringUtils.capitalize(modelProviderName) + "ModelProvider";
     try {
       this.modelProvider =
-          (ModelProvider) Class.forName(modelProviderClass).getConstructor().newInstance();
+          (ChatModelProvider) Class.forName(modelProviderClass).getConstructor().newInstance();
     } catch (ClassNotFoundException e) {
       throw new ConfigurationException("Model provider class not found: " + modelProviderClass, e);
     } catch (NoSuchMethodException e) {
@@ -30,6 +30,6 @@ public class ModelService {
   }
 
   public ChatModel getChatModel() {
-    return modelProvider.getChatModel();
+    return modelProvider.create();
   }
 }

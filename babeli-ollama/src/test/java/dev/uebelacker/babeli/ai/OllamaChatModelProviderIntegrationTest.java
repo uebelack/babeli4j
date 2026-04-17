@@ -11,7 +11,7 @@ import java.nio.file.StandardCopyOption;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class OllamaModelProviderIntegrationTest {
+class OllamaChatModelProviderIntegrationTest {
   @Test
   @DisplayName("should update translations using ollama")
   void shouldUpdateTranslationsUsingOllama() throws IOException {

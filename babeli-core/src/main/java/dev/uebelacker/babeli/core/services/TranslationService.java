@@ -4,15 +4,15 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.input.PromptTemplate;
 import dev.uebelacker.babeli.core.Configuration;
-import dev.uebelacker.babeli.core.ai.ModelProvider;
+import dev.uebelacker.babeli.core.ai.ChatModelFactory;
 import java.util.Map;
 
 public class TranslationService {
 
-  private ChatModel chatModel;
+  private final ChatModel chatModel;
 
   public TranslationService(Configuration configuration) {
-    this.chatModel = ModelProvider.getChatModel(configuration);
+    this.chatModel = ChatModelFactory.createChatModel(configuration);
   }
 
   public String translate(String value, String sourceLanguage, String targetLanguage) {
