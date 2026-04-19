@@ -1,7 +1,6 @@
 package dev.uebelacker.babeli.core.services;
 
 import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.input.PromptTemplate;
 import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.ai.ChatModelFactory;
@@ -9,10 +8,10 @@ import java.util.Map;
 
 public class TranslationService {
 
-  private final ChatModel chatModel;
+  private Configuration configuration;
 
   public TranslationService(Configuration configuration) {
-    this.chatModel = ChatModelFactory.createChatModel(configuration);
+    this.configuration = configuration;
   }
 
   public String translate(String value, String sourceLanguage, String targetLanguage) {
@@ -21,6 +20,8 @@ public class TranslationService {
 
   public String translate(
       String value, String sourceLanguage, String targetLanguage, String instructions) {
+
+    var chatModel = ChatModelFactory.createChatModel(configuration);
 
     var prompt =
         PromptTemplate.from(

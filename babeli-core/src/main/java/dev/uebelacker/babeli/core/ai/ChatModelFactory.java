@@ -3,14 +3,18 @@ package dev.uebelacker.babeli.core.ai;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.exceptions.ConfigurationException;
+import dev.uebelacker.babeli.core.util.EnvUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class ChatModelFactory {
   private static ChatModel chatModel;
 
+  private ChatModelFactory() {}
+
   public static ChatModel createChatModel(Configuration configuration) {
     if (chatModel == null) {
-      var modelProviderName = configuration.getModelProvider();
+      var modelProviderName =
+          EnvUtils.get("BABELI_MODEL_PROVIDER", configuration.getModelProvider());
 
       if (modelProviderName == null) {
         throw new ConfigurationException(

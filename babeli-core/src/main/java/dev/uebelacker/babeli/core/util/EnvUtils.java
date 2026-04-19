@@ -1,20 +1,29 @@
 package dev.uebelacker.babeli.core.util;
 
-import dev.uebelacker.babeli.core.exceptions.ConfigurationException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class EnvUtils {
+
+  private static final Map<String, String> ENVS = new HashMap<>();
+
   private EnvUtils() {}
 
   public static String get(String envVarName) {
-    var value = System.getenv(envVarName);
-    if (value == null) {
-      throw new ConfigurationException("Missing required environment variable: " + envVarName);
-    }
-    return value;
+    return get(envVarName, null);
   }
 
   public static String get(String envVarName, String defaultValue) {
-    var value = System.getenv(envVarName);
-    return value != null ? value : defaultValue;
+    return Optional.ofNullable(System.getenv(envVarName))
+        .orElse(Optional.ofNullable(ENVS.get(envVarName)).orElse(defaultValue));
+  }
+
+  public static void set(String envVarName, String value) {
+    ENVS.put(envVarName, value);
+  }
+
+  public static void remove(String envVarName) {
+    ENVS.remove(envVarName);
   }
 }

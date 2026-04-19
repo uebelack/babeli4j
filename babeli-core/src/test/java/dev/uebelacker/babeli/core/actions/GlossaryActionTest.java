@@ -1,6 +1,6 @@
 package dev.uebelacker.babeli.core.actions;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -37,13 +37,15 @@ class GlossaryActionTest {
   @Test
   @DisplayName("should validate glossary with single language translation files")
   void shouldValidateGlossaryWithSingleLanguageTranslationFiles() {
-    assertTrue(glossaryAction.validate(Fixtures.singleLanguageTranslationFiles()).isEmpty());
+    assertThat(glossaryAction.validate(Fixtures.singleLanguageTranslationFiles()).isEmpty())
+        .isTrue();
   }
 
   @Test
   @DisplayName("should validate glossary with multi language translation file")
   void shouldValidateGlossaryWithMultiLanguageTranslationFiles() {
-    assertTrue(glossaryAction.validate(Fixtures.singleLanguageTranslationFiles()).isEmpty());
+    assertThat(glossaryAction.validate(Fixtures.singleLanguageTranslationFiles()).isEmpty())
+        .isTrue();
   }
 
   @Test

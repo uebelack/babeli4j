@@ -1,0 +1,67 @@
+package dev.uebelacker.babeli.core.ai;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import dev.uebelacker.babeli.core.Configuration;
+import dev.uebelacker.babeli.core.exceptions.ConfigurationException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+class ChatModelFactoryTest {
+
+  @BeforeEach
+  void setUp() {
+    // Reset the singleton instance before each test
+    try {
+      var chatModelField = ChatModelFactory.class.getDeclaredField("chatModel");
+      chatModelField.setAccessible(true);
+      chatModelField.set(null, null);
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      throw new RuntimeException("Failed to reset ChatModelFactory singleton instance", e);
+    }
+  }
+
+  @Test
+  @DisplayName("should throw exception if model is not configured")
+  void shouldThrowExceptionIfModelIsNotConfigured() {
+    assertThatExceptionOfType(ConfigurationException.class)
+        .isThrownBy(() -> ChatModelFactory.createChatModel(new Configuration()))
+        .withMessage(
+            "No model provider specified in the configuration. Please specify a model provider using 'modelProvider'.");
+  }
+
+  @Test
+  @DisplayName("should throw exception if model provider class does not exist")
+  void shouldThrowExceptionIfModelProviderClassDoesNotExist() {
+    var configuration = new Configuration();
+    configuration.setModelProvider("nonexistent");
+    assertThatExceptionOfType(ConfigurationException.class)
+        .isThrownBy(() -> ChatModelFactory.createChatModel(configuration))
+        .withMessage(
+            "Model provider class not found: dev.uebelacker.babeli.ai.NonexistentChatModelProvider");
+  }
+
+  @Test
+  @DisplayName("should throw exception if model provider class does not have default constructor")
+  void shouldThrowExceptionIfModelProviderClassDoesNotHaveDefaultConstructor() {
+    var configuration = new Configuration();
+    configuration.setModelProvider(ChatModelFactoryTest.class.getName());
+    assertThatExceptionOfType(ConfigurationException.class)
+        .isThrownBy(() -> ChatModelFactory.createChatModel(configuration))
+        .withMessage(
+            "Model provider class does not have a default constructor: dev.uebelacker.babeli.core.ai.ChatModelFactoryTest");
+  }
+
+  @Test
+  @DisplayName("should return the same chat model instance on multiple calls")
+  void shouldReturnTheSameChatModelInstanceOnMultipleCalls() {
+    var configuration = new Configuration();
+    configuration.setModelProvider("test");
+    var chatModel1 = ChatModelFactory.createChatModel(configuration);
+    var chatModel2 = ChatModelFactory.createChatModel(configuration);
+
+    assertThat(chatModel1).isEqualTo(chatModel2);
+  }
+}
