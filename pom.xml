@@ -12,6 +12,7 @@
     <modules>
         <module>babeli-core</module>
         <module>babeli-ollama</module>
+        <module>babeli-anthropic</module>
     </modules>
 
     <properties>
