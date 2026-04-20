@@ -5,11 +5,11 @@ import dev.uebelacker.babeli.core.model.*;
 import dev.uebelacker.babeli.core.model.Error;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MissingAction implements Action {
-
   public static final String NAME = "missing";
-
+  private static final Logger LOG = Logger.getLogger(MissingAction.class.getName());
   private final BabeliContext context;
 
   public MissingAction(BabeliContext context) {
@@ -91,7 +91,17 @@ public class MissingAction implements Action {
                     .filter(key -> translations.getTranslation(key, language).isEmpty())
                     .forEach(
                         key -> {
+                          LOG.info(
+                              "Missing translation for key '%s' and language '%s' in file '%s'. Generating translation."
+                                  .formatted(key, language, translationFile.file().getName()));
                           var translation = translate(key, language, translations);
+                          LOG.info(
+                              "Generated translation for key '%s' and language '%s' in file '%s': '%s'"
+                                  .formatted(
+                                      key,
+                                      language,
+                                      translationFile.file().getName(),
+                                      translation));
                           translations.add(key, language, translation);
                         }));
 
@@ -120,7 +130,18 @@ public class MissingAction implements Action {
               key -> translationFile.translations().stream().noneMatch(t -> t.key().equals(key)))
           .forEach(
               key -> {
+                LOG.info(
+                    "Missing translation for key '%s' and language '%s' in file '%s'. Generating translation."
+                        .formatted(
+                            key, translationFile.language(), translationFile.file().getName()));
                 var translation = translate(key, translationFile.language(), translations);
+                LOG.info(
+                    "Generated translation for key '%s' and language '%s' in file '%s': '%s'"
+                        .formatted(
+                            key,
+                            translationFile.language(),
+                            translationFile.file().getName(),
+                            translation));
                 translations.add(key, translationFile.language(), translation);
               });
 

@@ -37,6 +37,7 @@ public class Babeli {
 
   public static List<Error> validate(BabeliContext context) {
     var configuration = context.getConfiguration();
+    configuration.autoConfigure();
     configuration.validate();
     var fileReader = FileReaderRegistry.getFileReader(configuration);
 
@@ -69,6 +70,7 @@ public class Babeli {
 
   public static void update(BabeliContext context) {
     var configuration = context.getConfiguration();
+    configuration.autoConfigure();
     configuration.validate();
     var fileReader = FileReaderRegistry.getFileReader(configuration);
     var fileWriter = FileWriterRegistry.getFileWriter(configuration);

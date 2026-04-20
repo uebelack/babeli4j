@@ -1,23 +1,44 @@
 package dev.uebelacker.babeli.core;
 
 import dev.uebelacker.babeli.core.actions.ActionRegistry;
+import dev.uebelacker.babeli.core.configuration.AndroidAutoConfigurator;
+import dev.uebelacker.babeli.core.configuration.AutoConfigurator;
+import dev.uebelacker.babeli.core.configuration.JavaPropertiesAutoConfigurator;
 import dev.uebelacker.babeli.core.configuration.LanguageFileConfiguration;
 import dev.uebelacker.babeli.core.exceptions.ConfigurationException;
+import dev.uebelacker.babeli.core.util.EnvUtils;
 import java.io.File;
+import java.util.List;
 import java.util.Set;
 
 public class Configuration {
+  private static final List<AutoConfigurator> autoConfigurators =
+      List.of(new AndroidAutoConfigurator(), new JavaPropertiesAutoConfigurator());
+
+  private File workingDirectory;
   private Operation operation;
-  private String baseLanguage = "en";
+  private String baseLanguage;
   private File file;
   private Set<LanguageFileConfiguration> files;
   private Set<String> actions;
-  private File glossaryFile = new File("glossary.json");
+  private File glossaryFile;
   private String modelProvider;
 
   public Configuration() {
     this.actions = ActionRegistry.getActionNames();
     this.operation = System.getenv("CI") != null ? Operation.VALIDATE : Operation.UPDATE;
+
+    this.workingDirectory = new File(EnvUtils.get("BABELI_WORKING_DIRECTORY", "."));
+    this.baseLanguage = EnvUtils.get("BABELI_BASE_LANGUAGE", "en");
+    this.glossaryFile = new File(EnvUtils.get("BABELI_GLOSSARY_FILE", "glossary.json"));
+  }
+
+  public File getWorkingDirectory() {
+    return workingDirectory;
+  }
+
+  public void setWorkingDirectory(File workingDirectory) {
+    this.workingDirectory = workingDirectory;
   }
 
   public String getBaseLanguage() {
@@ -79,6 +100,14 @@ public class Configuration {
 
   public void setModelProvider(String modelProvider) {
     this.modelProvider = modelProvider;
+  }
+
+  public void autoConfigure() {
+    for (var autoConfigurator : autoConfigurators) {
+      if (autoConfigurator.configure(this)) {
+        return;
+      }
+    }
   }
 
   public void validate() throws ConfigurationException {

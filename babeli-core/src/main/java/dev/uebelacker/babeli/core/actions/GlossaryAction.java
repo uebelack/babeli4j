@@ -43,7 +43,6 @@ public class GlossaryAction implements Action {
 
   private void update(Translations translations) {
     var glossaryService = context.getGlossaryService();
-
     translations
         .getKeys()
         .forEach(
