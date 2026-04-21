@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 
 class AndroidAutoConfiguratorTest {
   @Test
-  @DisplayName("should return fals if working directory does not contain an android project")
+  @DisplayName("should return false if working directory does not contain an android project")
   void shouldReturnFalsIfWorkingDirectoryDoesNotContainAndroidProject() {
     var androidAutoConfigurator = new AndroidAutoConfigurator();
-    assertThat(androidAutoConfigurator.configure(new Configuration())).isFalse();
+    assertThat(androidAutoConfigurator.matches(new Configuration())).isFalse();
   }
 
   @Test
@@ -22,7 +22,7 @@ class AndroidAutoConfiguratorTest {
     var androidAutoConfigurator = new AndroidAutoConfigurator();
     var configuration = new Configuration();
     configuration.setWorkingDirectory(new File("src/test/resources/auto/android"));
-    assertThat(androidAutoConfigurator.configure(configuration)).isTrue();
-    assertThat(configuration.getFiles()).hasSize(2);
+    assertThat(androidAutoConfigurator.matches(configuration)).isTrue();
+    assertThat(androidAutoConfigurator.configure(configuration).getFirst().getFiles()).hasSize(2);
   }
 }

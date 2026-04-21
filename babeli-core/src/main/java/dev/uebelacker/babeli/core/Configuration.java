@@ -37,40 +37,45 @@ public class Configuration {
     return workingDirectory;
   }
 
-  public void setWorkingDirectory(File workingDirectory) {
+  public Configuration setWorkingDirectory(File workingDirectory) {
     this.workingDirectory = workingDirectory;
+    return this;
   }
 
   public String getBaseLanguage() {
     return baseLanguage;
   }
 
-  public void setBaseLanguage(String baseLanguage) {
+  public Configuration setBaseLanguage(String baseLanguage) {
     this.baseLanguage = baseLanguage;
+    return this;
   }
 
   public File getFile() {
     return file;
   }
 
-  public void setFile(File file) {
+  public Configuration setFile(File file) {
     this.file = file;
+    return this;
   }
 
   public Set<LanguageFileConfiguration> getFiles() {
     return files;
   }
 
-  public void setFiles(Set<LanguageFileConfiguration> files) {
+  public Configuration setFiles(Set<LanguageFileConfiguration> files) {
     this.files = files;
+    return this;
   }
 
   public Set<String> getActions() {
     return actions;
   }
 
-  public void setActions(Set<String> actions) {
+  public Configuration setActions(Set<String> actions) {
     this.actions = actions;
+    return this;
   }
 
   public String getFileExtension() {
@@ -90,24 +95,39 @@ public class Configuration {
     return operation;
   }
 
-  public void setOperation(Operation operation) {
+  public Configuration setOperation(Operation operation) {
     this.operation = operation;
+    return this;
   }
 
   public String getModelProvider() {
     return modelProvider;
   }
 
-  public void setModelProvider(String modelProvider) {
+  public Configuration setModelProvider(String modelProvider) {
     this.modelProvider = modelProvider;
+    return this;
   }
 
-  public void autoConfigure() {
-    for (var autoConfigurator : autoConfigurators) {
-      if (autoConfigurator.configure(this)) {
-        return;
+  public File getGlossaryFile() {
+    return glossaryFile;
+  }
+
+  public Configuration setGlossaryFile(File glossaryFile) {
+    this.glossaryFile = glossaryFile;
+    return this;
+  }
+
+  public List<Configuration> autoConfigure() {
+    if (files == null && (files == null || files.isEmpty())) {
+      for (var autoConfigurator : autoConfigurators) {
+        if (autoConfigurator.matches(this)) {
+          return autoConfigurator.configure(this);
+        }
       }
     }
+
+    return List.of(this);
   }
 
   public void validate() throws ConfigurationException {
@@ -132,5 +152,18 @@ public class Configuration {
       throw new ConfigurationException(
           "All files in 'files' must have the same extension. Please ensure all files have the same extension.");
     }
+  }
+
+  public Configuration clone() {
+    return new Configuration()
+        .setActions(actions)
+        .setBaseLanguage(baseLanguage)
+        .setFile(file)
+        .setFiles(files)
+        .setGlossaryFile(glossaryFile)
+        .setModelProvider(modelProvider)
+        .setModelProvider(modelProvider)
+        .setOperation(operation)
+        .setWorkingDirectory(workingDirectory);
   }
 }

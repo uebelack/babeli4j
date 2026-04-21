@@ -26,9 +26,11 @@ class BabeliTest {
   static final File FILE = new File("target/test/test.json");
   static final Set<LanguageFileConfiguration> FILES =
       Set.of(
-          new LanguageFileConfiguration("en", new File("target/test/properties/en.properties")),
+          new LanguageFileConfiguration(
+              "en", new File("target/test/properties/messages_en.properties")),
           new LanguageFileConfiguration("fr", new File("target/test/properties/fr.properties")),
-          new LanguageFileConfiguration("de", new File("target/test/properties/de.properties")));
+          new LanguageFileConfiguration(
+              "de", new File("target/test/properties/messages_de.properties")));
 
   @Mock TranslationService translationService;
   @Mock GlossaryService glossaryService;
@@ -42,7 +44,7 @@ class BabeliTest {
     propertiesFileWriter.writeFile(
         new SingleLanguageTranslationFile(
             "en",
-            new File("target/test/properties/en.properties"),
+            new File("target/test/properties/messages_en.properties"),
             Fixtures.singleLanguageTranslationFileEn().translations()));
 
     propertiesFileWriter.writeFile(
@@ -54,7 +56,7 @@ class BabeliTest {
     propertiesFileWriter.writeFile(
         new SingleLanguageTranslationFile(
             "de",
-            new File("target/test/properties/de.properties"),
+            new File("target/test/properties/messages_de.properties"),
             Fixtures.singleLanguageTranslationFileDe().translations()));
 
     var jsonFileWriter = new JsonFileWriter();
@@ -79,10 +81,10 @@ class BabeliTest {
     assertThat(errors.stream().map(Error::toString).sorted().toList())
         .isEqualTo(
             List.of(
-                "Error[action=missing, language=de, value=common.button.no, message=Missing translation for 'common.button.no' in file de.properties]",
-                "Error[action=missing, language=en, value=common.button.perhaps, message=Missing translation for 'common.button.perhaps' in file en.properties]",
-                "Error[action=sort, language=de, value=target/test/properties/de.properties, message=Translations in file de.properties are not sorted.]",
-                "Error[action=sort, language=en, value=target/test/properties/en.properties, message=Translations in file en.properties are not sorted.]",
+                "Error[action=missing, language=de, value=common.button.no, message=Missing translation for 'common.button.no' in file messages_de.properties]",
+                "Error[action=missing, language=en, value=common.button.perhaps, message=Missing translation for 'common.button.perhaps' in file messages_en.properties]",
+                "Error[action=sort, language=de, value=target/test/properties/messages_de.properties, message=Translations in file messages_de.properties are not sorted.]",
+                "Error[action=sort, language=en, value=target/test/properties/messages_en.properties, message=Translations in file messages_en.properties are not sorted.]",
                 "Error[action=sort, language=fr, value=target/test/properties/fr.properties, message=Translations in file fr.properties are not sorted.]"));
   }
 

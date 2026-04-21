@@ -13,6 +13,7 @@
         <module>babeli-core</module>
         <module>babeli-ollama</module>
         <module>babeli-anthropic</module>
+        <module>babeli-cli</module>
     </modules>
 
     <properties>
