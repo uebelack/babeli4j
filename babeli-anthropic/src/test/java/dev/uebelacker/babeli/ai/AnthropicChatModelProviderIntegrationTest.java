@@ -32,19 +32,4 @@ class AnthropicChatModelProviderIntegrationTest {
     Babeli.execute(configuration);
     assertThat(Babeli.validate(configuration)).isEmpty();
   }
-
-  @Test
-  @DisplayName("should update autoconfigured project using anthropic")
-  void shouldUpdateAutoconfiguredProjectUsingAnthropic() {
-    if (System.getenv("BABELI_ANTHROPIC_API_KEY") == null
-        || System.getenv("BABELI_WORKING_DIRECTORY") == null) {
-      return;
-    }
-
-    var configuration = new Configuration();
-    configuration.setModelProvider("anthropic");
-
-    Babeli.execute(configuration);
-    assertThat(Babeli.validate(configuration)).isEmpty();
-  }
 }

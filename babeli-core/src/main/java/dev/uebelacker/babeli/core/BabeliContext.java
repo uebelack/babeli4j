@@ -9,7 +9,7 @@ public class BabeliContext {
   private GlossaryService glossaryService;
 
   public BabeliContext(Configuration configuration) {
-    this(configuration, new TranslationService(configuration), new GlossaryService());
+    this(configuration, new TranslationService(configuration), new GlossaryService(configuration));
   }
 
   public BabeliContext(

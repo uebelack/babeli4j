@@ -2,10 +2,9 @@ package dev.uebelacker.babeli.core.configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import dev.uebelacker.babeli.core.Configuration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import dev.uebelacker.babeli.core.Configuration;
 
 class JavaPropertiesAutoConfiguratorTest {
     @Test
@@ -26,6 +25,8 @@ class JavaPropertiesAutoConfiguratorTest {
         var configuration = new Configuration();
         configuration.setWorkingDirectory(new java.io.File("src/test/resources/auto/java"));
         assertThat(javaPropertiesAutoConfigurator.matches(configuration)).isTrue();
-        assertThat(configuration.getFiles()).hasSize(2);
+
+        var configurations = javaPropertiesAutoConfigurator.configure(configuration);
+        assertThat(configurations).hasSize(2);
     }
 }

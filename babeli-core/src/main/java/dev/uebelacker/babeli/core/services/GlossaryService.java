@@ -1,14 +1,41 @@
 package dev.uebelacker.babeli.core.services;
 
-import dev.uebelacker.babeli.core.model.GlossaryEntry;
+import com.google.gson.Gson;
+
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import dev.uebelacker.babeli.core.Configuration;
+import dev.uebelacker.babeli.core.model.Glossary;
+import dev.uebelacker.babeli.core.model.GlossaryEntry;
+
 public class GlossaryService {
 
-  public void updateWith(String key, Map<String, String> languageMap) {}
+    private final Configuration configuration;
+    private Glossary glossary;
 
-  public List<GlossaryEntry> findRelevantEntries(String term, String language, int maxResults) {
-    return List.of();
-  }
+    public GlossaryService(Configuration configuration) {
+        this.configuration = configuration;
+        load(configuration.getFile());
+    }
+
+    private void init() {
+    }
+
+    public void updateWith(String key, Map<String, String> languageMap) {
+    }
+
+    public List<GlossaryEntry> findRelevantEntries(String term, String language, int maxResults) {
+        return List.of();
+    }
+
+    private Glossary load(File file) {
+        try {
+            var gson = new Gson();
+            return gson.fromJson(new java.io.FileReader(file), Glossary.class);
+        } catch (Exception e) {
+            return new Glossary();
+        }
+    }
 }
