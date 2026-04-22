@@ -21,7 +21,6 @@ public class Configuration {
   private File file;
   private Set<LanguageFileConfiguration> files;
   private Set<String> actions;
-  private File glossaryFile;
   private String modelProvider;
 
   public Configuration() {
@@ -30,7 +29,6 @@ public class Configuration {
 
     this.workingDirectory = new File(EnvUtils.get("BABELI_WORKING_DIRECTORY", "."));
     this.baseLanguage = EnvUtils.get("BABELI_BASE_LANGUAGE", "en");
-    this.glossaryFile = new File(EnvUtils.get("BABELI_GLOSSARY_FILE", "glossary.json"));
   }
 
   public File getWorkingDirectory() {
@@ -109,15 +107,6 @@ public class Configuration {
     return this;
   }
 
-  public File getGlossaryFile() {
-    return glossaryFile;
-  }
-
-  public Configuration setGlossaryFile(File glossaryFile) {
-    this.glossaryFile = glossaryFile;
-    return this;
-  }
-
   public List<Configuration> autoConfigure() {
     if (files == null && (files == null || files.isEmpty())) {
       for (var autoConfigurator : autoConfigurators) {
@@ -160,7 +149,6 @@ public class Configuration {
         .setBaseLanguage(baseLanguage)
         .setFile(file)
         .setFiles(files)
-        .setGlossaryFile(glossaryFile)
         .setModelProvider(modelProvider)
         .setModelProvider(modelProvider)
         .setOperation(operation)

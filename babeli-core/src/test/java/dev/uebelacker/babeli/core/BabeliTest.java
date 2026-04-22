@@ -7,7 +7,6 @@ import dev.uebelacker.babeli.core.configuration.LanguageFileConfiguration;
 import dev.uebelacker.babeli.core.model.Error;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
-import dev.uebelacker.babeli.core.services.GlossaryService;
 import dev.uebelacker.babeli.core.services.TranslationService;
 import dev.uebelacker.babeli.core.writers.JsonFileWriter;
 import dev.uebelacker.babeli.core.writers.PropertiesFileWriter;
@@ -33,10 +32,8 @@ class BabeliTest {
               "de", new File("target/test/properties/messages_de.properties")));
 
   @Mock TranslationService translationService;
-  @Mock GlossaryService glossaryService;
 
   Configuration configuration;
-  BabeliContext babeliContext;
 
   @BeforeEach
   void setUp() {
@@ -64,7 +61,6 @@ class BabeliTest {
         new MultiLanguageTranslationFile(
             FILE, Fixtures.multiLanguageTranslationFile().translations()));
     configuration = new Configuration();
-    babeliContext = new BabeliContext(configuration, translationService, glossaryService);
 
     lenient().when(translationService.translate("No", "en", "de")).thenReturn("Nein");
     lenient().when(translationService.translate("Peut-être", "fr", "en")).thenReturn("perhaps");
@@ -76,7 +72,7 @@ class BabeliTest {
   void validateSingleLanguageTranslationFiles() {
     configuration.setFiles(FILES);
     configuration.setOperation(Operation.VALIDATE);
-    var errors = Babeli.execute(babeliContext);
+    var errors = Babeli.execute(configuration);
 
     assertThat(errors.stream().map(Error::toString).sorted().toList())
         .isEqualTo(
@@ -93,7 +89,7 @@ class BabeliTest {
   void validateMultiLanguageTranslationFiles() {
     configuration.setFile(FILE);
     configuration.setOperation(Operation.VALIDATE);
-    var errors = Babeli.execute(babeliContext);
+    var errors = Babeli.execute(configuration);
 
     assertThat(errors.stream().map(Error::toString).sorted().toList())
         .isEqualTo(
@@ -108,9 +104,9 @@ class BabeliTest {
   void shouldUpdateSingleLanguageTranslationFiles() {
     configuration.setFiles(FILES);
     configuration.setOperation(Operation.UPDATE);
-    assertThat(Babeli.validate(babeliContext)).hasSize(5);
-    Babeli.execute(babeliContext);
-    assertThat(Babeli.validate(babeliContext)).isEmpty();
+    assertThat(Babeli.validate(configuration)).hasSize(5);
+    Babeli.execute(configuration);
+    assertThat(Babeli.validate(configuration)).isEmpty();
   }
 
   @Test
@@ -118,8 +114,8 @@ class BabeliTest {
   void shouldUpdateMultiLanguageTranslationFiles() {
     configuration.setFile(FILE);
     configuration.setOperation(Operation.UPDATE);
-    assertThat(Babeli.validate(babeliContext)).hasSize(3);
-    Babeli.execute(babeliContext);
-    assertThat(Babeli.validate(babeliContext)).isEmpty();
+    assertThat(Babeli.validate(configuration)).hasSize(3);
+    Babeli.execute(configuration);
+    assertThat(Babeli.validate(configuration)).isEmpty();
   }
 }

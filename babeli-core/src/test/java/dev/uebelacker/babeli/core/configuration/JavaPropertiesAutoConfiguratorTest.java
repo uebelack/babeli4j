@@ -7,26 +7,26 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class JavaPropertiesAutoConfiguratorTest {
-    @Test
-    @DisplayName(
-            "should return false if working directory does not contain java properties files for internationalization")
-    void
-    shouldReturnFalseIfWorkingDirectoryDoesNotContainJavaPropertiesFilesForInternationalization() {
-        var javaPropertiesAutoConfigurator = new JavaPropertiesAutoConfigurator();
-        assertThat(javaPropertiesAutoConfigurator.matches(new Configuration())).isFalse();
-    }
+  @Test
+  @DisplayName(
+      "should return false if working directory does not contain java properties files for internationalization")
+  void
+      shouldReturnFalseIfWorkingDirectoryDoesNotContainJavaPropertiesFilesForInternationalization() {
+    var javaPropertiesAutoConfigurator = new JavaPropertiesAutoConfigurator();
+    assertThat(javaPropertiesAutoConfigurator.matches(new Configuration())).isFalse();
+  }
 
-    @Test
-    @DisplayName(
-            "should return true and update configuration if working directory contains java properties files for internationalization")
-    void
-    shouldReturnTrueAndUpdateConfigurationIfWorkingDirectoryContainsJavaPropertiesFilesForInternationalization() {
-        var javaPropertiesAutoConfigurator = new JavaPropertiesAutoConfigurator();
-        var configuration = new Configuration();
-        configuration.setWorkingDirectory(new java.io.File("src/test/resources/auto/java"));
-        assertThat(javaPropertiesAutoConfigurator.matches(configuration)).isTrue();
+  @Test
+  @DisplayName(
+      "should return true and update configuration if working directory contains java properties files for internationalization")
+  void
+      shouldReturnTrueAndUpdateConfigurationIfWorkingDirectoryContainsJavaPropertiesFilesForInternationalization() {
+    var javaPropertiesAutoConfigurator = new JavaPropertiesAutoConfigurator();
+    var configuration = new Configuration();
+    configuration.setWorkingDirectory(new java.io.File("src/test/resources/auto/java"));
+    assertThat(javaPropertiesAutoConfigurator.matches(configuration)).isTrue();
 
-        var configurations = javaPropertiesAutoConfigurator.configure(configuration);
-        assertThat(configurations).hasSize(2);
-    }
+    var configurations = javaPropertiesAutoConfigurator.configure(configuration);
+    assertThat(configurations).hasSize(2);
+  }
 }

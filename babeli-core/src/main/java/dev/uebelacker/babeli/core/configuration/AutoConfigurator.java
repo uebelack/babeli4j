@@ -1,11 +1,10 @@
 package dev.uebelacker.babeli.core.configuration;
 
+import dev.uebelacker.babeli.core.Configuration;
 import java.util.List;
 
-import dev.uebelacker.babeli.core.Configuration;
-
 public interface AutoConfigurator {
-    boolean matches(Configuration configuration);
+  boolean matches(Configuration configuration);
 
-    List<Configuration> configure(Configuration configuration);
+  List<Configuration> configure(Configuration configuration);
 }

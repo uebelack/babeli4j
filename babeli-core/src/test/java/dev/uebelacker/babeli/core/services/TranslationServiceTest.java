@@ -9,6 +9,8 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.ai.ChatModelFactory;
+import dev.uebelacker.babeli.core.model.Translations;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +37,8 @@ class TranslationServiceTest {
                 .aiMessage(AiMessage.builder().text("Hallo, wie geht es dir?").build())
                 .build());
 
-    var translationService = new TranslationService(configuration);
+    var translationService =
+        new TranslationService(configuration, Translations.fromTranslations(List.of()));
     var result = translationService.translate("Hello, how are you?", "en", "de");
 
     assertThat(result).isEqualTo("Hallo, wie geht es dir?");

@@ -1,8 +1,9 @@
 package dev.uebelacker.babeli.core.actions;
 
-import dev.uebelacker.babeli.core.BabeliContext;
+import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.model.*;
 import dev.uebelacker.babeli.core.model.Error;
+import dev.uebelacker.babeli.core.services.TranslationService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -10,10 +11,10 @@ import java.util.logging.Logger;
 public class MissingAction implements Action {
   public static final String NAME = "missing";
   private static final Logger LOG = Logger.getLogger(MissingAction.class.getName());
-  private final BabeliContext context;
+  private final Configuration configuration;
 
-  public MissingAction(BabeliContext context) {
-    this.context = context;
+  public MissingAction(Configuration configuration) {
+    this.configuration = configuration;
   }
 
   @Override
@@ -156,8 +157,7 @@ public class MissingAction implements Action {
   }
 
   private String translate(String key, String language, Translations translations) {
-    var translationService = context.getTranslationService();
-    var configuration = context.getConfiguration();
+    var translationService = new TranslationService(configuration, translations);
     if (!language.equals(configuration.getBaseLanguage())) {
       var translation = translations.getTranslation(key, configuration.getBaseLanguage());
       if (translation.isPresent()) {

@@ -1,104 +1,100 @@
 package dev.uebelacker.babeli.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import dev.uebelacker.babeli.core.actions.ActionRegistry;
 import dev.uebelacker.babeli.core.model.Error;
 import dev.uebelacker.babeli.core.readers.FileReaderRegistry;
 import dev.uebelacker.babeli.core.writers.FileWriterRegistry;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Babeli {
-    private Babeli() {
+  private Babeli() {}
+
+  public static List<Error> execute(Configuration configuration) {
+    switch (configuration.getOperation()) {
+      case VALIDATE -> {
+        return validate(configuration);
+      }
+      case UPDATE -> update(configuration);
     }
 
-    public static List<Error> execute(BabeliContext context) {
-        switch (context.getConfiguration().getOperation()) {
-            case VALIDATE -> {
-                return validate(context);
-            }
-            case UPDATE -> update(context);
-        }
+    return List.of();
+  }
 
-        return List.of();
-    }
+  public static List<Error> validate(Configuration configuration) {
+    var errors = new ArrayList<Error>();
+    configuration
+        .autoConfigure()
+        .forEach(
+            subConfiguration -> {
+              subConfiguration.validate();
 
-    public static List<Error> execute(Configuration configuration) {
-        switch (configuration.getOperation()) {
-            case VALIDATE -> {
-                return validate(configuration);
-            }
-            case UPDATE -> update(configuration);
-        }
+              var fileReader = FileReaderRegistry.getFileReader(subConfiguration);
 
-        return List.of();
-    }
-
-    public static List<Error> validate(Configuration configuration) {
-        return validate(new BabeliContext(configuration));
-    }
-
-    public static List<Error> validate(BabeliContext context) {
-        var errors = new ArrayList<Error>();
-        context.getConfiguration().autoConfigure().forEach(configuration -> {
-            configuration.validate();
-
-            var fileReader = FileReaderRegistry.getFileReader(configuration);
-
-            if (configuration.getFile() != null) {
-                var translationFile = fileReader.readFile(configuration.getFile());
-                errors.addAll(configuration.getActions().stream()
-                        .map(action -> ActionRegistry.createAction(action, context).validate(translationFile))
+              if (subConfiguration.getFile() != null) {
+                var translationFile = fileReader.readFile(subConfiguration.getFile());
+                errors.addAll(
+                    subConfiguration.getActions().stream()
+                        .map(
+                            action ->
+                                ActionRegistry.createAction(action, subConfiguration)
+                                    .validate(translationFile))
                         .flatMap(List::stream)
                         .toList());
-            }
+              }
 
-            if (configuration.getFiles() != null) {
+              if (subConfiguration.getFiles() != null) {
                 var translationFiles =
-                        configuration.getFiles().stream()
-                                .map(f -> fileReader.readFile(f.getLanguage(), f.getFile()))
-                                .toList();
+                    subConfiguration.getFiles().stream()
+                        .map(f -> fileReader.readFile(f.getLanguage(), f.getFile()))
+                        .toList();
 
-                errors.addAll(configuration.getActions().stream()
-                        .map(action -> ActionRegistry.createAction(action, context).validate(translationFiles))
+                errors.addAll(
+                    subConfiguration.getActions().stream()
+                        .map(
+                            action ->
+                                ActionRegistry.createAction(action, subConfiguration)
+                                    .validate(translationFiles))
                         .flatMap(List::stream)
                         .toList());
-            }
-        });
+              }
+            });
 
-        return errors;
-    }
+    return errors;
+  }
 
-    public static void update(Configuration configuration) {
-        update(new BabeliContext(configuration));
-    }
+  public static void update(Configuration configuration) {
+    configuration
+        .autoConfigure()
+        .forEach(
+            subConfiguration -> {
+              subConfiguration.validate();
+              var fileReader = FileReaderRegistry.getFileReader(subConfiguration);
+              var fileWriter = FileWriterRegistry.getFileWriter(subConfiguration);
 
-    public static void update(BabeliContext context) {
-        context.getConfiguration().autoConfigure().forEach(configuration -> {
-            configuration.validate();
-            var fileReader = FileReaderRegistry.getFileReader(configuration);
-            var fileWriter = FileWriterRegistry.getFileWriter(configuration);
-
-            if (configuration.getFile() != null) {
-                var translationFile = fileReader.readFile(configuration.getFile());
-                for (var action : configuration.getActions()) {
-                    translationFile = ActionRegistry.createAction(action, context).update(translationFile);
+              if (subConfiguration.getFile() != null) {
+                var translationFile = fileReader.readFile(subConfiguration.getFile());
+                for (var action : subConfiguration.getActions()) {
+                  translationFile =
+                      ActionRegistry.createAction(action, subConfiguration).update(translationFile);
                 }
                 fileWriter.writeFile(translationFile);
-            }
+              }
 
-            if (configuration.getFiles() != null) {
+              if (subConfiguration.getFiles() != null) {
                 var translationFiles =
-                        configuration.getFiles().stream()
-                                .map(f -> fileReader.readFile(f.getLanguage(), f.getFile()))
-                                .toList();
+                    subConfiguration.getFiles().stream()
+                        .map(f -> fileReader.readFile(f.getLanguage(), f.getFile()))
+                        .toList();
 
-                for (var action : configuration.getActions()) {
-                    translationFiles = ActionRegistry.createAction(action, context).update(translationFiles);
+                for (var action : subConfiguration.getActions()) {
+                  translationFiles =
+                      ActionRegistry.createAction(action, subConfiguration)
+                          .update(translationFiles);
                 }
 
                 translationFiles.forEach(fileWriter::writeFile);
-            }
-        });
-    }
+              }
+            });
+  }
 }
