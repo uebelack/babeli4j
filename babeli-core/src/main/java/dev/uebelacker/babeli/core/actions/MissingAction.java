@@ -83,7 +83,7 @@ public class MissingAction implements Action {
   @Override
   public MultiLanguageTranslationFile update(MultiLanguageTranslationFile translationFile) {
     var translations = Translations.fromTranslations(translationFile.translations());
-
+    var translationService = new TranslationService(configuration, translations);
     translations
         .getLanguages()
         .forEach(
@@ -95,7 +95,8 @@ public class MissingAction implements Action {
                           LOG.info(
                               "Missing translation for key '%s' and language '%s' in file '%s'. Generating translation."
                                   .formatted(key, language, translationFile.file().getName()));
-                          var translation = translate(key, language, translations);
+                          var translation =
+                              translate(translationService, key, language, translations);
                           LOG.info(
                               "Generated translation for key '%s' and language '%s' in file '%s': '%s'"
                                   .formatted(
@@ -124,6 +125,8 @@ public class MissingAction implements Action {
         Translations.fromTranslations(
             inputTranslationFiles.stream().flatMap(tf -> tf.translations().stream()).toList());
 
+    var translationService = new TranslationService(configuration, translations);
+
     var outputTranslationFiles = new ArrayList<SingleLanguageTranslationFile>();
     for (SingleLanguageTranslationFile translationFile : inputTranslationFiles) {
       keys.stream()
@@ -135,7 +138,8 @@ public class MissingAction implements Action {
                     "Missing translation for key '%s' and language '%s' in file '%s'. Generating translation."
                         .formatted(
                             key, translationFile.language(), translationFile.file().getName()));
-                var translation = translate(key, translationFile.language(), translations);
+                var translation =
+                    translate(translationService, key, translationFile.language(), translations);
                 LOG.info(
                     "Generated translation for key '%s' and language '%s' in file '%s': '%s'"
                         .formatted(
@@ -156,8 +160,11 @@ public class MissingAction implements Action {
     return outputTranslationFiles;
   }
 
-  private String translate(String key, String language, Translations translations) {
-    var translationService = new TranslationService(configuration, translations);
+  private String translate(
+      TranslationService translationService,
+      String key,
+      String language,
+      Translations translations) {
     if (!language.equals(configuration.getBaseLanguage())) {
       var translation = translations.getTranslation(key, configuration.getBaseLanguage());
       if (translation.isPresent()) {

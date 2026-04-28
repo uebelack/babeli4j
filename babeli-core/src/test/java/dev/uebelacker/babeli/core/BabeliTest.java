@@ -1,8 +1,14 @@
 package dev.uebelacker.babeli.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.SystemMessage;
+import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.uebelacker.babeli.core.ai.ChatModelFactory;
 import dev.uebelacker.babeli.core.configuration.LanguageFileConfiguration;
 import dev.uebelacker.babeli.core.model.Error;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
@@ -61,10 +67,16 @@ class BabeliTest {
         new MultiLanguageTranslationFile(
             FILE, Fixtures.multiLanguageTranslationFile().translations()));
     configuration = new Configuration();
+    configuration.setModelProvider("test");
 
-    lenient().when(translationService.translate("No", "en", "de")).thenReturn("Nein");
-    lenient().when(translationService.translate("Peut-être", "fr", "en")).thenReturn("perhaps");
-    lenient().when(translationService.translate("Vielleicht", "de", "en")).thenReturn("perhaps");
+    var chatModel = ChatModelFactory.createChatModel(configuration);
+
+    lenient()
+        .when(chatModel.chat(any(SystemMessage.class), any(UserMessage.class)))
+        .thenReturn(
+            ChatResponse.builder()
+                .aiMessage(AiMessage.builder().text("Test Translation").build())
+                .build());
   }
 
   @Test
