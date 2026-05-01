@@ -65,4 +65,10 @@ class TranslationsTest {
         .map(Translation::value)
         .forEach(value -> assertThat(value).isEqualTo("Vielleicht"));
   }
+
+  @Test
+  @DisplayName("should return translations for language")
+  void shouldReturnTranslations() {
+    assertThat(translations.getTranslationForValue("Yes", "en", "de")).isEqualTo("Ja");
+  }
 }

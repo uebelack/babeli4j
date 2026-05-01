@@ -30,7 +30,7 @@ public class ChatModelFactory {
       try {
         chatModel =
             ((ChatModelProvider) Class.forName(modelProviderClass).getConstructor().newInstance())
-                .create();
+                .create(configuration);
       } catch (ClassNotFoundException e) {
         throw new ConfigurationException(
             "Model provider class not found: " + modelProviderClass, e);

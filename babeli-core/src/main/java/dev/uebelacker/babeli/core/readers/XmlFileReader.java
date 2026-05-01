@@ -15,6 +15,15 @@ import org.xml.sax.SAXException;
 
 public class XmlFileReader implements FileReader {
 
+  private static String unescapeXmlValue(String value) {
+    return value
+        .replace("&amp;", "&")
+        .replace("\"&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("\\\"", "\"")
+        .replace("\\'", "'");
+  }
+
   private static Document parseDocument(File file)
       throws ParserConfigurationException, IOException, SAXException {
     var factory = DocumentBuilderFactory.newInstance();
@@ -36,7 +45,7 @@ public class XmlFileReader implements FileReader {
       for (int i = 0; i < nodeList.getLength(); i++) {
         var element = (Element) nodeList.item(i);
         var key = element.getAttribute("name");
-        var value = element.getTextContent();
+        var value = unescapeXmlValue(element.getTextContent());
         translations.add(new Translation(language, key, value));
       }
 

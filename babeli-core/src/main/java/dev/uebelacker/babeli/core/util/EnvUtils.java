@@ -14,6 +14,13 @@ public class EnvUtils {
     return get(envVarName, null);
   }
 
+  public static String get(String envVarName, String defaultValue1, String defaultValue2) {
+    return Optional.ofNullable(System.getenv(envVarName))
+        .orElse(
+            Optional.ofNullable(ENVS.get(envVarName))
+                .orElse(defaultValue1 != null ? defaultValue1 : defaultValue2));
+  }
+
   public static String get(String envVarName, String defaultValue) {
     return Optional.ofNullable(System.getenv(envVarName))
         .orElse(Optional.ofNullable(ENVS.get(envVarName)).orElse(defaultValue));

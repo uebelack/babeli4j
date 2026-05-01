@@ -14,6 +14,15 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 
 public class XmlFileWriter implements FileWriter {
+  private static String escapeXmlValue(String value) {
+    return value
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace("\"", "\\\"")
+        .replace("'", "\\'");
+  }
+
   private static Document createNewDocument() throws ParserConfigurationException {
     var factory = DocumentBuilderFactory.newInstance();
     factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
@@ -31,7 +40,7 @@ public class XmlFileWriter implements FileWriter {
 
     var transformer = factory.newTransformer();
     transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-    transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
     transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
     transformer.transform(new DOMSource(document), new StreamResult(file));
   }
@@ -48,7 +57,7 @@ public class XmlFileWriter implements FileWriter {
       for (var translation : file.translations()) {
         var element = document.createElement("string");
         element.setAttribute("name", translation.key());
-        element.setTextContent(translation.value());
+        element.setTextContent(escapeXmlValue(translation.value()));
         resources.appendChild(element);
       }
 
@@ -79,7 +88,7 @@ public class XmlFileWriter implements FileWriter {
                 (language, value) -> {
                   var languageElement = document.createElement("language");
                   languageElement.setAttribute("code", language);
-                  languageElement.setTextContent(value);
+                  languageElement.setTextContent(escapeXmlValue(value));
                   stringElement.appendChild(languageElement);
                 });
 

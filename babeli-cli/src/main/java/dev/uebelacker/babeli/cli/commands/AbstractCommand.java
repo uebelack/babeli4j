@@ -32,9 +32,24 @@ public abstract class AbstractCommand implements Callable<Integer> {
   private String actions;
 
   @CommandLine.Option(
-      names = {"-m", "--model-provider"},
+      names = {"-p", "--model-provider"},
       description = "AI model provider to use.")
   private String modelProvider;
+
+  @CommandLine.Option(
+      names = {"-m", "--model"},
+      description = "AI model to use.")
+  private String model;
+
+  @CommandLine.Option(
+      names = {"-k", "--api-key"},
+      description = "Api-Key for the model provider.")
+  private String apiKey;
+
+  @CommandLine.Option(
+      names = {"-u", "--url"},
+      description = "Api-Url to use for the model provider.")
+  private String apiUrl;
 
   protected Configuration createConfiguration() {
     var configuration = new Configuration();
@@ -72,6 +87,18 @@ public abstract class AbstractCommand implements Callable<Integer> {
 
     if (modelProvider != null) {
       configuration.setModelProvider(modelProvider);
+    }
+
+    if (model != null) {
+      configuration.setModel(model);
+    }
+
+    if (apiKey != null) {
+      configuration.setApiKey(apiKey);
+    }
+
+    if (apiUrl != null) {
+      configuration.setApiUrl(apiUrl);
     }
 
     return configuration;

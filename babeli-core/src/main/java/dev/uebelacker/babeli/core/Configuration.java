@@ -22,6 +22,9 @@ public class Configuration {
   private Set<LanguageFileConfiguration> files;
   private Set<String> actions;
   private String modelProvider;
+  private String model;
+  private String apiKey;
+  private String apiUrl;
 
   public Configuration() {
     this.actions = ActionRegistry.getActionNames();
@@ -107,6 +110,33 @@ public class Configuration {
     return this;
   }
 
+  public String getModel() {
+    return model;
+  }
+
+  public Configuration setModel(String model) {
+    this.model = model;
+    return this;
+  }
+
+  public String getApiKey() {
+    return apiKey;
+  }
+
+  public Configuration setApiKey(String apiKey) {
+    this.apiKey = apiKey;
+    return this;
+  }
+
+  public String getApiUrl() {
+    return apiUrl;
+  }
+
+  public Configuration setApiUrl(String apiUrl) {
+    this.apiUrl = apiUrl;
+    return this;
+  }
+
   public List<Configuration> autoConfigure() {
     if (files == null && (files == null || files.isEmpty())) {
       for (var autoConfigurator : autoConfigurators) {
@@ -145,10 +175,13 @@ public class Configuration {
 
   public Configuration clone() {
     return new Configuration()
+        .setApiUrl(apiUrl)
         .setActions(actions)
+        .setApiKey(apiKey)
         .setBaseLanguage(baseLanguage)
         .setFile(file)
         .setFiles(files)
+        .setModel(model)
         .setModelProvider(modelProvider)
         .setModelProvider(modelProvider)
         .setOperation(operation)

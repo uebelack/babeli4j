@@ -76,7 +76,7 @@ public class Translations {
   public List<Translation> getTranslationsForLanguage(String language) {
     var translations = new ArrayList<Translation>();
     languageKeyMap
-        .get(language)
+        .computeIfAbsent(language, l -> new LinkedHashMap<>())
         .forEach((key, value) -> translations.add(new Translation(language, key, value)));
 
     return translations;
@@ -101,5 +101,22 @@ public class Translations {
     keyLanguageMap.computeIfAbsent(key, k -> new LinkedHashMap<>()).put(language, value);
     languageKeyMap.computeIfAbsent(language, l -> new LinkedHashMap<>()).put(key, value);
     return translation;
+  }
+
+  public String getTranslationForValue(String text, String sourceLanguage, String targetLanguage) {
+    var sourceMap = languageKeyMap.get(sourceLanguage);
+    var targetMap = languageKeyMap.get(targetLanguage);
+    if (sourceMap == null || targetMap == null) {
+      return null;
+    }
+    for (var entry : sourceMap.entrySet()) {
+      if (entry.getValue().equals(text)) {
+        var translation = targetMap.get(entry.getKey());
+        if (translation != null) {
+          return translation;
+        }
+      }
+    }
+    return null;
   }
 }
