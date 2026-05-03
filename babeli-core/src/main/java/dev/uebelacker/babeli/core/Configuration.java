@@ -6,6 +6,9 @@ import dev.uebelacker.babeli.core.configuration.AutoConfigurator;
 import dev.uebelacker.babeli.core.configuration.JavaPropertiesAutoConfigurator;
 import dev.uebelacker.babeli.core.configuration.LanguageFileConfiguration;
 import dev.uebelacker.babeli.core.exceptions.ConfigurationException;
+import dev.uebelacker.babeli.core.logging.DefaultLoggingProvider;
+import dev.uebelacker.babeli.core.logging.Logger;
+import dev.uebelacker.babeli.core.logging.LoggingProvider;
 import dev.uebelacker.babeli.core.util.EnvUtils;
 import java.io.File;
 import java.util.List;
@@ -22,9 +25,11 @@ public class Configuration {
   private Set<LanguageFileConfiguration> files;
   private Set<String> actions;
   private String modelProvider;
+  private LoggingProvider loggingProvider = new DefaultLoggingProvider();
   private String model;
   private String apiKey;
   private String apiUrl;
+  private boolean debug;
 
   public Configuration() {
     this.actions = ActionRegistry.getActionNames();
@@ -137,8 +142,26 @@ public class Configuration {
     return this;
   }
 
+  public LoggingProvider getLoggingProvider() {
+    return loggingProvider;
+  }
+
+  public Configuration setLoggingProvider(LoggingProvider loggingProvider) {
+    this.loggingProvider = loggingProvider;
+    return this;
+  }
+
+  public boolean isDebug() {
+    return debug;
+  }
+
+  public Configuration setDebug(boolean debug) {
+    this.debug = debug;
+    return this;
+  }
+
   public List<Configuration> autoConfigure() {
-    if (files == null && (files == null || files.isEmpty())) {
+    if (file == null && (files == null || files.isEmpty())) {
       for (var autoConfigurator : autoConfigurators) {
         if (autoConfigurator.matches(this)) {
           return autoConfigurator.configure(this);
@@ -150,6 +173,44 @@ public class Configuration {
   }
 
   public void validate() throws ConfigurationException {
+
+    if (isDebug()) {
+      var logger = new Logger(this);
+      logger.debug("Configuration: ");
+
+      logger.debug("Working directory: " + workingDirectory.getAbsolutePath());
+
+      logger.debug("Base language: " + baseLanguage);
+
+      if (file != null) {
+        logger.debug("File: " + file);
+      }
+
+      if (files != null) {
+        logger.debug("File(s): " + files);
+      }
+
+      if (actions != null) {
+        logger.debug("Action(s): " + actions);
+      }
+
+      if (modelProvider != null) {
+        logger.debug("Model: " + modelProvider);
+      }
+
+      if (model != null) {
+        logger.debug("Model: " + model);
+      }
+
+      if (apiKey != null) {
+        logger.debug("API key: " + apiKey);
+      }
+
+      if (apiUrl != null) {
+        logger.debug("API URL: " + apiUrl);
+      }
+    }
+
     if (file != null && (files != null && !files.isEmpty())) {
       throw new ConfigurationException(
           "Both 'file' and 'files' are specified in the configuration. Please specify only one of them.");
@@ -173,11 +234,13 @@ public class Configuration {
     }
   }
 
-  public Configuration clone() {
+  public Configuration copy() {
     return new Configuration()
-        .setApiUrl(apiUrl)
+        .setDebug(debug)
+        .setLoggingProvider(loggingProvider)
         .setActions(actions)
         .setApiKey(apiKey)
+        .setApiUrl(apiUrl)
         .setBaseLanguage(baseLanguage)
         .setFile(file)
         .setFiles(files)

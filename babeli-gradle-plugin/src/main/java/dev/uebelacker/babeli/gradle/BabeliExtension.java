@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.gradle.api.Project;
 
 public class BabeliExtension {
   private final Map<String, File> files = new LinkedHashMap<>();
@@ -92,8 +93,11 @@ public class BabeliExtension {
     this.apiUrl = apiUrl;
   }
 
-  public Configuration toConfiguration() {
+  public Configuration toConfiguration(Project project) {
     var configuration = new Configuration();
+    configuration.setLoggingProvider(new BabeliLoggingProvider(project.getLogger()));
+    configuration.setDebug(project.getLogger().isDebugEnabled());
+    configuration.setWorkingDirectory(project.getProjectDir());
 
     if (file != null) {
       configuration.setFile(file);

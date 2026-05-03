@@ -1,16 +1,17 @@
 package dev.uebelacker.babeli.core.actions;
 
+import static dev.uebelacker.babeli.core.util.FileUtils.relativePath;
+
 import dev.uebelacker.babeli.core.Configuration;
+import dev.uebelacker.babeli.core.logging.Logger;
 import dev.uebelacker.babeli.core.model.*;
 import dev.uebelacker.babeli.core.model.Error;
 import dev.uebelacker.babeli.core.services.TranslationService;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class MissingAction implements Action {
   public static final String NAME = "missing";
-  private static final Logger LOG = Logger.getLogger(MissingAction.class.getName());
   private final Configuration configuration;
 
   public MissingAction(Configuration configuration) {
@@ -45,7 +46,11 @@ public class MissingAction implements Action {
                             translationFile.language(),
                             key,
                             "Missing translation for '%s' in file %s"
-                                .formatted(key, translationFile.file().getName())))
+                                .formatted(
+                                    key,
+                                    relativePath(
+                                        configuration.getWorkingDirectory(),
+                                        translationFile.file()))))
                 .toList());
       }
     }
@@ -73,7 +78,12 @@ public class MissingAction implements Action {
                                 language,
                                 key,
                                 "Missing translation for key '%s' and language '%s' in file '%s'"
-                                    .formatted(key, language, translationFile.file().getName())));
+                                    .formatted(
+                                        key,
+                                        language,
+                                        relativePath(
+                                            configuration.getWorkingDirectory(),
+                                            translationFile.file()))));
                       }
                     }));
 
@@ -84,6 +94,7 @@ public class MissingAction implements Action {
   public MultiLanguageTranslationFile update(MultiLanguageTranslationFile translationFile) {
     var translations = Translations.fromTranslations(translationFile.translations());
     var translationService = new TranslationService(configuration, translations);
+    var logger = new Logger(configuration);
     translations
         .getLanguages()
         .forEach(
@@ -92,17 +103,24 @@ public class MissingAction implements Action {
                     .filter(key -> translations.getTranslation(key, language).isEmpty())
                     .forEach(
                         key -> {
-                          LOG.info(
+                          logger.info(
                               "Missing translation for key '%s' and language '%s' in file '%s'. Generating translation."
-                                  .formatted(key, language, translationFile.file().getName()));
+                                  .formatted(
+                                      key,
+                                      language,
+                                      relativePath(
+                                          configuration.getWorkingDirectory(),
+                                          translationFile.file())));
                           var translation =
                               translate(translationService, key, language, translations);
-                          LOG.info(
+                          logger.info(
                               "Generated translation for key '%s' and language '%s' in file '%s': '%s'"
                                   .formatted(
                                       key,
                                       language,
-                                      translationFile.file().getName(),
+                                      relativePath(
+                                          configuration.getWorkingDirectory(),
+                                          translationFile.file()),
                                       translation));
                           translations.add(key, language, translation);
                         }));
@@ -126,6 +144,7 @@ public class MissingAction implements Action {
             inputTranslationFiles.stream().flatMap(tf -> tf.translations().stream()).toList());
 
     var translationService = new TranslationService(configuration, translations);
+    var logger = new Logger(configuration);
 
     var outputTranslationFiles = new ArrayList<SingleLanguageTranslationFile>();
     for (SingleLanguageTranslationFile translationFile : inputTranslationFiles) {
@@ -134,18 +153,22 @@ public class MissingAction implements Action {
               key -> translationFile.translations().stream().noneMatch(t -> t.key().equals(key)))
           .forEach(
               key -> {
-                LOG.info(
+                logger.info(
                     "Missing translation for key '%s' and language '%s' in file '%s'. Generating translation."
                         .formatted(
-                            key, translationFile.language(), translationFile.file().getName()));
+                            key,
+                            translationFile.language(),
+                            relativePath(
+                                configuration.getWorkingDirectory(), translationFile.file())));
                 var translation =
                     translate(translationService, key, translationFile.language(), translations);
-                LOG.info(
+                logger.info(
                     "Generated translation for key '%s' and language '%s' in file '%s': '%s'"
                         .formatted(
                             key,
                             translationFile.language(),
-                            translationFile.file().getName(),
+                            relativePath(
+                                configuration.getWorkingDirectory(), translationFile.file()),
                             translation));
                 translations.add(key, translationFile.language(), translation);
               });

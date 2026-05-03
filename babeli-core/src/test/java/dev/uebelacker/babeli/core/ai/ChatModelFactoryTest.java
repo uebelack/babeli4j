@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("java:S5778")
 class ChatModelFactoryTest {
 
   @BeforeEach
@@ -29,7 +30,7 @@ class ChatModelFactoryTest {
     assertThatExceptionOfType(ConfigurationException.class)
         .isThrownBy(() -> ChatModelFactory.createChatModel(new Configuration()))
         .withMessage(
-            "No model provider specified in the configuration. Please specify a model provider using 'modelProvider'.");
+            "No model provider specified in the configuration. Please specify a model provider using 'modelProvider' in the configuration or specify it as environment variable BABELI_MODEL_PROVIDER.");
   }
 
   @Test

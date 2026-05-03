@@ -2,6 +2,7 @@ package dev.uebelacker.babeli.core.configuration;
 
 import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.exceptions.ConfigurationException;
+import dev.uebelacker.babeli.core.logging.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,12 +19,24 @@ public class JavaPropertiesAutoConfigurator implements AutoConfigurator {
 
   @Override
   public boolean matches(Configuration configuration) {
+    var logger = new Logger(configuration);
     if (!Path.of(configuration.getWorkingDirectory().getAbsolutePath(), RESOURCES_DIRECTORY)
         .toFile()
         .exists()) {
+      logger.debug(
+          "Doesn't look like a java project, resources directory does not exist: "
+              + configuration.getWorkingDirectory().getAbsolutePath());
       return false;
     }
     bundles = findResourceBundles(configuration.getWorkingDirectory());
+
+    if (bundles.isEmpty()) {
+      logger.debug("Looks like there are no bundles in the working directory");
+    } else {
+      logger.debug(
+          "Found this bundles in the working directory: " + String.join(", ", bundles.keySet()));
+    }
+
     return !bundles.isEmpty();
   }
 
@@ -33,7 +46,7 @@ public class JavaPropertiesAutoConfigurator implements AutoConfigurator {
         .map(
             prefix -> {
               var languageFileConfigurations = bundles.get(prefix);
-              return configuration.clone().setFiles(languageFileConfigurations);
+              return configuration.copy().setFiles(languageFileConfigurations);
             })
         .toList();
   }

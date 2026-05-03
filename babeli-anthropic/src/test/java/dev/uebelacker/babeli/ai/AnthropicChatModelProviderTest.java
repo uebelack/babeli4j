@@ -6,10 +6,19 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.exceptions.ConfigurationException;
 import dev.uebelacker.babeli.core.util.EnvUtils;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 class AnthropicChatModelProviderTest {
+
+  @AfterAll
+  static void tearDown() {
+    EnvUtils.reset();
+  }
+
+  @BeforeEach
+  void setUp() {
+    EnvUtils.reset();
+  }
 
   @Test
   @DisplayName("should create chat model")
@@ -23,11 +32,13 @@ class AnthropicChatModelProviderTest {
   @Test
   @DisplayName("should throw exception if BABELI_ANTHROPIC_API_KEY is not set")
   void shouldThrowExceptionIfApiKeyIsNotSet() {
-    EnvUtils.remove("BABELI_ANTHROPIC_API_KEY");
+    EnvUtils.ignore("ANTHROPIC_API_KEY", "BABELI_ANTHROPIC_API_KEY");
+
     var provider = new AnthropicChatModelProvider();
 
     assertThatExceptionOfType(ConfigurationException.class)
         .isThrownBy(() -> provider.create(new Configuration()))
-        .withMessage("Missing required environment variable: BABELI_ANTHROPIC_API_KEY");
+        .withMessage(
+            "Missing required api key for anthropic chat model provider, please provide apiKey in configuration or define it as environment variable BABELI_ANTHROPIC_API_KEY or ANTHROPIC_API_KEY");
   }
 }

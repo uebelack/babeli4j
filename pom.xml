@@ -24,6 +24,7 @@
         <sonar.organization>uebelack</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.projectKey>uebelack_babeli4j</sonar.projectKey>
+        <sonar.exclusions>babeli-gradle-plugin/**</sonar.exclusions>
     </properties>
 
     <build>

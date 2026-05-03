@@ -1,5 +1,8 @@
 package dev.uebelacker.babeli.core.actions;
 
+import static dev.uebelacker.babeli.core.util.FileUtils.relativePath;
+
+import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.model.Error;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
@@ -11,6 +14,11 @@ import java.util.List;
 public class SortAction implements Action {
 
   public static final String NAME = "sort";
+  private final Configuration configuration;
+
+  public SortAction(Configuration configuration) {
+    this.configuration = configuration;
+  }
 
   @Override
   public List<Error> validate(List<SingleLanguageTranslationFile> translationFiles) {
@@ -27,7 +35,9 @@ public class SortAction implements Action {
                 NAME,
                 translationFile.language(),
                 translationFile.file().toString(),
-                "Translations in file " + translationFile.file().getName() + " are not sorted."));
+                "Translations in file "
+                    + relativePath(configuration.getWorkingDirectory(), translationFile.file())
+                    + " are not sorted."));
       }
     }
 
@@ -64,7 +74,9 @@ public class SortAction implements Action {
               NAME,
               null,
               translationFile.file().toString(),
-              "Translations in file " + translationFile.file().getName() + " are not sorted."));
+              "Translations in file "
+                  + relativePath(configuration.getWorkingDirectory(), translationFile.file())
+                  + " are not sorted."));
     }
 
     return errors;

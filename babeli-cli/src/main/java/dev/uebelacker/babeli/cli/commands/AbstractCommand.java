@@ -51,6 +51,11 @@ public abstract class AbstractCommand implements Callable<Integer> {
       description = "Api-Url to use for the model provider.")
   private String apiUrl;
 
+  @CommandLine.Option(
+      names = {"-v", "--verbose"},
+      description = "Enable verbose output for debugging purposes.")
+  private boolean debug;
+
   protected Configuration createConfiguration() {
     var configuration = new Configuration();
 
@@ -100,6 +105,8 @@ public abstract class AbstractCommand implements Callable<Integer> {
     if (apiUrl != null) {
       configuration.setApiUrl(apiUrl);
     }
+
+    configuration.setDebug(debug);
 
     return configuration;
   }

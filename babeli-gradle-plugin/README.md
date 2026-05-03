@@ -1,10 +1,51 @@
 # Babeli Gradle Plugin
 
-A Gradle plugin for managing and validating translation files using [babeli4j](https://github.com/uebelack/babeli4j).
+A Gradle plugin that uses AI to automatically manage and complete localization files in your project. It detects missing
+translations, sorts keys, and generates translations using LLMs — all integrated into your Gradle build lifecycle.
+
+Built on [LangChain4j](https://docs.langchain4j.dev/) for the AI layer, the plugin ships with support for the
+Anthropic API and local models via Ollama, and can easily be extended with additional providers.
+
+Part of the [babeli4j](https://github.com/uebelack/babeli4j) project.
+
+## Features
+
+- **AI-powered translation completion** — automatically generates missing translations using LLMs
+- **Automatic detection of translation files** — no configuration needed for standard project layouts
+- Supports Properties, JSON, and XML (Android) translation formats
+- Validates and updates translation files as part of your Gradle build
+- Extensible model provider system (Anthropic, Ollama, or add your own)
+
+## Auto-Detection
+
+The plugin automatically discovers translation files in your project. For most projects, you only need to apply the
+plugin and (optionally) add a model provider dependency — no `babeli { }` configuration block required.
+
+### Android Projects
+
+If your project follows the standard Android resource layout, translation files are detected automatically:
+
+```
+src/main/res/values/strings.xml        → base language (en)
+src/main/res/values-de/strings.xml     → German
+src/main/res/values-fr/strings.xml     → French
+```
+
+### Java/Kotlin Projects (Message Bundles)
+
+Properties files in the standard resources directory are detected automatically:
+
+```
+src/main/resources/messages_en.properties  → English
+src/main/resources/messages_de.properties  → German
+src/main/resources/messages_fr.properties  → French
+```
+
+Multiple bundles (e.g., `messages_*.properties` and `errors_*.properties`) are each detected and handled independently.
 
 ## Setup
 
-Add the plugin to your `build.gradle`:
+### Groovy DSL (`build.gradle`)
 
 ```groovy
 plugins {
@@ -12,22 +53,120 @@ plugins {
 }
 ```
 
+### Kotlin DSL (`build.gradle.kts`)
+
+```kotlin
+plugins {
+    id("dev.uebelacker.babeli") version "1.0-SNAPSHOT"
+}
+```
+
+## Minimal Setup (Auto-Detection)
+
+For Android or standard Java/Kotlin projects, applying the plugin is all you need for sorting and missing key detection:
+
+### Groovy DSL
+
+```groovy
+plugins {
+    id 'dev.uebelacker.babeli' version '1.0-SNAPSHOT'
+}
+```
+
+### Kotlin DSL
+
+```kotlin
+plugins {
+    id("dev.uebelacker.babeli") version "1.0-SNAPSHOT"
+}
+```
+
+That's it. The plugin will find your translation files automatically and apply the default actions.
+
+## AI-Powered Translation Completion
+
+To use AI-powered translation completion, add a model provider dependency to the `babeli` configuration:
+
+### Groovy DSL
+
+```groovy
+plugins {
+    id 'dev.uebelacker.babeli' version '1.0-SNAPSHOT'
+}
+
+dependencies {
+    babeli 'dev.uebelacker.babeli:babeli-anthropic:1.0-SNAPSHOT'
+}
+```
+
+### Kotlin DSL
+
+```kotlin
+plugins {
+    id("dev.uebelacker.babeli") version "1.0-SNAPSHOT"
+}
+
+dependencies {
+    babeli("dev.uebelacker.babeli:babeli-anthropic:1.0-SNAPSHOT")
+}
+```
+
+The Anthropic provider reads the API key from the `ANTHROPIC_API_KEY` or `BABELI_ANTHROPIC_API_KEY` environment
+variable.
+
+For local models using Ollama:
+
+### Groovy DSL
+
+```groovy
+dependencies {
+    babeli 'dev.uebelacker.babeli:babeli-ollama:1.0-SNAPSHOT'
+}
+```
+
+### Kotlin DSL
+
+```kotlin
+dependencies {
+    babeli("dev.uebelacker.babeli:babeli-ollama:1.0-SNAPSHOT")
+}
+```
+
+Ollama connects to `http://localhost:11434` by default. Override with the `BABELI_OLLAMA_URL` environment variable.
+
 ## Configuration
 
-Configure the plugin using the `babeli` extension block:
+For non-standard project layouts or advanced use cases, configure the plugin explicitly:
 
-### Per-language translation files (properties or XML)
+### Per-Language Translation Files
+
+#### Groovy DSL
 
 ```groovy
 babeli {
     actions = ['sort', 'missing']
+    baseLanguage = 'en'
     translationFile 'en', file('src/main/resources/messages_en.properties')
     translationFile 'de', file('src/main/resources/messages_de.properties')
     translationFile 'fr', file('src/main/resources/messages_fr.properties')
 }
 ```
 
-### Multi-language JSON file
+#### Kotlin DSL
+
+```kotlin
+babeli {
+    actions = listOf("sort", "missing")
+    baseLanguage = "en"
+    translationFile("en", file("src/main/resources/messages_en.properties"))
+    translationFile("de", file("src/main/resources/messages_de.properties"))
+    translationFile("fr", file("src/main/resources/messages_fr.properties"))
+}
+```
+
+### Multi-Language JSON File
+
+#### Groovy DSL
 
 ```groovy
 babeli {
@@ -36,7 +175,18 @@ babeli {
 }
 ```
 
-### XML (Android-style) translation files
+#### Kotlin DSL
+
+```kotlin
+babeli {
+    actions = listOf("sort", "missing")
+    multiLanguageFile = file("src/main/resources/translations.json")
+}
+```
+
+### XML (Android) Translation Files
+
+#### Groovy DSL
 
 ```groovy
 babeli {
@@ -46,12 +196,50 @@ babeli {
 }
 ```
 
+#### Kotlin DSL
+
+```kotlin
+babeli {
+    actions = listOf("sort")
+    translationFile("en", file("src/main/res/values/strings.xml"))
+    translationFile("de", file("src/main/res/values-de/strings.xml"))
+}
+```
+
+### Full Example with AI Completion
+
+#### Groovy DSL
+
+```groovy
+babeli {
+    actions = ['sort', 'missing', 'complete']
+    baseLanguage = 'en'
+    translationFile 'en', file('messages_en.properties')
+    translationFile 'de', file('messages_de.properties')
+    modelProvider = 'anthropic'
+    model = 'claude-sonnet-4-20250514'
+}
+```
+
+#### Kotlin DSL
+
+```kotlin
+babeli {
+    actions = listOf("sort", "missing", "complete")
+    baseLanguage = "en"
+    translationFile("en", file("messages_en.properties"))
+    translationFile("de", file("messages_de.properties"))
+    modelProvider = "anthropic"
+    model = "claude-sonnet-4-20250514"
+}
+```
+
 ## Tasks
 
-| Task | Description |
-|------|-------------|
-| `babeliValidate` | Validates translation files against the configured actions. Fails the build if errors are found. |
-| `babeliUpdate` | Updates translation files by applying the configured actions (e.g., sorting keys, completing missing translations). |
+| Task             | Description                                                                                                         |
+|------------------|---------------------------------------------------------------------------------------------------------------------|
+| `babeliValidate` | Validates translation files against the configured actions. Fails the build if errors are found.                    |
+| `babeliUpdate`   | Updates translation files by applying the configured actions (e.g., sorting keys, completing missing translations). |
 
 ```bash
 # Validate translation files
@@ -61,53 +249,47 @@ babeli {
 ./gradlew babeliUpdate
 ```
 
+The `babeliValidate` task is automatically added to the `check` lifecycle task, and `babeliUpdate` is added to
+`processResources`/`preBuild`.
+
 ## Actions
 
-| Action | Description |
-|--------|-------------|
-| `sort` | Ensures translation keys are sorted alphabetically. |
-| `missing` | Detects missing translation keys across language files. |
-| `complete` | Uses AI to automatically generate missing translations (requires AI configuration). |
+| Action     | Description                                                                                    |
+|------------|------------------------------------------------------------------------------------------------|
+| `sort`     | Ensures translation keys are sorted alphabetically.                                            |
+| `missing`  | Detects missing translation keys across language files.                                        |
+| `complete` | Uses AI to automatically generate missing translations (requires a model provider dependency). |
 
 ## Options
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `actions` | `List<String>` | Actions to apply (e.g., `['sort', 'missing']`). Defaults to all registered actions. |
-| `translationFile` | method | Registers a per-language translation file: `translationFile 'en', file('path')` |
-| `multiLanguageFile` | `File` | Path to a single multi-language JSON file. |
-| `baseLanguage` | `String` | The base/reference language (default: `en`). |
-| `workingDirectory` | `File` | Working directory for file resolution. |
+Environment variables, where applicable, override configuration values.
 
-### AI configuration (for `complete` action)
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `modelProvider` | `String` | AI model provider (e.g., `ollama`). |
-| `model` | `String` | Model name to use for translations. |
-| `apiKey` | `String` | API key for the model provider. |
-| `apiUrl` | `String` | API endpoint URL. |
-
-Example with AI completion:
-
-```groovy
-babeli {
-    actions = ['sort', 'missing', 'complete']
-    baseLanguage = 'en'
-    translationFile 'en', file('messages_en.properties')
-    translationFile 'de', file('messages_de.properties')
-    modelProvider = 'ollama'
-    model = 'llama3'
-    apiUrl = 'http://localhost:11434'
-}
-```
+| Property            | Type           | Environment Variable                            | Default                                                    | Description                                                                     |
+|---------------------|----------------|-------------------------------------------------|------------------------------------------------------------|---------------------------------------------------------------------------------|
+| `actions`           | `List<String>` | —                                               | All registered actions                                     | Actions to apply (e.g., `['sort', 'missing']`).                                 |
+| `translationFile`   | method         | —                                               | Auto-detected                                              | Registers a per-language translation file: `translationFile 'en', file('path')` |
+| `multiLanguageFile` | `File`         | —                                               | —                                                          | Path to a single multi-language JSON file.                                      |
+| `baseLanguage`      | `String`       | —                                               | `en`                                                       | The base/reference language.                                                    |
+| `workingDirectory`  | `File`         | —                                               | Project directory                                          | Working directory for file resolution.                                          |
+| `modelProvider`     | `String`       | `BABELI_MODEL_PROVIDER`                         | —                                                          | AI model provider (`anthropic`, `ollama`). Required for the `complete` action.  |
+| `model`             | `String`       | `BABELI_ANTHROPIC_MODEL`, `BABELI_OLLAMA_MODEL` | `claude-sonnet-4-20250514` (Anthropic), `qwen3.6` (Ollama) | Model name to use for translations.                                             |
+| `apiKey`            | `String`       | `ANTHROPIC_API_KEY`, `BABELI_ANTHROPIC_API_KEY` | —                                                          | API key for the model provider.                                                 |
+| `apiUrl`            | `String`       | `BABELI_OLLAMA_URL`                             | `http://localhost:11434` (Ollama)                          | API endpoint URL.                                                               |
+| —                   | —              | `CI`                                            | —                                                          | When set, disables automatic `babeliUpdate` during builds.                      |
+| —                   | —              | `BABELI_DISABLED`                               | —                                                          | When set (and not `false`), disables automatic `babeliUpdate` during builds.    |
 
 ## CI Integration
 
-Use `babeliValidate` in your CI pipeline to ensure translation files are properly maintained:
+The `babeliUpdate` task is **not** automatically added to the build lifecycle when:
+
+- The `CI` environment variable is set (any non-empty value), or
+- The `BABELI_DISABLED` environment variable is set to a non-empty value other than `false`.
+
+This means in CI environments, `babeliUpdate` will not run automatically — only `babeliValidate` hooks into the `check`
+task. You can still run `babeliUpdate` explicitly if needed.
+
+To disable the automatic update task locally, set:
 
 ```bash
-./gradlew babeliValidate
+BABELI_DISABLED=true ./gradlew build
 ```
-
-The task will fail the build if any configured action detects issues (unsorted keys, missing translations, etc.).
