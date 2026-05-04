@@ -34,3 +34,4 @@ build/
 ### Mac OS ###
 .DS_Store
 .tossitin.config.mjs
+babeli-gradle-plugin/.gradle

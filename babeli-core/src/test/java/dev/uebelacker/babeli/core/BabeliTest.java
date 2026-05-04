@@ -89,11 +89,11 @@ class BabeliTest {
     assertThat(errors.stream().map(Error::toString).sorted().toList())
         .isEqualTo(
             List.of(
-                "Error[action=missing, language=de, value=common.button.no, message=Missing translation for 'common.button.no' in file messages_de.properties]",
-                "Error[action=missing, language=en, value=common.button.perhaps, message=Missing translation for 'common.button.perhaps' in file messages_en.properties]",
-                "Error[action=sort, language=de, value=target/test/properties/messages_de.properties, message=Translations in file messages_de.properties are not sorted.]",
-                "Error[action=sort, language=en, value=target/test/properties/messages_en.properties, message=Translations in file messages_en.properties are not sorted.]",
-                "Error[action=sort, language=fr, value=target/test/properties/fr.properties, message=Translations in file fr.properties are not sorted.]"));
+                "Error[action=missing, language=de, value=common.button.no, message=Missing translation for 'common.button.no' in file target/test/properties/messages_de.properties]",
+                "Error[action=missing, language=en, value=common.button.perhaps, message=Missing translation for 'common.button.perhaps' in file target/test/properties/messages_en.properties]",
+                "Error[action=sort, language=de, value=target/test/properties/messages_de.properties, message=Translations in file target/test/properties/messages_de.properties are not sorted.]",
+                "Error[action=sort, language=en, value=target/test/properties/messages_en.properties, message=Translations in file target/test/properties/messages_en.properties are not sorted.]",
+                "Error[action=sort, language=fr, value=target/test/properties/fr.properties, message=Translations in file target/test/properties/fr.properties are not sorted.]"));
   }
 
   @Test
@@ -106,9 +106,9 @@ class BabeliTest {
     assertThat(errors.stream().map(Error::toString).sorted().toList())
         .isEqualTo(
             List.of(
-                "Error[action=missing, language=de, value=common.button.no, message=Missing translation for key 'common.button.no' and language 'de' in file 'test.json']",
-                "Error[action=missing, language=en, value=common.button.perhaps, message=Missing translation for key 'common.button.perhaps' and language 'en' in file 'test.json']",
-                "Error[action=sort, language=null, value=target/test/test.json, message=Translations in file test.json are not sorted.]"));
+                "Error[action=missing, language=de, value=common.button.no, message=Missing translation for key 'common.button.no' and language 'de' in file 'target/test/test.json']",
+                "Error[action=missing, language=en, value=common.button.perhaps, message=Missing translation for key 'common.button.perhaps' and language 'en' in file 'target/test/test.json']",
+                "Error[action=sort, language=null, value=target/test/test.json, message=Translations in file target/test/test.json are not sorted.]"));
   }
 
   @Test

@@ -10,11 +10,15 @@ import dev.uebelacker.babeli.core.util.EnvUtils;
 public class AnthropicChatModelProvider implements ChatModelProvider {
   @Override
   public ChatModel create(Configuration configuration) {
-    var apiKey = EnvUtils.get("BABELI_ANTHROPIC_API_KEY", configuration.getApiKey());
+    var apiKey =
+        EnvUtils.get(
+            "BABELI_ANTHROPIC_API_KEY",
+            configuration.getApiKey(),
+            EnvUtils.get("ANTHROPIC_API_KEY"));
 
     if (apiKey == null) {
       throw new ConfigurationException(
-          "Missing required environment variable: BABELI_ANTHROPIC_API_KEY");
+          "Missing required api key for anthropic chat model provider, please provide apiKey in configuration or define it as environment variable BABELI_ANTHROPIC_API_KEY or ANTHROPIC_API_KEY");
     }
 
     var model =

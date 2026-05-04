@@ -1,10 +1,12 @@
 package dev.uebelacker.babeli.core;
 
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 import dev.uebelacker.babeli.core.configuration.LanguageFileConfiguration;
 import dev.uebelacker.babeli.core.exceptions.ConfigurationException;
+import dev.uebelacker.babeli.core.logging.LoggingProvider;
 import java.io.File;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
@@ -90,5 +92,23 @@ class ConfigurationTest {
             new LanguageFileConfiguration("en", new File("test_en.properties")),
             new LanguageFileConfiguration("de", new File("test_de.properties"))));
     assertThatNoException().isThrownBy(configuration::validate);
+  }
+
+  @Test
+  @DisplayName("should run auto configuration")
+  void shouldRunAutoConfiguration() {
+    configuration.setWorkingDirectory(new File("src/test/resources/auto/java"));
+    assertThat(configuration.autoConfigure()).hasSize(2);
+  }
+
+  @Test
+  @DisplayName("should debug configuration")
+  void shouldDebugConfiguration() {
+    var loggingProvider = mock(LoggingProvider.class);
+    configuration.setWorkingDirectory(new File("src/test/resources/auto/android"));
+    configuration.setLoggingProvider(loggingProvider);
+    configuration.setDebug(true);
+    configuration.autoConfigure().getFirst().validate();
+    verify(loggingProvider, times(8)).debug(anyString());
   }
 }

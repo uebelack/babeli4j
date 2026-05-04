@@ -1,5 +1,7 @@
 package dev.uebelacker.babeli.core.ai;
 
+import static dev.uebelacker.babeli.core.Constants.EnvironmentVariables.BABELI_MODEL_PROVIDER;
+
 import dev.langchain4j.model.chat.ChatModel;
 import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.exceptions.ConfigurationException;
@@ -13,12 +15,11 @@ public class ChatModelFactory {
 
   public static ChatModel createChatModel(Configuration configuration) {
     if (chatModel == null) {
-      var modelProviderName =
-          EnvUtils.get("BABELI_MODEL_PROVIDER", configuration.getModelProvider());
+      var modelProviderName = EnvUtils.get(BABELI_MODEL_PROVIDER, configuration.getModelProvider());
 
       if (modelProviderName == null) {
         throw new ConfigurationException(
-            "No model provider specified in the configuration. Please specify a model provider using 'modelProvider'.");
+            "No model provider specified in the configuration. Please specify a model provider using 'modelProvider' in the configuration or specify it as environment variable BABELI_MODEL_PROVIDER.");
       }
 
       var modelProviderClass =
@@ -28,8 +29,14 @@ public class ChatModelFactory {
                   + StringUtils.capitalize(modelProviderName)
                   + "ChatModelProvider";
       try {
+
         chatModel =
-            ((ChatModelProvider) Class.forName(modelProviderClass).getConstructor().newInstance())
+            ((ChatModelProvider)
+                    Thread.currentThread()
+                        .getContextClassLoader()
+                        .loadClass(modelProviderClass)
+                        .getConstructor()
+                        .newInstance())
                 .create(configuration);
       } catch (ClassNotFoundException e) {
         throw new ConfigurationException(
@@ -39,7 +46,8 @@ public class ChatModelFactory {
             "Model provider class does not have a default constructor: " + modelProviderClass, e);
       } catch (Exception e) {
         throw new ConfigurationException(
-            "Failed to instantiate model provider: " + modelProviderClass, e);
+            "Failed to instantiate model provider " + modelProviderClass + ": " + e.getMessage(),
+            e);
       }
     }
 

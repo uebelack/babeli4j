@@ -1,12 +1,11 @@
 package dev.uebelacker.babeli.core.util;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class EnvUtils {
 
   private static final Map<String, String> ENVS = new HashMap<>();
+  private static final Set<String> IGNORED_KEYS = new HashSet<>();
 
   private EnvUtils() {}
 
@@ -15,6 +14,9 @@ public class EnvUtils {
   }
 
   public static String get(String envVarName, String defaultValue1, String defaultValue2) {
+    if (IGNORED_KEYS.contains(envVarName)) {
+      return null;
+    }
     return Optional.ofNullable(System.getenv(envVarName))
         .orElse(
             Optional.ofNullable(ENVS.get(envVarName))
@@ -22,6 +24,9 @@ public class EnvUtils {
   }
 
   public static String get(String envVarName, String defaultValue) {
+    if (IGNORED_KEYS.contains(envVarName)) {
+      return null;
+    }
     return Optional.ofNullable(System.getenv(envVarName))
         .orElse(Optional.ofNullable(ENVS.get(envVarName)).orElse(defaultValue));
   }
@@ -30,7 +35,12 @@ public class EnvUtils {
     ENVS.put(envVarName, value);
   }
 
-  public static void remove(String envVarName) {
-    ENVS.remove(envVarName);
+  public static void reset() {
+    ENVS.clear();
+    IGNORED_KEYS.clear();
+  }
+
+  public static void ignore(String... envVarName) {
+    IGNORED_KEYS.addAll(Arrays.asList(envVarName));
   }
 }

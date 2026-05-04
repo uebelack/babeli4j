@@ -42,8 +42,8 @@ class TranslationServiceTest {
     var result = translationService.translate("Hello, how are you?", "en", "de");
 
     assertThat(result).isEqualTo("Hallo, wie geht es dir?");
-    assertThat(
-        systemMessageArgumentCaptor.getValue().text().contains("translate text from en to de"));
+    assertThat(systemMessageArgumentCaptor.getValue().text())
+        .contains("translate text from en to de");
     assertThat(userMessageArgumentCaptor.getValue().singleText()).isEqualTo("Hello, how are you?");
   }
 }
