@@ -1,0 +1,21 @@
+<project>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>dev.uebelacker.babeli</groupId>
+                <artifactId>babeli-maven-plugin</artifactId>
+                <configuration>
+                    <workingDirectory>target/babeli-test-project</workingDirectory>
+                    <files>
+                        <en>messages_en.properties</en>
+                        <de>messages_de.properties</de>
+                    </files>
+                    <modelProvider>dev.uebelacker.babeli.maven.TestChatModelProvider</modelProvider>
+                    <model>test</model>
+                    <apiKey>123</apiKey>
+                    <apiUrl>https://example.org</apiUrl>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
