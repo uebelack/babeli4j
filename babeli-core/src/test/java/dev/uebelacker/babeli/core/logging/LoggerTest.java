@@ -1,6 +1,5 @@
 package dev.uebelacker.babeli.core.logging;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import dev.uebelacker.babeli.core.Configuration;
