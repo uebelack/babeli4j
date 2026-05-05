@@ -11,6 +11,9 @@
 
     <artifactId>babeli-anthropic</artifactId>
 
+    <name>Babeli Anthropic</name>
+    <description>Anthropic Claude model provider for AI-powered translation generation.</description>
+
     <dependencies>
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>

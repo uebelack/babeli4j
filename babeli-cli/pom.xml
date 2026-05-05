@@ -11,6 +11,9 @@
 
     <artifactId>babeli-cli</artifactId>
 
+    <name>Babeli CLI</name>
+    <description>Command-line interface for validating and updating translation files.</description>
+
     <dependencies>
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>

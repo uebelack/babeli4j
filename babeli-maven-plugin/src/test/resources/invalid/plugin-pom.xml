@@ -1,0 +1,17 @@
+<project>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>dev.uebelacker.babeli</groupId>
+                <artifactId>babeli-maven-plugin</artifactId>
+                <configuration>
+                    <workingDirectory>src/test/resources/invalid/</workingDirectory>
+                    <files>
+                        <en>src/main/resources/i18n/messages_en.properties</en>
+                        <de>src/main/resources/i18n/messages_de.properties</de>
+                    </files>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

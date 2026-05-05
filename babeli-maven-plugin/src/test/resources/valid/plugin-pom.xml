@@ -1,0 +1,15 @@
+<project>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>dev.uebelacker.babeli</groupId>
+                <artifactId>babeli-maven-plugin</artifactId>
+                <configuration>
+                    <workingDirectory>src/test/resources/valid/</workingDirectory>
+                    <baseLanguage>en</baseLanguage>
+                    <actions>missing,sort</actions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

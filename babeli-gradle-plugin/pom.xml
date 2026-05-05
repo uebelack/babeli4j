@@ -11,6 +11,9 @@
 
     <artifactId>babeli-gradle-plugin</artifactId>
 
+    <name>Babeli Gradle Plugin</name>
+    <description>Gradle plugin for AI-powered translation file management integrated into the Gradle build lifecycle.</description>
+
     <build>
         <plugins>
             <plugin>

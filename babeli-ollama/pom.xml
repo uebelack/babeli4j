@@ -11,6 +11,9 @@
 
     <artifactId>babeli-ollama</artifactId>
 
+    <name>Babeli Ollama</name>
+    <description>Ollama model provider for AI-powered translation generation using local LLMs.</description>
+
     <dependencies>
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
