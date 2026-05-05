@@ -31,6 +31,7 @@ class AnthropicChatModelProviderTest {
 
   @Test
   @DisplayName("should throw exception if BABELI_ANTHROPIC_API_KEY is not set")
+  @SuppressWarnings("java:S5778")
   void shouldThrowExceptionIfApiKeyIsNotSet() {
     EnvUtils.ignore("ANTHROPIC_API_KEY", "BABELI_ANTHROPIC_API_KEY");
 
