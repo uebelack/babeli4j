@@ -15,17 +15,6 @@ import java.util.List;
 public class Babeli {
   private Babeli() {}
 
-  public static List<Error> execute(Configuration configuration) {
-    switch (configuration.getOperation()) {
-      case VALIDATE -> {
-        return validate(configuration);
-      }
-      case UPDATE -> update(configuration);
-    }
-
-    return List.of();
-  }
-
   public static List<Error> validate(Configuration configuration) {
     var log = new Logger(configuration);
 
@@ -80,11 +69,6 @@ public class Babeli {
 
     if (skip(configuration)) {
       log.info("Babeli is skipped.");
-      return;
-    }
-
-    if (EnvUtils.get("CI") != null) {
-      log.info("Running on CI. Skipping execution.");
       return;
     }
 

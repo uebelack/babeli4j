@@ -6,13 +6,14 @@
     <parent>
         <groupId>dev.uebelacker.babeli</groupId>
         <artifactId>babeli</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>babeli-gradle-plugin</artifactId>
 
     <name>Babeli Gradle Plugin</name>
-    <description>Gradle plugin for AI-powered translation file management integrated into the Gradle build lifecycle.</description>
+    <description>Gradle plugin for AI-powered translation file management integrated into the Gradle build lifecycle.
+    </description>
 
     <build>
         <plugins>

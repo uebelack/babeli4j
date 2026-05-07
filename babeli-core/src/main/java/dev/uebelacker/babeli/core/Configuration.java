@@ -19,7 +19,6 @@ public class Configuration {
       List.of(new AndroidAutoConfigurator(), new JavaPropertiesAutoConfigurator());
 
   private File workingDirectory;
-  private Operation operation;
   private String baseLanguage;
   private File file;
   private Set<LanguageFileConfiguration> files;
@@ -34,8 +33,6 @@ public class Configuration {
 
   public Configuration() {
     this.actions = ActionRegistry.getActionNames();
-    this.operation = System.getenv("CI") != null ? Operation.VALIDATE : Operation.UPDATE;
-
     this.workingDirectory = new File(EnvUtils.get("BABELI_WORKING_DIRECTORY", "."));
     this.baseLanguage = EnvUtils.get("BABELI_BASE_LANGUAGE", "en");
   }
@@ -96,15 +93,6 @@ public class Configuration {
         .map(File::getName)
         .map(name -> name.substring(name.lastIndexOf('.') + 1))
         .orElseThrow();
-  }
-
-  public Operation getOperation() {
-    return operation;
-  }
-
-  public Configuration setOperation(Operation operation) {
-    this.operation = operation;
-    return this;
   }
 
   public String getModelProvider() {
@@ -260,7 +248,6 @@ public class Configuration {
         .setModel(model)
         .setModelProvider(modelProvider)
         .setModelProvider(modelProvider)
-        .setOperation(operation)
         .setWorkingDirectory(workingDirectory);
   }
 }

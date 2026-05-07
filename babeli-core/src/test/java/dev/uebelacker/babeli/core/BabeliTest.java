@@ -45,7 +45,6 @@ class BabeliTest {
 
   @BeforeEach
   void setUp() {
-    EnvUtils.ignore("CI");
     var propertiesFileWriter = new PropertiesFileWriter();
     propertiesFileWriter.writeFile(
         new SingleLanguageTranslationFile(
@@ -91,8 +90,7 @@ class BabeliTest {
   @DisplayName("should validate single language translation files")
   void validateSingleLanguageTranslationFiles() {
     configuration.setFiles(FILES);
-    configuration.setOperation(Operation.VALIDATE);
-    var errors = Babeli.execute(configuration);
+    var errors = Babeli.validate(configuration);
 
     assertThat(errors.stream().map(Error::toString).sorted().toList())
         .isEqualTo(
@@ -108,8 +106,7 @@ class BabeliTest {
   @DisplayName("should validate multi language translation file")
   void validateMultiLanguageTranslationFiles() {
     configuration.setFile(FILE);
-    configuration.setOperation(Operation.VALIDATE);
-    var errors = Babeli.execute(configuration);
+    var errors = Babeli.validate(configuration);
 
     assertThat(errors.stream().map(Error::toString).sorted().toList())
         .isEqualTo(
@@ -123,9 +120,8 @@ class BabeliTest {
   @DisplayName("should update single language translation files")
   void shouldUpdateSingleLanguageTranslationFiles() {
     configuration.setFiles(FILES);
-    configuration.setOperation(Operation.UPDATE);
     assertThat(Babeli.validate(configuration)).hasSize(5);
-    Babeli.execute(configuration);
+    Babeli.update(configuration);
     assertThat(Babeli.validate(configuration)).isEmpty();
   }
 
@@ -133,9 +129,8 @@ class BabeliTest {
   @DisplayName("should update multi language translation file")
   void shouldUpdateMultiLanguageTranslationFiles() {
     configuration.setFile(FILE);
-    configuration.setOperation(Operation.UPDATE);
     assertThat(Babeli.validate(configuration)).hasSize(3);
-    Babeli.execute(configuration);
+    Babeli.update(configuration);
     assertThat(Babeli.validate(configuration)).isEmpty();
   }
 }

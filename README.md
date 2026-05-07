@@ -28,7 +28,7 @@ Add the plugin to your `pom.xml`:
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <executions>
         <execution>
             <goals>
@@ -41,7 +41,7 @@ Add the plugin to your `pom.xml`:
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
             <artifactId>babeli-anthropic</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -58,11 +58,11 @@ mvn babeli:update     # sort keys and generate missing translations
 
 ```groovy
 plugins {
-    id 'dev.uebelacker.babeli' version '1.0-SNAPSHOT'
+    id 'dev.uebelacker.babeli' version '1.0.0'
 }
 
 dependencies {
-    babeli 'dev.uebelacker.babeli:babeli-anthropic:1.0-SNAPSHOT'
+    babeli 'dev.uebelacker.babeli:babeli-anthropic:1.0.0'
 }
 ```
 
@@ -174,8 +174,7 @@ mvn clean install
 | `BABELI_OLLAMA_MODEL`      | Override Ollama model name                      |
 | `BABELI_MODEL_PROVIDER`    | Override model provider (`anthropic`, `ollama`) |
 | `BABELI_BASE_LANGUAGE`     | Override base language (default: `en`)          |
-| `BABELI_SKIP`              | When set babeli exection is skipped             |
-| `CI`                       | When set, switches to validate-only mode        |
+| `BABELI_SKIP`              | When set babeli execution is skipped            |
 
 ## License
 

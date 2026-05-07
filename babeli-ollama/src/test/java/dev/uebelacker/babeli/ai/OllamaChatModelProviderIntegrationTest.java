@@ -29,7 +29,7 @@ class OllamaChatModelProviderIntegrationTest {
         StandardCopyOption.REPLACE_EXISTING);
 
     assertThat(Babeli.validate(configuration)).hasSize(5);
-    Babeli.execute(configuration);
+    Babeli.update(configuration);
     assertThat(Babeli.validate(configuration)).isEmpty();
   }
 }

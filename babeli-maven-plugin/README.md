@@ -55,7 +55,7 @@ translation generation.
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <executions>
         <execution>
             <goals>
@@ -68,7 +68,7 @@ translation generation.
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
             <artifactId>babeli-anthropic</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -84,7 +84,7 @@ variable.
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <executions>
         <execution>
             <goals>
@@ -97,7 +97,7 @@ variable.
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
             <artifactId>babeli-ollama</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -119,7 +119,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <configuration>
         <actions>
             <action>sort</action>
@@ -170,7 +170,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <configuration>
         <actions>
             <action>sort</action>
@@ -202,7 +202,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
             <artifactId>babeli-anthropic</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -246,16 +246,4 @@ Environment variables, where applicable, override configuration values.
 | `apiKey`           | `babeli.apiKey`           | `ANTHROPIC_API_KEY`, `BABELI_ANTHROPIC_API_KEY` | —                                                          | API key for the model provider.                                           |
 | `apiUrl`           | `babeli.apiUrl`           | `BABELI_OLLAMA_URL`                             | `http://localhost:11434` (Ollama)                          | API endpoint URL.                                                         |
 | `skip`             | `babeli.skip`             | —                                               | `false`                                                    | Skip plugin execution entirely.                                           |
-| —                  | —                         | `CI`                                            | —                                                          | When set, `babeli:update` is automatically skipped.                       |
 
-## CI Integration
-
-The `babeli:update` goal is **automatically skipped** when the `CI` environment variable is set (any non-empty value).
-No special configuration is needed — in CI environments, only `babeli:validate` will run, ensuring translation files
-are never modified during CI builds.
-
-To skip the plugin entirely (both validate and update):
-
-```bash
-mvn verify -Dbabeli.skip=true
-```

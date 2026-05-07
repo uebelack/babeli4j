@@ -54,11 +54,11 @@ generation.
 
 ```groovy
 plugins {
-    id 'dev.uebelacker.babeli' version '1.0-SNAPSHOT'
+    id 'dev.uebelacker.babeli' version '1.0.0'
 }
 
 dependencies {
-    babeli 'dev.uebelacker.babeli:babeli-anthropic:1.0-SNAPSHOT'
+    babeli 'dev.uebelacker.babeli:babeli-anthropic:1.0.0'
 }
 ```
 
@@ -66,11 +66,11 @@ dependencies {
 
 ```kotlin
 plugins {
-    id("dev.uebelacker.babeli") version "1.0-SNAPSHOT"
+    id("dev.uebelacker.babeli") version "1.0.0"
 }
 
 dependencies {
-    babeli("dev.uebelacker.babeli:babeli-anthropic:1.0-SNAPSHOT")
+    babeli("dev.uebelacker.babeli:babeli-anthropic:1.0.0")
 }
 ```
 
@@ -83,11 +83,11 @@ variable.
 
 ```groovy
 plugins {
-    id 'dev.uebelacker.babeli' version '1.0-SNAPSHOT'
+    id 'dev.uebelacker.babeli' version '1.0.0'
 }
 
 dependencies {
-    babeli 'dev.uebelacker.babeli:babeli-ollama:1.0-SNAPSHOT'
+    babeli 'dev.uebelacker.babeli:babeli-ollama:1.0.0'
 }
 ```
 
@@ -95,11 +95,11 @@ dependencies {
 
 ```kotlin
 plugins {
-    id("dev.uebelacker.babeli") version "1.0-SNAPSHOT"
+    id("dev.uebelacker.babeli") version "1.0.0"
 }
 
 dependencies {
-    babeli("dev.uebelacker.babeli:babeli-ollama:1.0-SNAPSHOT")
+    babeli("dev.uebelacker.babeli:babeli-ollama:1.0.0")
 }
 ```
 
@@ -248,6 +248,6 @@ Environment variables, where applicable, override configuration values.
 | `model`             | `String`       | `BABELI_ANTHROPIC_MODEL`, `BABELI_OLLAMA_MODEL` | `claude-sonnet-4-20250514` (Anthropic), `qwen3.6` (Ollama) | Model name to use for translations.                                             |
 | `apiKey`            | `String`       | `ANTHROPIC_API_KEY`, `BABELI_ANTHROPIC_API_KEY` | —                                                          | API key for the model provider.                                                 |
 | `apiUrl`            | `String`       | `BABELI_OLLAMA_URL`                             | `http://localhost:11434` (Ollama)                          | API endpoint URL.                                                               |
-| `skip`              | `boolean`      | `BABELI_SKIP`                                   | `false`                                                    | When set to true babeli exection is skipped.                                    |
+| `skip`              | `boolean`      | `BABELI_SKIP`                                   | `false`                                                    | When set to true babeli execution is skipped.                                   |
 | —                   | —              | `CI`                                            | —                                                          | When set, disables automatic `babeliUpdate` during builds.                      |
 

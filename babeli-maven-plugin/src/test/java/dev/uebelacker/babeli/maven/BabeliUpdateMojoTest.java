@@ -45,7 +45,6 @@ class BabeliUpdateMojoTest {
   @InjectMojo(goal = "update", pom = "src/test/resources/update/plugin-pom.xml")
   @DisplayName("should update translation files")
   void shouldUpdateTranslationFiles(BabeliUpdateMojo mojo) {
-    EnvUtils.ignore("CI");
     var log = mock(Log.class);
     mojo.setLog(log);
     when(TestChatModelProvider.TEST_CHAT_MODEL.chat(
