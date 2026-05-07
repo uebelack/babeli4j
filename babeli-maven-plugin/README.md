@@ -51,6 +51,7 @@ translation generation.
 ### Using Anthropic
 
 ```xml
+
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
@@ -59,6 +60,7 @@ translation generation.
         <execution>
             <goals>
                 <goal>validate</goal>
+                <goal>update</goal>
             </goals>
         </execution>
     </executions>
@@ -78,6 +80,7 @@ variable.
 ### Using Ollama
 
 ```xml
+
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
@@ -86,6 +89,7 @@ variable.
         <execution>
             <goals>
                 <goal>validate</goal>
+                <goal>update</goal>
             </goals>
         </execution>
     </executions>
@@ -111,6 +115,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
 ### Per-Language Translation Files
 
 ```xml
+
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
@@ -133,6 +138,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
 ### Multi-Language JSON File
 
 ```xml
+
 <configuration>
     <actions>
         <action>sort</action>
@@ -145,6 +151,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
 ### XML (Android) Translation Files
 
 ```xml
+
 <configuration>
     <actions>
         <action>sort</action>
@@ -159,6 +166,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
 ### Full Example
 
 ```xml
+
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
@@ -202,10 +210,10 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
 
 ## Goals
 
-| Goal | Default Phase | Description |
-|------|---------------|-------------|
-| `babeli:validate` | `verify` | Validates translation files against the configured actions. Fails the build if errors are found. |
-| `babeli:update` | `generate-resources` | Updates translation files by applying the configured actions (e.g., sorting keys, completing missing translations). |
+| Goal              | Default Phase        | Description                                                                                                         |
+|-------------------|----------------------|---------------------------------------------------------------------------------------------------------------------|
+| `babeli:validate` | `verify`             | Validates translation files against the configured actions. Fails the build if errors are found.                    |
+| `babeli:update`   | `generate-resources` | Updates translation files by applying the configured actions (e.g., sorting keys, completing missing translations). |
 
 ```bash
 # Validate translation files
@@ -217,28 +225,28 @@ mvn babeli:update
 
 ## Actions
 
-| Action | Description |
-|--------|-------------|
-| `sort` | Ensures translation keys are sorted alphabetically. |
+| Action    | Description                                                                                                                                       |
+|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `sort`    | Ensures translation keys are sorted alphabetically.                                                                                               |
 | `missing` | Detects missing translation keys across language files. When running `babeli:update`, uses AI to automatically generate the missing translations. |
 
 ## Options
 
 Environment variables, where applicable, override configuration values.
 
-| Parameter | Property | Environment Variable | Default | Description |
-|-----------|----------|----------------------|---------|-------------|
-| `files` | — | — | Auto-detected | Map of language codes to translation file paths. |
-| `file` | `babeli.file` | — | — | Path to a single multi-language translation file. |
-| `baseLanguage` | `babeli.baseLanguage` | — | `en` | The base/reference language. |
-| `workingDirectory` | `babeli.workingDirectory` | — | `${project.basedir}` | Working directory for file resolution. |
-| `actions` | — | — | All registered actions | Actions to apply (e.g., `sort`, `missing`). |
-| `modelProvider` | `babeli.modelProvider` | `BABELI_MODEL_PROVIDER` | — | AI model provider (`anthropic`, `ollama`). Required for `missing` action. |
-| `model` | `babeli.model` | `BABELI_ANTHROPIC_MODEL`, `BABELI_OLLAMA_MODEL` | `claude-sonnet-4-20250514` (Anthropic), `qwen3.6` (Ollama) | Model name to use for translations. |
-| `apiKey` | `babeli.apiKey` | `ANTHROPIC_API_KEY`, `BABELI_ANTHROPIC_API_KEY` | — | API key for the model provider. |
-| `apiUrl` | `babeli.apiUrl` | `BABELI_OLLAMA_URL` | `http://localhost:11434` (Ollama) | API endpoint URL. |
-| `skip` | `babeli.skip` | — | `false` | Skip plugin execution entirely. |
-| — | — | `CI` | — | When set, `babeli:update` is automatically skipped. |
+| Parameter          | Property                  | Environment Variable                            | Default                                                    | Description                                                               |
+|--------------------|---------------------------|-------------------------------------------------|------------------------------------------------------------|---------------------------------------------------------------------------|
+| `files`            | —                         | —                                               | Auto-detected                                              | Map of language codes to translation file paths.                          |
+| `file`             | `babeli.file`             | —                                               | —                                                          | Path to a single multi-language translation file.                         |
+| `baseLanguage`     | `babeli.baseLanguage`     | —                                               | `en`                                                       | The base/reference language.                                              |
+| `workingDirectory` | `babeli.workingDirectory` | —                                               | `${project.basedir}`                                       | Working directory for file resolution.                                    |
+| `actions`          | —                         | —                                               | All registered actions                                     | Actions to apply (e.g., `sort`, `missing`).                               |
+| `modelProvider`    | `babeli.modelProvider`    | `BABELI_MODEL_PROVIDER`                         | —                                                          | AI model provider (`anthropic`, `ollama`). Required for `missing` action. |
+| `model`            | `babeli.model`            | `BABELI_ANTHROPIC_MODEL`, `BABELI_OLLAMA_MODEL` | `claude-sonnet-4-20250514` (Anthropic), `qwen3.6` (Ollama) | Model name to use for translations.                                       |
+| `apiKey`           | `babeli.apiKey`           | `ANTHROPIC_API_KEY`, `BABELI_ANTHROPIC_API_KEY` | —                                                          | API key for the model provider.                                           |
+| `apiUrl`           | `babeli.apiUrl`           | `BABELI_OLLAMA_URL`                             | `http://localhost:11434` (Ollama)                          | API endpoint URL.                                                         |
+| `skip`             | `babeli.skip`             | —                                               | `false`                                                    | Skip plugin execution entirely.                                           |
+| —                  | —                         | `CI`                                            | —                                                          | When set, `babeli:update` is automatically skipped.                       |
 
 ## CI Integration
 

@@ -1,8 +1,13 @@
 package dev.uebelacker.babeli.core;
 
+import static dev.uebelacker.babeli.core.Constants.EnvironmentVariables.BABELI_MODEL_PROVIDER;
+import static dev.uebelacker.babeli.core.Constants.EnvironmentVariables.BABELI_SKIP;
+
 import dev.uebelacker.babeli.core.actions.ActionRegistry;
+import dev.uebelacker.babeli.core.logging.Logger;
 import dev.uebelacker.babeli.core.model.Error;
 import dev.uebelacker.babeli.core.readers.FileReaderRegistry;
+import dev.uebelacker.babeli.core.util.EnvUtils;
 import dev.uebelacker.babeli.core.writers.FileWriterRegistry;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +27,13 @@ public class Babeli {
   }
 
   public static List<Error> validate(Configuration configuration) {
+    var log = new Logger(configuration);
+
+    if (skip(configuration)) {
+      log.info("Babeli is skipped.");
+      return List.of();
+    }
+
     var errors = new ArrayList<Error>();
     configuration
         .autoConfigure()
@@ -64,6 +76,24 @@ public class Babeli {
   }
 
   public static void update(Configuration configuration) {
+    var log = new Logger(configuration);
+
+    if (skip(configuration)) {
+      log.info("Babeli is skipped.");
+      return;
+    }
+
+    if (EnvUtils.get("CI") != null) {
+      log.info("Running on CI. Skipping execution.");
+      return;
+    }
+
+    if (EnvUtils.get(BABELI_MODEL_PROVIDER, configuration.getModelProvider()) == null) {
+      log.warn(
+          "No model provider specified. Babeli requires a model provider to function. Please specify a model provider using 'modelProvider' in the configuration or specify it as environment variable BABELI_MODEL_PROVIDER. Skipping execution.");
+      return;
+    }
+
     configuration
         .autoConfigure()
         .forEach(
@@ -96,5 +126,11 @@ public class Babeli {
                 translationFiles.forEach(fileWriter::writeFile);
               }
             });
+  }
+
+  private static boolean skip(Configuration configuration) {
+    return (Boolean.TRUE
+        .toString()
+        .equals(EnvUtils.get(BABELI_SKIP, Boolean.toString(configuration.isSkip()))));
   }
 }

@@ -25,15 +25,6 @@ class ChatModelFactoryTest {
   }
 
   @Test
-  @DisplayName("should throw exception if model is not configured")
-  void shouldThrowExceptionIfModelIsNotConfigured() {
-    assertThatExceptionOfType(ConfigurationException.class)
-        .isThrownBy(() -> ChatModelFactory.createChatModel(new Configuration()))
-        .withMessage(
-            "No model provider specified in the configuration. Please specify a model provider using 'modelProvider' in the configuration or specify it as environment variable BABELI_MODEL_PROVIDER.");
-  }
-
-  @Test
   @DisplayName("should throw exception if model provider class does not exist")
   void shouldThrowExceptionIfModelProviderClassDoesNotExist() {
     var configuration = new Configuration();

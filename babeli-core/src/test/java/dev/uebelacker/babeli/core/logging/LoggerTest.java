@@ -29,6 +29,13 @@ class LoggerTest {
   }
 
   @Test
+  @DisplayName("should log warn message")
+  void shouldLogWarnMessage() {
+    logger.error("warn message");
+    verify(loggingProvider).error("warn message");
+  }
+
+  @Test
   @DisplayName("should log info message")
   void shouldLogInfoMessage() {
     logger.info("info message");

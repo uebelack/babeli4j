@@ -16,4 +16,9 @@ public class DefaultLoggingProvider implements LoggingProvider {
   public void debug(String message) {
     System.out.println(message);
   }
+
+  @Override
+  public void warn(String message) {
+    System.out.println(message);
+  }
 }

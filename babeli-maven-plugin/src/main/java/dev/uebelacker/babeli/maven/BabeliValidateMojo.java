@@ -10,17 +10,11 @@ public class BabeliValidateMojo extends AbstractBabeliMojo {
 
   @Override
   public void execute() throws MojoFailureException {
-    if (skip) {
-      getLog().info("Babeli validation skipped.");
-      return;
-    }
 
     var configuration = createConfiguration();
     var errors = Babeli.validate(configuration);
 
-    if (errors.isEmpty()) {
-      getLog().info("Validation passed.");
-    } else {
+    if (!errors.isEmpty()) {
       for (var error : errors) {
         getLog().error(error.message());
       }

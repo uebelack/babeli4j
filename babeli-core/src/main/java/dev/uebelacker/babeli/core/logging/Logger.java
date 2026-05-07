@@ -21,6 +21,10 @@ public class Logger {
     loggingProvider.info(message);
   }
 
+  public void warn(String message) {
+    loggingProvider.warn(message);
+  }
+
   public void error(String message) {
     loggingProvider.error(message);
   }

@@ -14,11 +14,13 @@ import dev.uebelacker.babeli.core.model.Error;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 import dev.uebelacker.babeli.core.services.TranslationService;
+import dev.uebelacker.babeli.core.util.EnvUtils;
 import dev.uebelacker.babeli.core.writers.JsonFileWriter;
 import dev.uebelacker.babeli.core.writers.PropertiesFileWriter;
 import java.io.File;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,6 +45,7 @@ class BabeliTest {
 
   @BeforeEach
   void setUp() {
+    EnvUtils.ignore("CI");
     var propertiesFileWriter = new PropertiesFileWriter();
     propertiesFileWriter.writeFile(
         new SingleLanguageTranslationFile(
@@ -77,6 +80,11 @@ class BabeliTest {
             ChatResponse.builder()
                 .aiMessage(AiMessage.builder().text("Test Translation").build())
                 .build());
+  }
+
+  @AfterEach
+  void tearDown() {
+    EnvUtils.reset();
   }
 
   @Test

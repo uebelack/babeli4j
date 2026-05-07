@@ -6,4 +6,6 @@ public interface LoggingProvider {
   void error(String message);
 
   void debug(String message);
+
+  void warn(String message);
 }

@@ -58,16 +58,4 @@ class BabeliUpdateMojoTest {
 
     verify(log).info("Translation files updated.");
   }
-
-  @Test
-  @InjectMojo(goal = "update", pom = "src/test/resources/update/plugin-pom.xml")
-  @DisplayName("should skip update on ci")
-  void shouldSkipUpdateOnCi(BabeliUpdateMojo mojo) {
-    EnvUtils.set("CI", "true");
-
-    var log = mock(Log.class);
-    mojo.setLog(log);
-    assertThatNoException().isThrownBy(mojo::execute);
-    verify(log).info("Babeli update skipped.");
-  }
 }

@@ -109,6 +109,6 @@ class ConfigurationTest {
     configuration.setLoggingProvider(loggingProvider);
     configuration.setDebug(true);
     configuration.autoConfigure().getFirst().validate();
-    verify(loggingProvider, times(8)).debug(anyString());
+    verify(loggingProvider, times(9)).debug(anyString());
   }
 }

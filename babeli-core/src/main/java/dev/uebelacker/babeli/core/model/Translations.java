@@ -69,10 +69,6 @@ public class Translations {
     return keyLanguageMap.get(key);
   }
 
-  public Map<String, String> getTranslationsMapForLanguage(String language) {
-    return languageKeyMap.get(language);
-  }
-
   public List<Translation> getTranslationsForLanguage(String language) {
     var translations = new ArrayList<Translation>();
     languageKeyMap

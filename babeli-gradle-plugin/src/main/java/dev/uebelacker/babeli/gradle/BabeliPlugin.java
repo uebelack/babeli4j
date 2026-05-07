@@ -6,16 +6,6 @@ import org.gradle.api.Project;
 public class BabeliPlugin implements Plugin<Project> {
   public static final String CONFIGURATION_NAME = "babeli";
 
-  private static boolean isCi() {
-    String ci = System.getenv("CI");
-    return ci != null && !ci.isEmpty();
-  }
-
-  private static boolean isDisabled() {
-    String disabled = System.getenv("BABELI_DISABLED");
-    return disabled != null && !disabled.isEmpty() && !disabled.equalsIgnoreCase("false");
-  }
-
   @Override
   public void apply(Project project) {
     var extension = project.getExtensions().create("babeli", BabeliExtension.class);
@@ -65,14 +55,12 @@ public class BabeliPlugin implements Plugin<Project> {
               .matching(task -> task.getName().equals("check"))
               .configureEach(task -> task.dependsOn(validateTask));
 
-          if (!isDisabled() && !isCi()) {
-            p.getTasks()
-                .matching(
-                    task ->
-                        task.getName().equals("processResources")
-                            || task.getName().equals("preBuild"))
-                .configureEach(task -> task.dependsOn(updateTask));
-          }
+          p.getTasks()
+              .matching(
+                  task ->
+                      task.getName().equals("processResources")
+                          || task.getName().equals("preBuild"))
+              .configureEach(task -> task.dependsOn(updateTask));
         });
   }
 }

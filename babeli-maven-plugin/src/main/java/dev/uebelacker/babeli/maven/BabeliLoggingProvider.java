@@ -26,4 +26,9 @@ public class BabeliLoggingProvider implements LoggingProvider {
   public void debug(String message) {
     log.debug(BABELI + message);
   }
+
+  @Override
+  public void warn(String message) {
+    log.warn(BABELI + message);
+  }
 }

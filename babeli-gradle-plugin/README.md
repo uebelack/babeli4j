@@ -45,7 +45,8 @@ Multiple bundles (e.g., `messages_*.properties` and `errors_*.properties`) are e
 
 ## Setup
 
-Apply the plugin and add a model provider dependency. The model provider is required for AI-powered translation generation.
+Apply the plugin and add a model provider dependency. The model provider is required for AI-powered translation
+generation.
 
 ### Using Anthropic
 
@@ -104,7 +105,8 @@ dependencies {
 
 Ollama connects to `http://localhost:11434` by default. Override with the `BABELI_OLLAMA_URL` environment variable.
 
-For projects with standard layouts (see Auto-Detection above), that's all you need — the plugin will find your translation files automatically and apply the default actions.
+For projects with standard layouts (see Auto-Detection above), that's all you need — the plugin will find your
+translation files automatically and apply the default actions.
 
 ## Configuration
 
@@ -226,9 +228,9 @@ The `babeliValidate` task is automatically added to the `check` lifecycle task, 
 
 ## Actions
 
-| Action    | Description                                                                                                                                                 |
-|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `sort`    | Ensures translation keys are sorted alphabetically.                                                                                                         |
+| Action    | Description                                                                                                                                      |
+|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| `sort`    | Ensures translation keys are sorted alphabetically.                                                                                              |
 | `missing` | Detects missing translation keys across language files. When running `babeliUpdate`, uses AI to automatically generate the missing translations. |
 
 ## Options
@@ -246,21 +248,6 @@ Environment variables, where applicable, override configuration values.
 | `model`             | `String`       | `BABELI_ANTHROPIC_MODEL`, `BABELI_OLLAMA_MODEL` | `claude-sonnet-4-20250514` (Anthropic), `qwen3.6` (Ollama) | Model name to use for translations.                                             |
 | `apiKey`            | `String`       | `ANTHROPIC_API_KEY`, `BABELI_ANTHROPIC_API_KEY` | —                                                          | API key for the model provider.                                                 |
 | `apiUrl`            | `String`       | `BABELI_OLLAMA_URL`                             | `http://localhost:11434` (Ollama)                          | API endpoint URL.                                                               |
+| `skip`              | `boolean`      | `BABELI_SKIP`                                   | `false`                                                    | When set to true babeli exection is skipped.                                    |
 | —                   | —              | `CI`                                            | —                                                          | When set, disables automatic `babeliUpdate` during builds.                      |
-| —                   | —              | `BABELI_DISABLED`                               | —                                                          | When set (and not `false`), disables automatic `babeliUpdate` during builds.    |
 
-## CI Integration
-
-The `babeliUpdate` task is **not** automatically added to the build lifecycle when:
-
-- The `CI` environment variable is set (any non-empty value), or
-- The `BABELI_DISABLED` environment variable is set to a non-empty value other than `false`.
-
-This means in CI environments, `babeliUpdate` will not run automatically — only `babeliValidate` hooks into the `check`
-task. You can still run `babeliUpdate` explicitly if needed.
-
-To disable the automatic update task locally, set:
-
-```bash
-BABELI_DISABLED=true ./gradlew build
-```

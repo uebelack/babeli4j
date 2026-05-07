@@ -84,6 +84,8 @@ public abstract class AbstractBabeliMojo extends AbstractMojo {
       configuration.setApiUrl(apiUrl);
     }
 
+    configuration.setSkip(skip);
+
     return configuration;
   }
 }

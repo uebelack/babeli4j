@@ -29,6 +29,14 @@ Add the plugin to your `pom.xml`:
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>validate</goal>
+                <goal>update</goal>
+            </goals>
+        </execution>
+    </executions>
     <dependencies>
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
@@ -136,19 +144,6 @@ export BABELI_OLLAMA_URL=http://my-server:11434   # optional
 
 Default model: `qwen3.6`. Override with `BABELI_OLLAMA_MODEL`.
 
-## CI Integration
-
-When the `CI` environment variable is set, Babeli automatically switches to validation-only mode — translation files are
-never modified during CI builds. No special configuration needed.
-
-```bash
-# Skip the plugin entirely
-mvn verify -Dbabeli.skip=true
-
-# Gradle: disable automatic update
-BABELI_DISABLED=true ./gradlew build
-```
-
 ## Modules
 
 | Module                 | Description                                                                     |
@@ -170,17 +165,17 @@ mvn clean install
 
 ## Environment Variables
 
-| Variable                   | Description                                            |
-|----------------------------|--------------------------------------------------------|
-| `ANTHROPIC_API_KEY`        | Anthropic API key                                      |
-| `BABELI_ANTHROPIC_API_KEY` | Anthropic API key (takes priority)                     |
-| `BABELI_ANTHROPIC_MODEL`   | Override Anthropic model name                          |
-| `BABELI_OLLAMA_URL`        | Ollama API endpoint                                    |
-| `BABELI_OLLAMA_MODEL`      | Override Ollama model name                             |
-| `BABELI_MODEL_PROVIDER`    | Override model provider (`anthropic`, `ollama`)        |
-| `BABELI_BASE_LANGUAGE`     | Override base language (default: `en`)                 |
-| `CI`                       | When set, switches to validate-only mode               |
-| `BABELI_DISABLED`          | When set (Gradle only), disables automatic update task |
+| Variable                   | Description                                     |
+|----------------------------|-------------------------------------------------|
+| `ANTHROPIC_API_KEY`        | Anthropic API key                               |
+| `BABELI_ANTHROPIC_API_KEY` | Anthropic API key (takes priority)              |
+| `BABELI_ANTHROPIC_MODEL`   | Override Anthropic model name                   |
+| `BABELI_OLLAMA_URL`        | Ollama API endpoint                             |
+| `BABELI_OLLAMA_MODEL`      | Override Ollama model name                      |
+| `BABELI_MODEL_PROVIDER`    | Override model provider (`anthropic`, `ollama`) |
+| `BABELI_BASE_LANGUAGE`     | Override base language (default: `en`)          |
+| `BABELI_SKIP`              | When set babeli exection is skipped             |
+| `CI`                       | When set, switches to validate-only mode        |
 
 ## License
 

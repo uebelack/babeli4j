@@ -27,7 +27,6 @@ public abstract class BabeliUpdateTask extends DefaultTask {
     var extension = getExtension().get();
     var configuration = extension.toConfiguration(getProject());
 
-    getLogger().info("Updating Babeli");
     var classLoader = createClassLoader();
     if (classLoader != null) {
       var previousClassLoader = Thread.currentThread().getContextClassLoader();
@@ -40,7 +39,6 @@ public abstract class BabeliUpdateTask extends DefaultTask {
     } else {
       Babeli.update(configuration);
     }
-    getLogger().lifecycle("Translation files updated.");
   }
 
   private URLClassLoader createClassLoader() {

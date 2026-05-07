@@ -30,6 +30,7 @@ public class Configuration {
   private String apiKey;
   private String apiUrl;
   private boolean debug;
+  private boolean skip;
 
   public Configuration() {
     this.actions = ActionRegistry.getActionNames();
@@ -160,6 +161,15 @@ public class Configuration {
     return this;
   }
 
+  public boolean isSkip() {
+    return skip;
+  }
+
+  public Configuration setSkip(boolean skip) {
+    this.skip = skip;
+    return this;
+  }
+
   public List<Configuration> autoConfigure() {
     if (file == null && (files == null || files.isEmpty())) {
       for (var autoConfigurator : autoConfigurators) {
@@ -209,6 +219,8 @@ public class Configuration {
       if (apiUrl != null) {
         logger.debug("API URL: " + apiUrl);
       }
+
+      logger.debug("Skip: " + skip);
     }
 
     if (file != null && (files != null && !files.isEmpty())) {
@@ -237,6 +249,7 @@ public class Configuration {
   public Configuration copy() {
     return new Configuration()
         .setDebug(debug)
+        .setSkip(skip)
         .setLoggingProvider(loggingProvider)
         .setActions(actions)
         .setApiKey(apiKey)
