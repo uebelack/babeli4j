@@ -16,6 +16,7 @@ class DefaultLoggingProviderTest {
             () -> {
               provider.debug("debug");
               provider.info("info");
+              provider.warn("warn");
               provider.error("error");
             });
   }

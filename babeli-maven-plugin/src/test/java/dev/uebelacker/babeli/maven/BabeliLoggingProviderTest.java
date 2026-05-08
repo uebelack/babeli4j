@@ -34,6 +34,13 @@ class BabeliLoggingProviderTest {
   }
 
   @Test
+  @DisplayName("should log warn message")
+  void shouldLogWarnMessage() {
+    babeliLoggingProvider.warn("warn message");
+    verify(log).warn("babeli: warn message");
+  }
+
+  @Test
   @DisplayName("should log error message")
   void shouldLogErrorMessage() {
     babeliLoggingProvider.error("error message");

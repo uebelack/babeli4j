@@ -3,6 +3,7 @@ package dev.uebelacker.babeli.core;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
 
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.SystemMessage;
@@ -10,10 +11,10 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.uebelacker.babeli.core.ai.ChatModelFactory;
 import dev.uebelacker.babeli.core.configuration.LanguageFileConfiguration;
+import dev.uebelacker.babeli.core.logging.LoggingProvider;
 import dev.uebelacker.babeli.core.model.Error;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
-import dev.uebelacker.babeli.core.services.TranslationService;
 import dev.uebelacker.babeli.core.util.EnvUtils;
 import dev.uebelacker.babeli.core.writers.JsonFileWriter;
 import dev.uebelacker.babeli.core.writers.PropertiesFileWriter;
@@ -39,7 +40,7 @@ class BabeliTest {
           new LanguageFileConfiguration(
               "de", new File("target/test/properties/messages_de.properties")));
 
-  @Mock TranslationService translationService;
+  @Mock LoggingProvider loggingProvider;
 
   Configuration configuration;
 
@@ -70,6 +71,7 @@ class BabeliTest {
             FILE, Fixtures.multiLanguageTranslationFile().translations()));
     configuration = new Configuration();
     configuration.setModelProvider("test");
+    configuration.setLoggingProvider(loggingProvider);
 
     var chatModel = ChatModelFactory.createChatModel(configuration);
 
@@ -132,5 +134,31 @@ class BabeliTest {
     assertThat(Babeli.validate(configuration)).hasSize(3);
     Babeli.update(configuration);
     assertThat(Babeli.validate(configuration)).isEmpty();
+  }
+
+  @Test
+  @DisplayName("should skip validation execution")
+  void shouldSkipValidationExecution() {
+    configuration.setSkip(true);
+    assertThat(Babeli.validate(configuration)).isEmpty();
+    verify(loggingProvider).info("Babeli is skipped.");
+  }
+
+  @Test
+  @DisplayName("should skip update execution")
+  void shouldSkipUpdateExecution() {
+    configuration.setSkip(true);
+    Babeli.update(configuration);
+    verify(loggingProvider).info("Babeli is skipped.");
+  }
+
+  @Test
+  @DisplayName("should skip update execution if no model provider was provided")
+  void shouldSkipUpdateExecutionIfNoModelProviderWasProvided() {
+    configuration.setModelProvider(null);
+    Babeli.update(configuration);
+    verify(loggingProvider)
+        .warn(
+            "No model provider specified. Babeli requires a model provider to function. Please specify a model provider using 'modelProvider' in the configuration or specify it as environment variable BABELI_MODEL_PROVIDER. Skipping execution.");
   }
 }
