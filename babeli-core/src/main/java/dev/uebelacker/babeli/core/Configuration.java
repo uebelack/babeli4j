@@ -28,6 +28,7 @@ public class Configuration {
   private String model;
   private String apiKey;
   private String apiUrl;
+  private String charset = "UTF-8";
   private boolean debug;
   private boolean skip;
 
@@ -149,6 +150,15 @@ public class Configuration {
     return this;
   }
 
+  public String getCharset() {
+    return charset;
+  }
+
+  public Configuration setCharset(String charset) {
+    this.charset = charset;
+    return this;
+  }
+
   public boolean isSkip() {
     return skip;
   }
@@ -179,6 +189,8 @@ public class Configuration {
       logger.debug("Working directory: " + workingDirectory.getAbsolutePath());
 
       logger.debug("Base language: " + baseLanguage);
+
+      logger.debug("Charset: " + charset);
 
       if (file != null) {
         logger.debug("File: " + file);

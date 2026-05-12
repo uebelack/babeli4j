@@ -17,6 +17,11 @@ public abstract class AbstractCommand implements Callable<Integer> {
   private String[] files;
 
   @CommandLine.Option(
+      names = {"-c", "--charset"},
+      description = "Character set to use when reading and writing files (default: UTF-8).")
+  private String charset;
+
+  @CommandLine.Option(
       names = {"-d", "--directory"},
       description = "Working directory (default: current directory).")
   private File workingDirectory;
@@ -76,6 +81,10 @@ public abstract class AbstractCommand implements Callable<Integer> {
                     return new LanguageFileConfiguration(parts[0], new File(parts[1]));
                   })
               .collect(java.util.stream.Collectors.toSet()));
+    }
+
+    if (charset != null) {
+      configuration.setCharset(charset);
     }
 
     if (workingDirectory != null) {

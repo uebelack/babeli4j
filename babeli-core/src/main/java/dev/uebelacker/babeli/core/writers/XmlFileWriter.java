@@ -1,5 +1,6 @@
 package dev.uebelacker.babeli.core.writers;
 
+import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.Translations;
@@ -14,6 +15,12 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 
 public class XmlFileWriter implements FileWriter {
+  private final Configuration configuration;
+
+  public XmlFileWriter(Configuration configuration) {
+    this.configuration = configuration;
+  }
+
   private static String escapeXmlValue(String value) {
     return value
         .replace("&", "&amp;")
@@ -32,7 +39,7 @@ public class XmlFileWriter implements FileWriter {
     return factory.newDocumentBuilder().newDocument();
   }
 
-  private static void writeDocument(org.w3c.dom.Document document, java.io.File file)
+  private void writeDocument(org.w3c.dom.Document document, java.io.File file)
       throws TransformerException {
     var factory = TransformerFactory.newInstance();
     factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
@@ -40,7 +47,7 @@ public class XmlFileWriter implements FileWriter {
 
     var transformer = factory.newTransformer();
     transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+    transformer.setOutputProperty(OutputKeys.ENCODING, configuration.getCharset());
     transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
     transformer.transform(new DOMSource(document), new StreamResult(file));
   }

@@ -46,7 +46,7 @@ class BabeliTest {
 
   @BeforeEach
   void setUp() {
-    var propertiesFileWriter = new PropertiesFileWriter();
+    var propertiesFileWriter = new PropertiesFileWriter(new Configuration());
     propertiesFileWriter.writeFile(
         new SingleLanguageTranslationFile(
             "en",
@@ -65,7 +65,7 @@ class BabeliTest {
             new File("target/test/properties/messages_de.properties"),
             Fixtures.singleLanguageTranslationFileDe().translations()));
 
-    var jsonFileWriter = new JsonFileWriter();
+    var jsonFileWriter = new JsonFileWriter(new Configuration());
     jsonFileWriter.writeFile(
         new MultiLanguageTranslationFile(
             FILE, Fixtures.multiLanguageTranslationFile().translations()));

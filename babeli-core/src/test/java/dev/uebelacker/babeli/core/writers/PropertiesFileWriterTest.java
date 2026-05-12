@@ -3,6 +3,7 @@ package dev.uebelacker.babeli.core.writers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
+import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.Translation;
@@ -18,7 +19,7 @@ class PropertiesFileWriterTest {
 
   @BeforeEach
   void setUp() {
-    propertiesFileWriter = new PropertiesFileWriter();
+    propertiesFileWriter = new PropertiesFileWriter(new Configuration());
   }
 
   @Test

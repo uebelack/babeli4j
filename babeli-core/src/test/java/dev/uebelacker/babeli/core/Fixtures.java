@@ -8,8 +8,9 @@ import java.io.File;
 import java.util.List;
 
 public class Fixtures {
-  private static final PropertiesFileReader propertiesFileReader = new PropertiesFileReader();
-  private static final JsonFileReader jsonFileReader = new JsonFileReader();
+  private static final PropertiesFileReader propertiesFileReader =
+      new PropertiesFileReader(new Configuration());
+  private static final JsonFileReader jsonFileReader = new JsonFileReader(new Configuration());
 
   public static SingleLanguageTranslationFile singleLanguageTranslationFileDe() {
     return propertiesFileReader.readFile(

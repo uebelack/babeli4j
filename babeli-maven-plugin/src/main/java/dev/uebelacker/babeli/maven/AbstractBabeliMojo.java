@@ -18,6 +18,9 @@ public abstract class AbstractBabeliMojo extends AbstractMojo {
   @Parameter(property = "babeli.file")
   private File file;
 
+  @Parameter(property = "babeli.charset")
+  private String charset;
+
   @Parameter private Map<String, String> files;
 
   @Parameter(property = "babeli.workingDirectory", defaultValue = "${project.basedir}")
@@ -58,6 +61,10 @@ public abstract class AbstractBabeliMojo extends AbstractMojo {
                       new LanguageFileConfiguration(
                           entry.getKey(), new File(workingDirectory, entry.getValue())))
               .collect(Collectors.toSet()));
+    }
+
+    if (charset != null) {
+      configuration.setCharset(charset);
     }
 
     if (baseLanguage != null) {

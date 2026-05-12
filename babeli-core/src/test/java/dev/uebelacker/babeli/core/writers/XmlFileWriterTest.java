@@ -3,6 +3,7 @@ package dev.uebelacker.babeli.core.writers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.Fixtures;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
@@ -18,7 +19,7 @@ class XmlFileWriterTest {
 
   @BeforeEach
   void setUp() {
-    xmlFileWriter = new XmlFileWriter();
+    xmlFileWriter = new XmlFileWriter(new Configuration());
   }
 
   @Test
@@ -41,7 +42,7 @@ class XmlFileWriterTest {
         new SingleLanguageTranslationFile(
             "de", outputFile, Fixtures.singleLanguageTranslationFileDe().translations()));
 
-    var reader = new XmlFileReader();
+    var reader = new XmlFileReader(new Configuration());
     var result = reader.readFile("de", outputFile);
 
     assertThat(result.translations()).hasSize(3);
@@ -67,7 +68,7 @@ class XmlFileWriterTest {
         new MultiLanguageTranslationFile(
             outputFile, Fixtures.multiLanguageTranslationFile().translations()));
 
-    var reader = new XmlFileReader();
+    var reader = new XmlFileReader(new Configuration());
     var result = reader.readFile(outputFile);
 
     assertThat(result.translations()).hasSize(10);

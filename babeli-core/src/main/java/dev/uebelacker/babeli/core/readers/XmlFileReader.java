@@ -1,5 +1,6 @@
 package dev.uebelacker.babeli.core.readers;
 
+import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.Translation;
@@ -14,6 +15,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class XmlFileReader implements FileReader {
+
+  private final Configuration configuration;
+
+  public XmlFileReader(Configuration configuration) {
+    this.configuration = configuration;
+  }
 
   private static String unescapeXmlValue(String value) {
     return value

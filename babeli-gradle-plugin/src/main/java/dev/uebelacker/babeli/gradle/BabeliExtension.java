@@ -13,6 +13,7 @@ import org.gradle.api.Project;
 public class BabeliExtension {
   private final Map<String, File> files = new LinkedHashMap<>();
   private File file;
+  private String charset;
   private File workingDirectory;
   private String baseLanguage;
   private List<String> actions;
@@ -20,6 +21,8 @@ public class BabeliExtension {
   private String model;
   private String apiKey;
   private String apiUrl;
+
+  public BabeliExtension(Project project) {}
 
   public File getMultiLanguageFile() {
     return file;
@@ -31,6 +34,14 @@ public class BabeliExtension {
 
   public Map<String, File> getFiles() {
     return files;
+  }
+
+  public String getCharset() {
+    return charset;
+  }
+
+  public void setCharset(String charset) {
+    this.charset = charset;
   }
 
   public void translationFile(String language, File file) {
@@ -107,6 +118,10 @@ public class BabeliExtension {
           files.keySet().stream()
               .map(language -> new LanguageFileConfiguration(language, files.get(language)))
               .collect(Collectors.toSet()));
+    }
+
+    if (charset != null) {
+      configuration.setCharset(charset);
     }
 
     if (workingDirectory != null) {

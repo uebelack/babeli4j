@@ -3,6 +3,7 @@ package dev.uebelacker.babeli.core.writers;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.Fixtures;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
@@ -17,7 +18,7 @@ class JsonFileWriterTest {
 
   @BeforeEach
   void setUp() {
-    jsonFileWriter = new JsonFileWriter();
+    jsonFileWriter = new JsonFileWriter(new Configuration());
   }
 
   @Test

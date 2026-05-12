@@ -3,6 +3,7 @@ package dev.uebelacker.babeli.core.readers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.model.Translation;
 import java.io.File;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,7 @@ class XmlFileReaderTest {
 
   @BeforeEach
   void setUp() {
-    xmlFileReader = new XmlFileReader();
+    xmlFileReader = new XmlFileReader(new Configuration());
   }
 
   @Test

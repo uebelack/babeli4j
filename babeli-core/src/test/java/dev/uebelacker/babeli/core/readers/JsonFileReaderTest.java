@@ -3,6 +3,7 @@ package dev.uebelacker.babeli.core.readers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.model.Translation;
 import java.io.File;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 class JsonFileReaderTest {
 
-  private final JsonFileReader jsonFileReader = new JsonFileReader();
+  private final JsonFileReader jsonFileReader = new JsonFileReader(new Configuration());
 
   @Test
   @DisplayName("should read single language json file")
