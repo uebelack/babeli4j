@@ -55,7 +55,7 @@ translation generation.
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <executions>
         <execution>
             <goals>
@@ -68,7 +68,7 @@ translation generation.
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
             <artifactId>babeli-anthropic</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -84,7 +84,7 @@ variable.
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <executions>
         <execution>
             <goals>
@@ -97,7 +97,7 @@ variable.
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
             <artifactId>babeli-ollama</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -119,7 +119,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <configuration>
         <actions>
             <action>sort</action>
@@ -170,7 +170,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <configuration>
         <actions>
             <action>sort</action>
@@ -202,7 +202,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
             <artifactId>babeli-anthropic</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -211,7 +211,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
 ## Goals
 
 | Goal              | Default Phase        | Description                                                                                                         |
-|-------------------|----------------------|---------------------------------------------------------------------------------------------------------------------|
+| ----------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `babeli:validate` | `verify`             | Validates translation files against the configured actions. Fails the build if errors are found.                    |
 | `babeli:update`   | `generate-resources` | Updates translation files by applying the configured actions (e.g., sorting keys, completing missing translations). |
 
@@ -226,7 +226,7 @@ mvn babeli:update
 ## Actions
 
 | Action    | Description                                                                                                                                       |
-|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sort`    | Ensures translation keys are sorted alphabetically.                                                                                               |
 | `missing` | Detects missing translation keys across language files. When running `babeli:update`, uses AI to automatically generate the missing translations. |
 
@@ -235,7 +235,7 @@ mvn babeli:update
 Environment variables, where applicable, override configuration values.
 
 | Parameter          | Property                  | Environment Variable                            | Default                                                    | Description                                                               |
-|--------------------|---------------------------|-------------------------------------------------|------------------------------------------------------------|---------------------------------------------------------------------------|
+| ------------------ | ------------------------- | ----------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------- |
 | `files`            | —                         | —                                               | Auto-detected                                              | Map of language codes to translation file paths.                          |
 | `file`             | `babeli.file`             | —                                               | —                                                          | Path to a single multi-language translation file.                         |
 | `charset`          | `babeli.charset`          | —                                               | `UTF-8`                                                    | Character encoding for reading/writing files.                             |
@@ -247,4 +247,3 @@ Environment variables, where applicable, override configuration values.
 | `apiKey`           | `babeli.apiKey`           | `ANTHROPIC_API_KEY`, `BABELI_ANTHROPIC_API_KEY` | —                                                          | API key for the model provider.                                           |
 | `apiUrl`           | `babeli.apiUrl`           | `BABELI_OLLAMA_URL`                             | `http://localhost:11434` (Ollama)                          | API endpoint URL.                                                         |
 | `skip`             | `babeli.skip`             | —                                               | `false`                                                    | Skip plugin execution entirely.                                           |
-
