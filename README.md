@@ -28,7 +28,7 @@ Add the plugin to your `pom.xml`:
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <executions>
         <execution>
             <goals>
@@ -41,7 +41,7 @@ Add the plugin to your `pom.xml`:
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
             <artifactId>babeli-anthropic</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -107,7 +107,7 @@ Multiple bundles (e.g., `messages_*.properties` and `errors_*.properties`) are e
 ## Actions
 
 | Action    | Description                                                                                                      |
-|-----------|------------------------------------------------------------------------------------------------------------------|
+| --------- | ---------------------------------------------------------------------------------------------------------------- |
 | `sort`    | Ensures translation keys are sorted alphabetically.                                                              |
 | `missing` | Detects missing translation keys across language files. On update, uses AI to generate the missing translations. |
 
@@ -117,7 +117,7 @@ Both actions run by default. To select specific actions, configure them explicit
 ## Supported Formats
 
 | Format        | Extensions    | Single-language       | Multi-language                            |
-|---------------|---------------|-----------------------|-------------------------------------------|
+| ------------- | ------------- | --------------------- | ----------------------------------------- |
 | Properties    | `.properties` | one file per language | —                                         |
 | JSON          | `.json`       | one file per language | single file with nested language keys     |
 | XML (Android) | `.xml`        | one file per language | single file with nested language elements |
@@ -147,7 +147,7 @@ Default model: `qwen3.6`. Override with `BABELI_OLLAMA_MODEL`.
 ## Modules
 
 | Module                 | Description                                                                     |
-|------------------------|---------------------------------------------------------------------------------|
+| ---------------------- | ------------------------------------------------------------------------------- |
 | `babeli-core`          | Core library — reading, validating, transforming, and writing translation files |
 | `babeli-anthropic`     | Anthropic model provider                                                        |
 | `babeli-ollama`        | Ollama model provider                                                           |
@@ -166,7 +166,7 @@ mvn clean install
 ## Environment Variables
 
 | Variable                   | Description                                     |
-|----------------------------|-------------------------------------------------|
+| -------------------------- | ----------------------------------------------- |
 | `ANTHROPIC_API_KEY`        | Anthropic API key                               |
 | `BABELI_ANTHROPIC_API_KEY` | Anthropic API key (takes priority)              |
 | `BABELI_ANTHROPIC_MODEL`   | Override Anthropic model name                   |
