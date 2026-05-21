@@ -21,6 +21,13 @@
         <module>babeli-maven-plugin</module>
     </modules>
 
+    <scm>
+        <connection>scm:git:https://github.com/uebelack/babeli4j.git</connection>
+        <developerConnection>scm:git:git@github.com:uebelack/babeli4j.git</developerConnection>
+        <url>https://github.com/uebelack/babeli4j</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
