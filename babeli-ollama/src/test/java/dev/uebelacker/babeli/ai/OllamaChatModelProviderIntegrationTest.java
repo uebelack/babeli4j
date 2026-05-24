@@ -15,7 +15,7 @@ class OllamaChatModelProviderIntegrationTest {
   @Test
   @DisplayName("should update translations using ollama")
   void shouldUpdateTranslationsUsingOllama() throws IOException {
-    if (System.getenv("BABELI_OLLAMA_MODEL") == null) {
+    if (System.getenv("BABELI_MODEL") == null) {
       return;
     }
 

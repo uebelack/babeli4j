@@ -103,7 +103,7 @@ dependencies {
 }
 ```
 
-Ollama connects to `http://localhost:11434` by default. Override with the `BABELI_OLLAMA_URL` environment variable.
+Ollama connects to `http://localhost:11434` by default. Override with the `BABELI_API_URL` environment variable.
 
 For projects with standard layouts (see Auto-Detection above), that's all you need — the plugin will find your
 translation files automatically and apply the default actions.
@@ -246,9 +246,9 @@ Environment variables, where applicable, override configuration values.
 | `baseLanguage`      | `String`       | —                                               | `en`                                                       | The base/reference language.                                                    |
 | `workingDirectory`  | `File`         | —                                               | Project directory                                          | Working directory for file resolution.                                          |
 | `modelProvider`     | `String`       | `BABELI_MODEL_PROVIDER`                         | —                                                          | AI model provider (`anthropic`, `ollama`). Required.                            |
-| `model`             | `String`       | `BABELI_ANTHROPIC_MODEL`, `BABELI_OLLAMA_MODEL` | `claude-sonnet-4-20250514` (Anthropic), `qwen3.6` (Ollama) | Model name to use for translations.                                             |
+| `model`             | `String`       | `BABELI_MODEL`                                  | `claude-sonnet-4-20250514` (Anthropic), `qwen3.6` (Ollama) | Model name to use for translations.                                             |
 | `apiKey`            | `String`       | `ANTHROPIC_API_KEY`, `BABELI_ANTHROPIC_API_KEY` | —                                                          | API key for the model provider.                                                 |
-| `apiUrl`            | `String`       | `BABELI_OLLAMA_URL`                             | `http://localhost:11434` (Ollama)                          | API endpoint URL.                                                               |
+| `apiUrl`            | `String`       | `BABELI_API_URL`                                | `http://localhost:11434` (Ollama)                          | API endpoint URL.                                                               |
 | `skip`              | `boolean`      | `BABELI_SKIP`                                   | `false`                                                    | When set to true babeli execution is skipped.                                   |
 | —                   | —              | `CI`                                            | —                                                          | When set, disables automatic `babeliUpdate` during builds.                      |
 

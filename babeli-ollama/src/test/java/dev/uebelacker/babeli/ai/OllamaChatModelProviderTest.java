@@ -12,7 +12,7 @@ class OllamaChatModelProviderTest {
   @Test
   @DisplayName("should create chat model")
   void shouldCreateChatModel() {
-    EnvUtils.set("BABELI_OLLAMA_MODEL", "test-model");
+    EnvUtils.set("BABELI_MODEL", "test-model");
     var provider = new OllamaChatModelProvider();
     var chatModel = provider.create(new Configuration());
     assertThat(chatModel).isNotNull();

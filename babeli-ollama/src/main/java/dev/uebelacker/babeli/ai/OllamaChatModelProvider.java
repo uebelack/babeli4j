@@ -9,9 +9,8 @@ import dev.uebelacker.babeli.core.util.EnvUtils;
 public class OllamaChatModelProvider implements ChatModelProvider {
   @Override
   public ChatModel create(Configuration configuration) {
-    var model = EnvUtils.get("BABELI_OLLAMA_MODEL", configuration.getModel(), "qwen3.6");
-    var url =
-        EnvUtils.get("BABELI_OLLAMA_URL", configuration.getApiUrl(), "http://localhost:11434");
+    var model = EnvUtils.get("BABELI_MODEL", configuration.getModel(), "qwen3.6");
+    var url = EnvUtils.get("BABELI_API_URL", configuration.getApiUrl(), "http://localhost:11434");
 
     return OllamaChatModel.builder().modelName(model).baseUrl(url).build();
   }

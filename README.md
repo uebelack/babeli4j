@@ -107,7 +107,7 @@ Multiple bundles (e.g., `messages_*.properties` and `errors_*.properties`) are e
 ## Actions
 
 | Action    | Description                                                                                                      |
-| --------- | ---------------------------------------------------------------------------------------------------------------- |
+|-----------|------------------------------------------------------------------------------------------------------------------|
 | `sort`    | Ensures translation keys are sorted alphabetically.                                                              |
 | `missing` | Detects missing translation keys across language files. On update, uses AI to generate the missing translations. |
 
@@ -117,7 +117,7 @@ Both actions run by default. To select specific actions, configure them explicit
 ## Supported Formats
 
 | Format        | Extensions    | Single-language       | Multi-language                            |
-| ------------- | ------------- | --------------------- | ----------------------------------------- |
+|---------------|---------------|-----------------------|-------------------------------------------|
 | Properties    | `.properties` | one file per language | —                                         |
 | JSON          | `.json`       | one file per language | single file with nested language keys     |
 | XML (Android) | `.xml`        | one file per language | single file with nested language elements |
@@ -132,22 +132,22 @@ Uses the Anthropic API. Set your API key via environment variable:
 export ANTHROPIC_API_KEY=sk-...       # or BABELI_ANTHROPIC_API_KEY
 ```
 
-Default model: `claude-sonnet-4-20250514`. Override with `BABELI_ANTHROPIC_MODEL`.
+Default model: `claude-sonnet-4-20250514`. Override with `BABELI_MODEL`.
 
 ### Ollama
 
 Uses a local Ollama instance at `http://localhost:11434` by default.
 
 ```bash
-export BABELI_OLLAMA_URL=http://my-server:11434   # optional
+export BABELI_API_URL=http://my-server:11434   # optional
 ```
 
-Default model: `qwen3.6`. Override with `BABELI_OLLAMA_MODEL`.
+Default model: `qwen3.6`. Override with `BABELI_MODEL`.
 
 ## Modules
 
 | Module                 | Description                                                                     |
-| ---------------------- | ------------------------------------------------------------------------------- |
+|------------------------|---------------------------------------------------------------------------------|
 | `babeli-core`          | Core library — reading, validating, transforming, and writing translation files |
 | `babeli-anthropic`     | Anthropic model provider                                                        |
 | `babeli-ollama`        | Ollama model provider                                                           |
@@ -158,12 +158,11 @@ Default model: `qwen3.6`. Override with `BABELI_OLLAMA_MODEL`.
 ## Environment Variables
 
 | Variable                   | Description                                     |
-| -------------------------- | ----------------------------------------------- |
+|----------------------------|-------------------------------------------------|
 | `ANTHROPIC_API_KEY`        | Anthropic API key                               |
 | `BABELI_ANTHROPIC_API_KEY` | Anthropic API key (takes priority)              |
-| `BABELI_ANTHROPIC_MODEL`   | Override Anthropic model name                   |
-| `BABELI_OLLAMA_URL`        | Ollama API endpoint                             |
-| `BABELI_OLLAMA_MODEL`      | Override Ollama model name                      |
+| `BABELI_MODEL`             | Override model name                             |
+| `BABELI_API_URL`           | API endpoint                                    |
 | `BABELI_MODEL_PROVIDER`    | Override model provider (`anthropic`, `ollama`) |
 | `BABELI_BASE_LANGUAGE`     | Override base language (default: `en`)          |
 | `BABELI_SKIP`              | When set babeli execution is skipped            |

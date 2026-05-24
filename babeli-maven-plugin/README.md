@@ -103,7 +103,7 @@ variable.
 </plugin>
 ```
 
-Ollama connects to `http://localhost:11434` by default. Override with the `BABELI_OLLAMA_URL` environment variable.
+Ollama connects to `http://localhost:11434` by default. Override with the `BABELI_API_URL` environment variable.
 
 For projects with standard layouts (see Auto-Detection above), that's all you need — the plugin will find your
 translation files automatically and apply the default actions.
@@ -211,7 +211,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
 ## Goals
 
 | Goal              | Default Phase        | Description                                                                                                         |
-| ----------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------- |
+|-------------------|----------------------|---------------------------------------------------------------------------------------------------------------------|
 | `babeli:validate` | `verify`             | Validates translation files against the configured actions. Fails the build if errors are found.                    |
 | `babeli:update`   | `generate-resources` | Updates translation files by applying the configured actions (e.g., sorting keys, completing missing translations). |
 
@@ -226,7 +226,7 @@ mvn babeli:update
 ## Actions
 
 | Action    | Description                                                                                                                                       |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
 | `sort`    | Ensures translation keys are sorted alphabetically.                                                                                               |
 | `missing` | Detects missing translation keys across language files. When running `babeli:update`, uses AI to automatically generate the missing translations. |
 
@@ -235,7 +235,7 @@ mvn babeli:update
 Environment variables, where applicable, override configuration values.
 
 | Parameter          | Property                  | Environment Variable                            | Default                                                    | Description                                                               |
-| ------------------ | ------------------------- | ----------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------- |
+|--------------------|---------------------------|-------------------------------------------------|------------------------------------------------------------|---------------------------------------------------------------------------|
 | `files`            | —                         | —                                               | Auto-detected                                              | Map of language codes to translation file paths.                          |
 | `file`             | `babeli.file`             | —                                               | —                                                          | Path to a single multi-language translation file.                         |
 | `charset`          | `babeli.charset`          | —                                               | `UTF-8`                                                    | Character encoding for reading/writing files.                             |
@@ -243,7 +243,7 @@ Environment variables, where applicable, override configuration values.
 | `workingDirectory` | `babeli.workingDirectory` | —                                               | `${project.basedir}`                                       | Working directory for file resolution.                                    |
 | `actions`          | —                         | —                                               | All registered actions                                     | Actions to apply (e.g., `sort`, `missing`).                               |
 | `modelProvider`    | `babeli.modelProvider`    | `BABELI_MODEL_PROVIDER`                         | —                                                          | AI model provider (`anthropic`, `ollama`). Required for `missing` action. |
-| `model`            | `babeli.model`            | `BABELI_ANTHROPIC_MODEL`, `BABELI_OLLAMA_MODEL` | `claude-sonnet-4-20250514` (Anthropic), `qwen3.6` (Ollama) | Model name to use for translations.                                       |
+| `model`            | `babeli.model`            | `BABELI_MODEL`                                  | `claude-sonnet-4-20250514` (Anthropic), `qwen3.6` (Ollama) | Model name to use for translations.                                       |
 | `apiKey`           | `babeli.apiKey`           | `ANTHROPIC_API_KEY`, `BABELI_ANTHROPIC_API_KEY` | —                                                          | API key for the model provider.                                           |
-| `apiUrl`           | `babeli.apiUrl`           | `BABELI_OLLAMA_URL`                             | `http://localhost:11434` (Ollama)                          | API endpoint URL.                                                         |
+| `apiUrl`           | `babeli.apiUrl`           | `BABELI_API_URL`                                | `http://localhost:11434` (Ollama)                          | API endpoint URL.                                                         |
 | `skip`             | `babeli.skip`             | —                                               | `false`                                                    | Skip plugin execution entirely.                                           |
