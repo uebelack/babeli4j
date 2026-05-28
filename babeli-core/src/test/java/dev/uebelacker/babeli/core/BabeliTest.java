@@ -1,5 +1,6 @@
 package dev.uebelacker.babeli.core;
 
+import static java.nio.file.Paths.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
@@ -19,6 +20,9 @@ import dev.uebelacker.babeli.core.util.EnvUtils;
 import dev.uebelacker.babeli.core.writers.JsonFileWriter;
 import dev.uebelacker.babeli.core.writers.PropertiesFileWriter;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
@@ -36,7 +40,8 @@ class BabeliTest {
       Set.of(
           new LanguageFileConfiguration(
               "en", new File("target/test/properties/messages_en.properties")),
-          new LanguageFileConfiguration("fr", new File("target/test/properties/fr.properties")),
+          new LanguageFileConfiguration(
+              "fr", new File("target/test/properties/messages_fr.properties")),
           new LanguageFileConfiguration(
               "de", new File("target/test/properties/messages_de.properties")));
 
@@ -45,8 +50,13 @@ class BabeliTest {
   Configuration configuration;
 
   @BeforeEach
-  void setUp() {
-    var propertiesFileWriter = new PropertiesFileWriter(new Configuration());
+  void setUp() throws IOException {
+    var propertiesFileWriter = new PropertiesFileWriter(new Configuration().setActions(Set.of()));
+
+    try (var stream = Files.list(get("target/test/properties"))) {
+      stream.filter(Files::isRegularFile).map(Path::toFile).forEach(File::delete);
+    }
+
     propertiesFileWriter.writeFile(
         new SingleLanguageTranslationFile(
             "en",
@@ -56,7 +66,7 @@ class BabeliTest {
     propertiesFileWriter.writeFile(
         new SingleLanguageTranslationFile(
             "fr",
-            new File("target/test/properties/fr.properties"),
+            new File("target/test/properties/messages_fr.properties"),
             Fixtures.singleLanguageTranslationFileFr().translations()));
 
     propertiesFileWriter.writeFile(
@@ -101,7 +111,7 @@ class BabeliTest {
                 "Error[action=missing, language=en, value=common.button.perhaps, message=Missing translation for 'common.button.perhaps' in file target/test/properties/messages_en.properties]",
                 "Error[action=sort, language=de, value=target/test/properties/messages_de.properties, message=Translations in file target/test/properties/messages_de.properties are not sorted.]",
                 "Error[action=sort, language=en, value=target/test/properties/messages_en.properties, message=Translations in file target/test/properties/messages_en.properties are not sorted.]",
-                "Error[action=sort, language=fr, value=target/test/properties/fr.properties, message=Translations in file target/test/properties/fr.properties are not sorted.]"));
+                "Error[action=sort, language=fr, value=target/test/properties/messages_fr.properties, message=Translations in file target/test/properties/messages_fr.properties are not sorted.]"));
   }
 
   @Test

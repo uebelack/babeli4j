@@ -1,14 +1,12 @@
 package dev.uebelacker.babeli.core.writers;
 
+import de.poiu.apron.ApronOptions;
+import de.poiu.apron.PropertyFile;
+import de.poiu.apron.UnicodeHandling;
 import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.time.LocalDate;
-import java.util.Locale;
-import org.apache.commons.collections4.properties.OrderedProperties;
+import java.nio.charset.Charset;
+import java.util.HashSet;
 
 public class PropertiesFileWriter implements FileWriter {
 
@@ -20,29 +18,41 @@ public class PropertiesFileWriter implements FileWriter {
 
   @Override
   public void writeFile(SingleLanguageTranslationFile file) {
-    ensureDirectory(file.file());
-
-    var properties = new OrderedProperties();
-    file.translations()
-        .forEach(translation -> properties.setProperty(translation.key(), translation.value()));
-    try (var outputStream = new FileOutputStream(file.file())) {
-      properties.store(new OutputStreamWriter(outputStream, configuration.getCharset()), null);
-    } catch (Exception e) {
-      throw new FileWriterException(file.file(), e);
-    }
-
-    var currentDate =
-        LocalDate.now()
-            .format(java.time.format.DateTimeFormatter.ofPattern("EEE MMM dd", Locale.ENGLISH));
-
     try {
-      var lines =
-          Files.readAllLines(file.file().toPath()).stream()
-              .filter(line -> !line.startsWith("#%s".formatted(currentDate)))
-              .toList();
+      ensureFile(file.file());
 
-      Files.write(file.file().toPath(), lines);
-    } catch (IOException e) {
+      var properties = PropertyFile.from(file.file());
+      var keys = new HashSet<String>();
+
+      file.translations()
+          .forEach(
+              translation -> {
+                keys.add(translation.key());
+                if (properties.get(translation.key()) == null
+                    || !properties.get(translation.key()).equals(translation.value())) {
+                  properties.set(translation.key(), translation.value());
+                }
+              });
+
+      properties
+          .keys()
+          .forEach(
+              key -> {
+                if (!keys.contains(key)) {
+                  properties.remove(key);
+                }
+              });
+
+      if (configuration.getActions().contains("sort")) {
+        properties.reorderByKey();
+      }
+
+      properties.overwrite(
+          file.file(),
+          ApronOptions.create()
+              .with(Charset.forName(configuration.getCharset()))
+              .with(UnicodeHandling.BY_CHARSET));
+    } catch (Exception e) {
       throw new FileWriterException(file.file(), e);
     }
   }
