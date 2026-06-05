@@ -40,7 +40,7 @@ testing {
             dependencies {
                 implementation 'org.assertj:assertj-core:3.27.6'
                 runtimeOnly 'org.junit.platform:junit-platform-launcher:1.13.0'
-                implementation 'dev.uebelacker.babeli:babeli-core:1.0.2'
+                implementation 'dev.uebelacker.babeli:babeli-core:1.0.2-SNAPSHOT'
             }
         }
     }
