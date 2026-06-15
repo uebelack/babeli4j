@@ -7,10 +7,10 @@ import static org.mockito.Mockito.when;
 
 import dev.uebelacker.babeli.cli.commands.Add;
 import java.nio.file.Files;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.jline.reader.LineReader;
 import org.jline.terminal.Terminal;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
 class BabeliCliTest {

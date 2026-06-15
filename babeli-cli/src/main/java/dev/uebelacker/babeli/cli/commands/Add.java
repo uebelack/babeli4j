@@ -21,39 +21,50 @@ import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 @Command(name = "add", description = "Adds a translation key interactively.")
 @SuppressWarnings("java:S106")
 public class Add extends AbstractCommand {
+
+  @Option(
+      names = {"--bundle"},
+      description = "Name of the resource bundle to add the key to.")
+  private String bundle;
 
   @Override
   public Integer call() {
     try (var terminal = createTerminal()) {
       var reader = createLineReader(terminal);
       var configuration = createConfiguration();
+      var bundles = configuration.autoConfigure();
 
-      for (var subConfiguration : configuration.autoConfigure()) {
-        subConfiguration.validate();
-        var fileReader = FileReaderRegistry.getFileReader(subConfiguration);
-        var fileWriter = FileWriterRegistry.getFileWriter(subConfiguration);
+      var selectedBundle = selectBundle(reader, bundles);
+      if (selectedBundle == null) {
+        return 0;
+      }
 
-        if (subConfiguration.getFile() != null) {
-          var translationFile = fileReader.readFile(subConfiguration.getFile());
-          var updatedTranslationFile = addToMultiLanguageFile(reader, subConfiguration, translationFile);
-          fileWriter.writeFile(updatedTranslationFile);
-        }
+      selectedBundle.validate();
+      var fileReader = FileReaderRegistry.getFileReader(selectedBundle);
+      var fileWriter = FileWriterRegistry.getFileWriter(selectedBundle);
 
-        if (subConfiguration.getFiles() != null) {
-          var translationFiles =
-              subConfiguration.getFiles().stream()
-                  .map(file -> fileReader.readFile(file.getLanguage(), file.getFile()))
-                  .toList();
+      if (selectedBundle.getFile() != null) {
+        var translationFile = fileReader.readFile(selectedBundle.getFile());
+        var updatedTranslationFile =
+            addToMultiLanguageFile(reader, selectedBundle, translationFile);
+        fileWriter.writeFile(updatedTranslationFile);
+      }
 
-          var updatedTranslationFiles =
-              addToSingleLanguageFiles(reader, subConfiguration, translationFiles);
+      if (selectedBundle.getFiles() != null) {
+        var translationFiles =
+            selectedBundle.getFiles().stream()
+                .map(file -> fileReader.readFile(file.getLanguage(), file.getFile()))
+                .toList();
 
-          updatedTranslationFiles.forEach(fileWriter::writeFile);
-        }
+        var updatedTranslationFiles =
+            addToSingleLanguageFiles(reader, selectedBundle, translationFiles);
+
+        updatedTranslationFiles.forEach(fileWriter::writeFile);
       }
 
       return 0;
@@ -74,6 +85,55 @@ public class Add extends AbstractCommand {
     return LineReaderBuilder.builder().terminal(terminal).build();
   }
 
+  private Configuration selectBundle(LineReader reader, List<Configuration> bundles) {
+    if (bundles.isEmpty()) {
+      throw new IllegalStateException("No bundles found.");
+    }
+
+    if (bundle != null) {
+      return bundles.stream()
+          .filter(b -> bundle.equals(b.getName()))
+          .findFirst()
+          .orElseThrow(
+              () ->
+                  new IllegalArgumentException(
+                      "Bundle '%s' not found. Available bundles: %s"
+                          .formatted(
+                              bundle,
+                              bundles.stream()
+                                  .map(Configuration::getName)
+                                  .filter(java.util.Objects::nonNull)
+                                  .collect(java.util.stream.Collectors.joining(", ")))));
+    }
+
+    if (bundles.size() == 1) {
+      return bundles.get(0);
+    }
+
+    System.out.println("Available bundles:");
+    for (var i = 0; i < bundles.size(); i++) {
+      var name = bundles.get(i).getName();
+      System.out.println("  %d) %s".formatted(i + 1, name != null ? name : "bundle " + (i + 1)));
+    }
+
+    var input =
+        Optional.ofNullable(reader.readLine("Select bundle (1-%d): ".formatted(bundles.size())))
+            .map(String::trim)
+            .orElse("");
+
+    try {
+      var index = Integer.parseInt(input) - 1;
+      if (index >= 0 && index < bundles.size()) {
+        return bundles.get(index);
+      }
+    } catch (NumberFormatException e) {
+      // fall through
+    }
+
+    throw new IllegalArgumentException(
+        "Invalid selection. Please specify a number between 1 and %d.".formatted(bundles.size()));
+  }
+
   private MultiLanguageTranslationFile addToMultiLanguageFile(
       LineReader reader,
       Configuration configuration,
@@ -81,7 +141,14 @@ public class Add extends AbstractCommand {
     var translations = Translations.fromTranslations(translationFile.translations());
     var valuesByLanguage =
         promptForTranslations(
-            reader, translations, "file '%s'".formatted(translationFile.file().getPath()), configuration);
+            reader,
+            translations,
+            "file '%s'".formatted(translationFile.file().getPath()),
+            configuration);
+
+    if (valuesByLanguage == null) {
+      return translationFile;
+    }
 
     var key = valuesByLanguage.key();
     var values = valuesByLanguage.values();
@@ -103,8 +170,11 @@ public class Add extends AbstractCommand {
             translationFiles.stream().flatMap(file -> file.translations().stream()).toList());
 
     var valuesByLanguage =
-        promptForTranslations(
-            reader, translations, "configured language files", configuration);
+        promptForTranslations(reader, translations, "configured language files", configuration);
+
+    if (valuesByLanguage == null) {
+      return translationFiles;
+    }
 
     var key = valuesByLanguage.key();
     var values = valuesByLanguage.values();
@@ -115,7 +185,9 @@ public class Add extends AbstractCommand {
         .map(
             file ->
                 new SingleLanguageTranslationFile(
-                    file.language(), file.file(), translations.getTranslationsForLanguage(file.language())))
+                    file.language(),
+                    file.file(),
+                    translations.getTranslationsForLanguage(file.language())))
         .toList();
   }
 
@@ -129,7 +201,12 @@ public class Add extends AbstractCommand {
       throw new IllegalStateException("No languages found in %s.".formatted(targetDescription));
     }
 
-    var key = readRequired(reader, "Translation key for %s: ".formatted(targetDescription));
+    var key =
+        readKey(
+            reader, "Translation key for %s (or empty to finish): ".formatted(targetDescription));
+    if (key == null) {
+      return null;
+    }
     if (existingTranslations.getKeys().contains(key)) {
       throw new IllegalArgumentException("Key '%s' already exists.".formatted(key));
     }
@@ -139,7 +216,8 @@ public class Add extends AbstractCommand {
       var entered =
           Optional.ofNullable(
                   reader.readLine(
-                      "Translation for '%s' (leave empty for auto-translation): ".formatted(language)))
+                      "Translation for '%s' (leave empty for auto-translation): "
+                          .formatted(language)))
               .map(String::trim)
               .orElse("");
       if (!entered.isEmpty()) {
@@ -152,20 +230,23 @@ public class Add extends AbstractCommand {
           "At least one translation must be provided to generate missing languages.");
     }
 
-    var missingLanguages = languages.stream().filter(language -> !values.containsKey(language)).toList();
+    var missingLanguages =
+        languages.stream().filter(language -> !values.containsKey(language)).toList();
     if (!missingLanguages.isEmpty()) {
       if (EnvUtils.get(BABELI_MODEL_PROVIDER, configuration.getModelProvider()) == null) {
         throw new IllegalArgumentException(
             "No model provider specified. Please set '--model-provider' or BABELI_MODEL_PROVIDER for auto-translation.");
       }
 
-      var contextTranslations = Translations.fromTranslations(existingTranslations.getTranslations());
+      var contextTranslations =
+          Translations.fromTranslations(existingTranslations.getTranslations());
       values.forEach((language, value) -> contextTranslations.add(key, language, value));
       var translationService = new TranslationService(configuration, contextTranslations);
 
       for (var language : missingLanguages) {
         var reference = findReference(values, configuration.getBaseLanguage(), language);
-        var translated = translationService.translate(reference.value(), reference.language(), language);
+        var translated =
+            translationService.translate(reference.value(), reference.language(), language);
         values.put(language, translated);
       }
     }
@@ -186,10 +267,10 @@ public class Add extends AbstractCommand {
         .orElseThrow(() -> new IllegalStateException("No reference translation available."));
   }
 
-  private String readRequired(LineReader reader, String prompt) {
+  private String readKey(LineReader reader, String prompt) {
     var value = Optional.ofNullable(reader.readLine(prompt)).map(String::trim).orElse("");
     if (value.isEmpty()) {
-      throw new IllegalArgumentException("Translation key must not be empty.");
+      return null;
     }
     return value;
   }

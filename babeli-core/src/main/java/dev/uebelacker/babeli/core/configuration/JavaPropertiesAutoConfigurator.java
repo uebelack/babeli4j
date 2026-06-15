@@ -46,7 +46,7 @@ public class JavaPropertiesAutoConfigurator implements AutoConfigurator {
         .map(
             prefix -> {
               var languageFileConfigurations = bundles.get(prefix);
-              return configuration.copy().setFiles(languageFileConfigurations);
+              return configuration.copy().setName(prefix).setFiles(languageFileConfigurations);
             })
         .toList();
   }

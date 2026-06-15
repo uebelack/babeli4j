@@ -3,6 +3,7 @@ package dev.uebelacker.babeli.core.writers;
 import de.poiu.apron.ApronOptions;
 import de.poiu.apron.PropertyFile;
 import de.poiu.apron.UnicodeHandling;
+import de.poiu.apron.entry.PropertyEntry;
 import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 import java.nio.charset.Charset;
@@ -28,8 +29,10 @@ public class PropertiesFileWriter implements FileWriter {
           .forEach(
               translation -> {
                 keys.add(translation.key());
-                if (properties.get(translation.key()) == null
-                    || !properties.get(translation.key()).equals(translation.value())) {
+                if (properties.get(translation.key()) == null) {
+                  properties.appendEntry(
+                      new PropertyEntry("", translation.key(), "=", translation.value(), "\n"));
+                } else if (!properties.get(translation.key()).equals(translation.value())) {
                   properties.set(translation.key(), translation.value());
                 }
               });
