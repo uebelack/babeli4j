@@ -78,6 +78,7 @@ export ANTHROPIC_API_KEY=sk-...
 ```bash
 babeli validate -p anthropic
 babeli update -p anthropic
+babeli add -p anthropic
 ```
 
 For most projects with standard layouts, that's all you need — Babeli will find your translation files automatically.
