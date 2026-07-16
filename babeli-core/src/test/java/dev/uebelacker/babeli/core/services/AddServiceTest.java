@@ -1,24 +1,10 @@
 package dev.uebelacker.babeli.core.services;
 
+import static dev.uebelacker.babeli.core.Constants.EnvironmentVariables.BABELI_MODEL_PROVIDER;
+import static java.nio.file.Paths.get;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
-import static java.nio.file.Paths.get;
-import static dev.uebelacker.babeli.core.Constants.EnvironmentVariables.BABELI_MODEL_PROVIDER;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Map;
-import java.util.Set;
 
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.SystemMessage;
@@ -26,7 +12,7 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.Fixtures;
-import dev.uebelacker.babeli.core.ai.AiFactory;
+import dev.uebelacker.babeli.core.ai.ChatModelFactory;
 import dev.uebelacker.babeli.core.configuration.LanguageFileConfiguration;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
@@ -36,6 +22,18 @@ import dev.uebelacker.babeli.core.readers.PropertiesFileReader;
 import dev.uebelacker.babeli.core.util.EnvUtils;
 import dev.uebelacker.babeli.core.writers.JsonFileWriter;
 import dev.uebelacker.babeli.core.writers.PropertiesFileWriter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
+import java.util.Set;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AddServiceTest {
@@ -74,7 +72,7 @@ class AddServiceTest {
         configuration.setModelProvider("test");
 
         EnvUtils.set(BABELI_MODEL_PROVIDER, "test");
-        var chatModel = AiFactory.createChatModel(configuration);
+        var chatModel = ChatModelFactory.createChatModel(configuration);
         lenient()
                 .when(chatModel.chat(any(SystemMessage.class), any(UserMessage.class)))
                 .thenReturn(ChatResponse.builder()

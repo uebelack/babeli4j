@@ -10,7 +10,7 @@
                         <en>messages_en.properties</en>
                         <de>messages_de.properties</de>
                     </files>
-                    <modelProvider>dev.uebelacker.babeli.maven.TestAiProvider</modelProvider>
+                    <modelProvider>dev.uebelacker.babeli.maven.TestChatModelProvider</modelProvider>
                     <model>test</model>
                     <apiKey>123</apiKey>
                     <apiUrl>https://example.org</apiUrl>
