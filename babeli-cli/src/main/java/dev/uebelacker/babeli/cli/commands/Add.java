@@ -1,15 +1,9 @@
 package dev.uebelacker.babeli.cli.commands;
 
-import static dev.uebelacker.babeli.core.Constants.EnvironmentVariables.BABELI_MODEL_PROVIDER;
-
+import dev.uebelacker.babeli.core.Babeli;
 import dev.uebelacker.babeli.core.Configuration;
-import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
-import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.Translations;
 import dev.uebelacker.babeli.core.readers.FileReaderRegistry;
-import dev.uebelacker.babeli.core.services.TranslationService;
-import dev.uebelacker.babeli.core.util.EnvUtils;
-import dev.uebelacker.babeli.core.writers.FileWriterRegistry;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,36 +30,22 @@ public class Add extends AbstractCommand {
   public Integer call() {
     try (var terminal = createTerminal()) {
       var reader = createLineReader(terminal);
-      var configuration = createConfiguration();
-      var bundles = configuration.autoConfigure();
+      var bundles = createConfiguration().autoConfigure();
 
       var selectedBundle = selectBundle(reader, bundles);
-      if (selectedBundle == null) {
+      var existingTranslations = readExistingTranslations(selectedBundle);
+      var keyTranslations =
+          promptForTranslations(reader, existingTranslations, targetDescription(selectedBundle));
+
+      if (keyTranslations == null) {
         return 0;
       }
 
-      selectedBundle.validate();
-      var fileReader = FileReaderRegistry.getFileReader(selectedBundle);
-      var fileWriter = FileWriterRegistry.getFileWriter(selectedBundle);
-
-      if (selectedBundle.getFile() != null) {
-        var translationFile = fileReader.readFile(selectedBundle.getFile());
-        var updatedTranslationFile =
-            addToMultiLanguageFile(reader, selectedBundle, translationFile);
-        fileWriter.writeFile(updatedTranslationFile);
-      }
-
-      if (selectedBundle.getFiles() != null) {
-        var translationFiles =
-            selectedBundle.getFiles().stream()
-                .map(file -> fileReader.readFile(file.getLanguage(), file.getFile()))
-                .toList();
-
-        var updatedTranslationFiles =
-            addToSingleLanguageFiles(reader, selectedBundle, translationFiles);
-
-        updatedTranslationFiles.forEach(fileWriter::writeFile);
-      }
+      Babeli.add(
+          selectedBundle.getName(),
+          keyTranslations.key(),
+          keyTranslations.values(),
+          selectedBundle);
 
       return 0;
     } catch (UserInterruptException | EndOfFileException e) {
@@ -134,68 +114,16 @@ public class Add extends AbstractCommand {
         "Invalid selection. Please specify a number between 1 and %d.".formatted(bundles.size()));
   }
 
-  private MultiLanguageTranslationFile addToMultiLanguageFile(
-      LineReader reader,
-      Configuration configuration,
-      MultiLanguageTranslationFile translationFile) {
-    var translations = Translations.fromTranslations(translationFile.translations());
-    var valuesByLanguage =
-        promptForTranslations(
-            reader,
-            translations,
-            "file '%s'".formatted(translationFile.file().getPath()),
-            configuration);
-
-    if (valuesByLanguage == null) {
-      return translationFile;
+  private String targetDescription(Configuration configuration) {
+    if (configuration.getFile() != null) {
+      return "file '%s'".formatted(configuration.getFile().getPath());
     }
 
-    var key = valuesByLanguage.key();
-    var values = valuesByLanguage.values();
-
-    values.forEach((language, value) -> translations.add(key, language, value));
-    return new MultiLanguageTranslationFile(translationFile.file(), translations.getTranslations());
-  }
-
-  private List<SingleLanguageTranslationFile> addToSingleLanguageFiles(
-      LineReader reader,
-      Configuration configuration,
-      List<SingleLanguageTranslationFile> translationFiles) {
-    if (translationFiles.isEmpty()) {
-      throw new IllegalStateException("No languages found in configured files.");
-    }
-
-    var translations =
-        Translations.fromTranslations(
-            translationFiles.stream().flatMap(file -> file.translations().stream()).toList());
-
-    var valuesByLanguage =
-        promptForTranslations(reader, translations, "configured language files", configuration);
-
-    if (valuesByLanguage == null) {
-      return translationFiles;
-    }
-
-    var key = valuesByLanguage.key();
-    var values = valuesByLanguage.values();
-
-    values.forEach((language, value) -> translations.add(key, language, value));
-
-    return translationFiles.stream()
-        .map(
-            file ->
-                new SingleLanguageTranslationFile(
-                    file.language(),
-                    file.file(),
-                    translations.getTranslationsForLanguage(file.language())))
-        .toList();
+    return "configured language files";
   }
 
   private KeyTranslations promptForTranslations(
-      LineReader reader,
-      Translations existingTranslations,
-      String targetDescription,
-      Configuration configuration) {
+      LineReader reader, Translations existingTranslations, String targetDescription) {
     var languages = existingTranslations.getLanguages();
     if (languages.isEmpty()) {
       throw new IllegalStateException("No languages found in %s.".formatted(targetDescription));
@@ -230,41 +158,27 @@ public class Add extends AbstractCommand {
           "At least one translation must be provided to generate missing languages.");
     }
 
-    var missingLanguages =
-        languages.stream().filter(language -> !values.containsKey(language)).toList();
-    if (!missingLanguages.isEmpty()) {
-      if (EnvUtils.get(BABELI_MODEL_PROVIDER, configuration.getModelProvider()) == null) {
-        throw new IllegalArgumentException(
-            "No model provider specified. Please set '--model-provider' or BABELI_MODEL_PROVIDER for auto-translation.");
-      }
-
-      var contextTranslations =
-          Translations.fromTranslations(existingTranslations.getTranslations());
-      values.forEach((language, value) -> contextTranslations.add(key, language, value));
-      var translationService = new TranslationService(configuration, contextTranslations);
-
-      for (var language : missingLanguages) {
-        var reference = findReference(values, configuration.getBaseLanguage(), language);
-        var translated =
-            translationService.translate(reference.value(), reference.language(), language);
-        values.put(language, translated);
-      }
-    }
-
     return new KeyTranslations(key, values);
   }
 
-  private ReferenceTranslation findReference(
-      Map<String, String> valuesByLanguage, String baseLanguage, String targetLanguage) {
-    if (!targetLanguage.equals(baseLanguage) && valuesByLanguage.containsKey(baseLanguage)) {
-      return new ReferenceTranslation(baseLanguage, valuesByLanguage.get(baseLanguage));
+  private Translations readExistingTranslations(Configuration configuration) {
+    configuration.validate();
+
+    var fileReader = FileReaderRegistry.getFileReader(configuration);
+    if (configuration.getFile() != null) {
+      return Translations.fromTranslations(
+          fileReader.readFile(configuration.getFile()).translations());
     }
 
-    return valuesByLanguage.entrySet().stream()
-        .filter(entry -> !entry.getKey().equals(targetLanguage))
-        .findFirst()
-        .map(entry -> new ReferenceTranslation(entry.getKey(), entry.getValue()))
-        .orElseThrow(() -> new IllegalStateException("No reference translation available."));
+    if (configuration.getFiles() != null) {
+      return Translations.fromTranslations(
+          configuration.getFiles().stream()
+              .map(file -> fileReader.readFile(file.getLanguage(), file.getFile()))
+              .flatMap(file -> file.translations().stream())
+              .toList());
+    }
+
+    throw new IllegalStateException("No files configured.");
   }
 
   private String readKey(LineReader reader, String prompt) {
@@ -274,8 +188,6 @@ public class Add extends AbstractCommand {
     }
     return value;
   }
-
-  private record ReferenceTranslation(String language, String value) {}
 
   private record KeyTranslations(String key, Map<String, String> values) {}
 }
