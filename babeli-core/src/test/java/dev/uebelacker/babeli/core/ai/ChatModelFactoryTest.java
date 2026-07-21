@@ -1,7 +1,6 @@
 package dev.uebelacker.babeli.core.ai;
 
 import static dev.uebelacker.babeli.core.Constants.EnvironmentVariables.BABELI_MODEL_PROVIDER;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -68,5 +67,17 @@ class ChatModelFactoryTest {
     var chatModel2 = ChatModelFactory.createChatModel(configuration);
 
     assertThat(chatModel1).isEqualTo(chatModel2);
+  }
+
+  @Test
+  @DisplayName("should resolve kebab-case model provider names")
+  void shouldResolveKebabCaseModelProviderNames() {
+    EnvUtils.set(BABELI_MODEL_PROVIDER, "copilot-cli");
+    var configuration = new Configuration();
+    configuration.setModelProvider("copilot-cli");
+
+    var chatModel = ChatModelFactory.createChatModel(configuration);
+
+    assertThat(chatModel).isNotNull();
   }
 }
