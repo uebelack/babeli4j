@@ -91,8 +91,10 @@ class BabeliAddTest {
             List.of(
                 new Configuration().setName("messages"), new Configuration().setName("errors")));
 
+    var translations = Map.of("en", "New");
+
     assertThatExceptionOfType(MultipleResourceBundlesFoundException.class)
-        .isThrownBy(() -> Babeli.add(null, "new.key", Map.of("en", "New"), root))
+        .isThrownBy(() -> Babeli.add(null, "new.key", translations, root))
         .withMessage(
             "Multiple resource bundles found, please specify which one to use: messages, errors");
   }
@@ -106,8 +108,10 @@ class BabeliAddTest {
             List.of(
                 new Configuration().setName("messages"), new Configuration().setName("errors")));
 
+    var translations = Map.of("en", "New");
+
     assertThatExceptionOfType(ResourceBundleNotFoundException.class)
-        .isThrownBy(() -> Babeli.add("missing", "new.key", Map.of("en", "New"), root))
+        .isThrownBy(() -> Babeli.add("missing", "new.key", translations, root))
         .withMessage("Resource bundle not found: missing");
   }
 
@@ -124,8 +128,9 @@ class BabeliAddTest {
   void shouldReportMissingTranslationsWhenValidating() {
     var errors = Babeli.validate(configuration);
 
-    assertThat(errors).isNotEmpty();
-    assertThat(errors).allSatisfy(error -> assertThat(error.message()).contains(FILE.getPath()));
+    assertThat(errors)
+        .isNotEmpty()
+        .allSatisfy(error -> assertThat(error.message()).contains(FILE.getPath()));
   }
 
   private Translations translationsFromFile() {

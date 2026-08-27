@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.request.ChatRequest;
@@ -114,8 +115,10 @@ class CopilotCliModelTest {
   void shouldFailWithStderrWhenExitCodeIsNonZero() {
     var model = new StubModel(configuration, process("", "not logged in", 1));
 
+    var chatRequest = request(UserMessage.from("Translate hello"));
+
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> model.doChat(request(UserMessage.from("Translate hello"))))
+        .isThrownBy(() -> model.doChat(chatRequest))
         .withMessage("copilot command failed with exit code 1: not logged in");
   }
 
@@ -124,8 +127,10 @@ class CopilotCliModelTest {
   void shouldFailWithoutDetailsWhenStderrIsBlank() {
     var model = new StubModel(configuration, process("", "  ", 2));
 
+    var chatRequest = request(UserMessage.from("Translate hello"));
+
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> model.doChat(request(UserMessage.from("Translate hello"))))
+        .isThrownBy(() -> model.doChat(chatRequest))
         .withMessage("copilot command failed with exit code 2");
   }
 
@@ -140,8 +145,10 @@ class CopilotCliModelTest {
           }
         };
 
+    var chatRequest = request(UserMessage.from("Translate hello"));
+
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> model.doChat(request(UserMessage.from("Translate hello"))))
+        .isThrownBy(() -> model.doChat(chatRequest))
         .withMessage("Failed to execute copilot command")
         .withCauseInstanceOf(IOException.class);
   }
@@ -157,8 +164,10 @@ class CopilotCliModelTest {
     var model = new StubModel(configuration, process);
 
     try {
+      var chatRequest = request(UserMessage.from("Translate hello"));
+
       assertThatExceptionOfType(IllegalStateException.class)
-          .isThrownBy(() -> model.doChat(request(UserMessage.from("Translate hello"))))
+          .isThrownBy(() -> model.doChat(chatRequest))
           .withMessage("Execution of copilot command was interrupted")
           .withCauseInstanceOf(InterruptedException.class);
 
@@ -169,7 +178,7 @@ class CopilotCliModelTest {
     }
   }
 
-  private ChatRequest request(dev.langchain4j.data.message.ChatMessage... messages) {
+  private ChatRequest request(ChatMessage... messages) {
     return ChatRequest.builder().messages(messages).build();
   }
 

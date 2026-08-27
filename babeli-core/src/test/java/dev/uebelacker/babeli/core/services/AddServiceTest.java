@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
@@ -187,7 +188,7 @@ class AddServiceTest {
   @DisplayName("should ignore a null valued translation when choosing the source language")
   void shouldIgnoreNullValuedTranslationWhenChoosingSourceLanguage() {
     configuration.setFile(FILE);
-    var values = new java.util.HashMap<String, String>();
+    var values = new HashMap<String, String>();
     values.put("en", null);
     values.put("fr", "Nouveau");
 
@@ -206,7 +207,7 @@ class AddServiceTest {
     new AddService(configuration).add("new.key", Map.of());
 
     var translations = translationsFromFile(FILE);
-    assertThat(translations.getKeys()).doesNotContain("new.key");
+    assertThat(translations.getKeys()).isNotEmpty().doesNotContain("new.key");
   }
 
   private Translations translationsFromFile(File file) {
