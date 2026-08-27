@@ -255,6 +255,97 @@ class BabeliPluginFunctionalTest {
         .isEqualTo(TaskOutcome.SUCCESS);
   }
 
+  @Test
+  @DisplayName("should add a translation key to the translation files")
+  void shouldAddTranslationKey() throws IOException {
+    writePropertiesProject();
+
+    var result =
+        GradleRunner.create()
+            .withProjectDir(projectDir)
+            .withPluginClasspath()
+            .withArguments(
+                "babeliAdd",
+                "--key=common.button.no",
+                "--translation=en=No",
+                "--translation=de=Nein",
+                "--stacktrace")
+            .build();
+
+    assertThat(result.task(":babeliAdd").getOutcome()).isEqualTo(TaskOutcome.SUCCESS);
+    assertThat(readFile("messages_en.properties")).contains("common.button.no=No");
+    assertThat(readFile("messages_de.properties")).contains("common.button.no=Nein");
+  }
+
+  @Test
+  @DisplayName("should fail to add a translation key without a key")
+  void shouldFailToAddWithoutKey() throws IOException {
+    writePropertiesProject();
+
+    var result =
+        GradleRunner.create()
+            .withProjectDir(projectDir)
+            .withPluginClasspath()
+            .withArguments("babeliAdd", "--translation=en=No")
+            .buildAndFail();
+
+    assertThat(result.task(":babeliAdd").getOutcome()).isEqualTo(TaskOutcome.FAILED);
+    assertThat(result.getOutput()).contains("No translation key given.");
+  }
+
+  @Test
+  @DisplayName("should fail to add a translation key without any translation")
+  void shouldFailToAddWithoutTranslation() throws IOException {
+    writePropertiesProject();
+
+    var result =
+        GradleRunner.create()
+            .withProjectDir(projectDir)
+            .withPluginClasspath()
+            .withArguments("babeliAdd", "--key=common.button.no")
+            .buildAndFail();
+
+    assertThat(result.task(":babeliAdd").getOutcome()).isEqualTo(TaskOutcome.FAILED);
+    assertThat(result.getOutput()).contains("No translation given.");
+  }
+
+  @Test
+  @DisplayName("should fail to add a translation without a language prefix")
+  void shouldFailToAddTranslationWithoutLanguagePrefix() throws IOException {
+    writePropertiesProject();
+
+    var result =
+        GradleRunner.create()
+            .withProjectDir(projectDir)
+            .withPluginClasspath()
+            .withArguments("babeliAdd", "--key=common.button.no", "--translation=oops")
+            .buildAndFail();
+
+    assertThat(result.task(":babeliAdd").getOutcome()).isEqualTo(TaskOutcome.FAILED);
+    assertThat(result.getOutput())
+        .contains("Invalid translation 'oops'. Expected format: <language>=<value>.");
+  }
+
+  private void writePropertiesProject() throws IOException {
+    writeFile(new File(projectDir, "messages_en.properties"), "common.button.yes=Yes\n");
+    writeFile(new File(projectDir, "messages_de.properties"), "common.button.yes=Ja\n");
+    writeFile(
+        new File(projectDir, "build.gradle"),
+        """
+        plugins {
+            id 'dev.uebelacker.babeli'
+        }
+        babeli {
+            translationFile 'en', file('messages_en.properties')
+            translationFile 'de', file('messages_de.properties')
+        }
+        """);
+  }
+
+  private String readFile(String name) throws IOException {
+    return Files.readString(new File(projectDir, name).toPath());
+  }
+
   private void writeFile(File file, String content) throws IOException {
     Files.writeString(file.toPath(), content);
   }

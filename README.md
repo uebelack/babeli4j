@@ -56,6 +56,9 @@ export ANTHROPIC_API_KEY=sk-...
 
 mvn babeli:validate   # check for issues
 mvn babeli:update     # sort keys and generate missing translations
+
+# add a new key, missing languages are generated
+mvn babeli:add -Dbabeli.key=common.button.ok -Dbabeli.translations=en=OK,de=Okay
 ```
 
 ### Gradle
@@ -75,7 +78,14 @@ export ANTHROPIC_API_KEY=sk-...
 
 ./gradlew babeliValidate   # check for issues
 ./gradlew babeliUpdate     # sort keys and generate missing translations
+
+# add a new key, missing languages are generated
+./gradlew babeliAdd --key=common.button.ok --translation=en=OK --translation=de=Okay
 ```
+
+If the project contains several resource bundles, pick one with `-Dbabeli.bundle=<name>`
+(Maven) or `--bundle=<name>` (Gradle). The plugins take the key and its translations as
+parameters; only the CLI `babeli add` prompts for them interactively.
 
 ### CLI
 

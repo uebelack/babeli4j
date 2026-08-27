@@ -1,0 +1,23 @@
+<project>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>dev.uebelacker.babeli</groupId>
+                <artifactId>babeli-maven-plugin</artifactId>
+                <configuration>
+                    <workingDirectory>target/babeli-add-test-project</workingDirectory>
+                    <files>
+                        <en>messages_en.properties</en>
+                        <de>messages_de.properties</de>
+                    </files>
+                    <key>common.button.no</key>
+                    <translations>
+                        <translation>en=No</translation>
+                        <translation>de=Nein</translation>
+                    </translations>
+                    <modelProvider>dev.uebelacker.babeli.maven.TestChatModelProvider</modelProvider>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
