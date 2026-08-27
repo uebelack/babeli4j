@@ -4,6 +4,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=uebelack_babeli4j&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=uebelack_babeli4j)
 
+<p align="center">
+  <img src="https://github.com/uebelack/babeli/blob/main/babeli.png?raw=true" style="height: 150px;" alt="Babeli"/>
+</p>
+
 AI-powered translation file management for Java projects. Babeli detects missing translations, sorts keys, and generates
 translations using LLMs — integrated into your Maven or Gradle build, or used standalone via CLI.
 
@@ -28,7 +32,7 @@ Add the plugin to your `pom.xml`:
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <executions>
         <execution>
             <goals>
@@ -41,7 +45,7 @@ Add the plugin to your `pom.xml`:
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
             <artifactId>babeli-anthropic</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -58,11 +62,11 @@ mvn babeli:update     # sort keys and generate missing translations
 
 ```groovy
 plugins {
-    id 'dev.uebelacker.babeli' version '1.0.0'
+    id 'dev.uebelacker.babeli' version '1.0.1'
 }
 
 dependencies {
-    babeli 'dev.uebelacker.babeli:babeli-anthropic:1.0.0'
+    babeli 'dev.uebelacker.babeli:babeli-anthropic:1.0.1'
 }
 ```
 
