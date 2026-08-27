@@ -8,8 +8,8 @@ import dev.uebelacker.babeli.core.ai.ChatModelProvider;
 
 public class CopilotCliChatModelProvider implements ChatModelProvider {
 
-    @Override
-    public ChatModel create(Configuration configuration) {
-        return mock(ChatModel.class);
-    }
+  @Override
+  public ChatModel create(Configuration configuration) {
+    return mock(ChatModel.class);
+  }
 }

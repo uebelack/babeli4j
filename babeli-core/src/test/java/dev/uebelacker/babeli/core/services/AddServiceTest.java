@@ -38,113 +38,146 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class AddServiceTest {
 
-    static final File FILE = new File("target/test/test.json");
-    static final Set<LanguageFileConfiguration> FILES =
-            Set.of(
-                    new LanguageFileConfiguration("en", new File("target/test/properties/messages_en.properties")),
-                    new LanguageFileConfiguration("fr", new File("target/test/properties/messages_fr.properties")),
-                    new LanguageFileConfiguration("de", new File("target/test/properties/messages_de.properties")));
+  static final File FILE = new File("target/test/test.json");
+  static final Set<LanguageFileConfiguration> FILES =
+      Set.of(
+          new LanguageFileConfiguration(
+              "en", new File("target/test/properties/messages_en.properties")),
+          new LanguageFileConfiguration(
+              "fr", new File("target/test/properties/messages_fr.properties")),
+          new LanguageFileConfiguration(
+              "de", new File("target/test/properties/messages_de.properties")));
 
-    Configuration configuration;
+  Configuration configuration;
 
-    @BeforeEach
-    void setUp() throws IOException {
-        var propertiesFileWriter = new PropertiesFileWriter(new Configuration().setActions(Set.of()));
+  @BeforeEach
+  void setUp() throws IOException {
+    var propertiesFileWriter = new PropertiesFileWriter(new Configuration().setActions(Set.of()));
 
-        try (var stream = Files.list(get("target/test/properties"))) {
-            stream.filter(Files::isRegularFile).map(Path::toFile).forEach(File::delete);
-        }
-
-        propertiesFileWriter.writeFile(new SingleLanguageTranslationFile(
-                "en", new File("target/test/properties/messages_en.properties"),
-                Fixtures.singleLanguageTranslationFileEn().translations()));
-        propertiesFileWriter.writeFile(new SingleLanguageTranslationFile(
-                "fr", new File("target/test/properties/messages_fr.properties"),
-                Fixtures.singleLanguageTranslationFileFr().translations()));
-        propertiesFileWriter.writeFile(new SingleLanguageTranslationFile(
-                "de", new File("target/test/properties/messages_de.properties"),
-                Fixtures.singleLanguageTranslationFileDe().translations()));
-
-        var jsonFileWriter = new JsonFileWriter(new Configuration());
-        jsonFileWriter.writeFile(new MultiLanguageTranslationFile(FILE, Fixtures.multiLanguageTranslationFile().translations()));
-
-        configuration = new Configuration();
-        configuration.setModelProvider("test");
-
-        EnvUtils.set(BABELI_MODEL_PROVIDER, "test");
-        var chatModel = ChatModelFactory.createChatModel(configuration);
-        lenient()
-                .when(chatModel.chat(any(SystemMessage.class), any(UserMessage.class)))
-                .thenReturn(ChatResponse.builder()
-                        .aiMessage(AiMessage.builder().text("AI Translation").build())
-                        .build());
+    try (var stream = Files.list(get("target/test/properties"))) {
+      stream.filter(Files::isRegularFile).map(Path::toFile).forEach(File::delete);
     }
 
-    @AfterEach
-    void tearDown() {
-        EnvUtils.reset();
-    }
+    propertiesFileWriter.writeFile(
+        new SingleLanguageTranslationFile(
+            "en",
+            new File("target/test/properties/messages_en.properties"),
+            Fixtures.singleLanguageTranslationFileEn().translations()));
+    propertiesFileWriter.writeFile(
+        new SingleLanguageTranslationFile(
+            "fr",
+            new File("target/test/properties/messages_fr.properties"),
+            Fixtures.singleLanguageTranslationFileFr().translations()));
+    propertiesFileWriter.writeFile(
+        new SingleLanguageTranslationFile(
+            "de",
+            new File("target/test/properties/messages_de.properties"),
+            Fixtures.singleLanguageTranslationFileDe().translations()));
 
-    @Test
-    @DisplayName("should add key with all translations to multi language translation file")
-    void shouldAddKeyWithAllTranslationsToMultiLanguageFile() {
-        configuration.setFile(FILE);
+    var jsonFileWriter = new JsonFileWriter(new Configuration());
+    jsonFileWriter.writeFile(
+        new MultiLanguageTranslationFile(
+            FILE, Fixtures.multiLanguageTranslationFile().translations()));
 
-        new AddService(configuration).add("new.key", Map.of("en", "New", "de", "Neu", "fr", "Nouveau"));
+    configuration = new Configuration();
+    configuration.setModelProvider("test");
 
-        var translations = translationsFromFile(FILE);
-        assertThat(translations.getTranslation("new.key", "en")).contains("New");
-        assertThat(translations.getTranslation("new.key", "de")).contains("Neu");
-        assertThat(translations.getTranslation("new.key", "fr")).contains("Nouveau");
-    }
+    EnvUtils.set(BABELI_MODEL_PROVIDER, "test");
+    var chatModel = ChatModelFactory.createChatModel(configuration);
+    lenient()
+        .when(chatModel.chat(any(SystemMessage.class), any(UserMessage.class)))
+        .thenReturn(
+            ChatResponse.builder()
+                .aiMessage(AiMessage.builder().text("AI Translation").build())
+                .build());
+  }
 
-    @Test
-    @DisplayName("should add key with partial translations to multi language translation file using AI for missing languages")
-    void shouldAddKeyWithPartialTranslationsToMultiLanguageFileUsingAI() {
-        configuration.setFile(FILE);
+  @AfterEach
+  void tearDown() {
+    EnvUtils.reset();
+  }
 
-        new AddService(configuration).add("new.key", Map.of("en", "New Value"));
+  @Test
+  @DisplayName("should add key with all translations to multi language translation file")
+  void shouldAddKeyWithAllTranslationsToMultiLanguageFile() {
+    configuration.setFile(FILE);
 
-        var translations = translationsFromFile(FILE);
-        assertThat(translations.getTranslation("new.key", "en")).contains("New Value");
-        assertThat(translations.getTranslation("new.key", "de")).contains("AI Translation");
-        assertThat(translations.getTranslation("new.key", "fr")).contains("AI Translation");
-    }
+    new AddService(configuration).add("new.key", Map.of("en", "New", "de", "Neu", "fr", "Nouveau"));
 
-    @Test
-    @DisplayName("should add key with all translations to single language translation files")
-    void shouldAddKeyWithAllTranslationsToSingleLanguageFiles() {
-        configuration.setFiles(FILES);
+    var translations = translationsFromFile(FILE);
+    assertThat(translations.getTranslation("new.key", "en")).contains("New");
+    assertThat(translations.getTranslation("new.key", "de")).contains("Neu");
+    assertThat(translations.getTranslation("new.key", "fr")).contains("Nouveau");
+  }
 
-        new AddService(configuration).add("new.key", Map.of("en", "New", "de", "Neu", "fr", "Nouveau"));
+  @Test
+  @DisplayName(
+      "should add key with partial translations to multi language translation file using AI for missing languages")
+  void shouldAddKeyWithPartialTranslationsToMultiLanguageFileUsingAI() {
+    configuration.setFile(FILE);
 
-        assertThat(translationFromPropertiesFile("en", new File("target/test/properties/messages_en.properties"), "new.key")).isEqualTo("New");
-        assertThat(translationFromPropertiesFile("de", new File("target/test/properties/messages_de.properties"), "new.key")).isEqualTo("Neu");
-        assertThat(translationFromPropertiesFile("fr", new File("target/test/properties/messages_fr.properties"), "new.key")).isEqualTo("Nouveau");
-    }
+    new AddService(configuration).add("new.key", Map.of("en", "New Value"));
 
-    @Test
-    @DisplayName("should add key with partial translations to single language translation files using AI for missing languages")
-    void shouldAddKeyWithPartialTranslationsToSingleLanguageFilesUsingAI() {
-        configuration.setFiles(FILES);
+    var translations = translationsFromFile(FILE);
+    assertThat(translations.getTranslation("new.key", "en")).contains("New Value");
+    assertThat(translations.getTranslation("new.key", "de")).contains("AI Translation");
+    assertThat(translations.getTranslation("new.key", "fr")).contains("AI Translation");
+  }
 
-        new AddService(configuration).add("new.key", Map.of("en", "New Value"));
+  @Test
+  @DisplayName("should add key with all translations to single language translation files")
+  void shouldAddKeyWithAllTranslationsToSingleLanguageFiles() {
+    configuration.setFiles(FILES);
 
-        assertThat(translationFromPropertiesFile("en", new File("target/test/properties/messages_en.properties"), "new.key")).isEqualTo("New Value");
-        assertThat(translationFromPropertiesFile("de", new File("target/test/properties/messages_de.properties"), "new.key")).isEqualTo("AI Translation");
-        assertThat(translationFromPropertiesFile("fr", new File("target/test/properties/messages_fr.properties"), "new.key")).isEqualTo("AI Translation");
-    }
+    new AddService(configuration).add("new.key", Map.of("en", "New", "de", "Neu", "fr", "Nouveau"));
 
-    private Translations translationsFromFile(File file) {
-        return Translations.fromTranslations(new JsonFileReader(configuration).readFile(file).translations());
-    }
+    assertThat(
+            translationFromPropertiesFile(
+                "en", new File("target/test/properties/messages_en.properties"), "new.key"))
+        .isEqualTo("New");
+    assertThat(
+            translationFromPropertiesFile(
+                "de", new File("target/test/properties/messages_de.properties"), "new.key"))
+        .isEqualTo("Neu");
+    assertThat(
+            translationFromPropertiesFile(
+                "fr", new File("target/test/properties/messages_fr.properties"), "new.key"))
+        .isEqualTo("Nouveau");
+  }
 
-    private String translationFromPropertiesFile(String language, File file, String key) {
-        return new PropertiesFileReader(configuration).readFile(language, file)
-                .translations().stream()
-                .filter(t -> t.key().equals(key))
-                .map(t -> t.value())
-                .findFirst()
-                .orElse(null);
-    }
+  @Test
+  @DisplayName(
+      "should add key with partial translations to single language translation files using AI for missing languages")
+  void shouldAddKeyWithPartialTranslationsToSingleLanguageFilesUsingAI() {
+    configuration.setFiles(FILES);
+
+    new AddService(configuration).add("new.key", Map.of("en", "New Value"));
+
+    assertThat(
+            translationFromPropertiesFile(
+                "en", new File("target/test/properties/messages_en.properties"), "new.key"))
+        .isEqualTo("New Value");
+    assertThat(
+            translationFromPropertiesFile(
+                "de", new File("target/test/properties/messages_de.properties"), "new.key"))
+        .isEqualTo("AI Translation");
+    assertThat(
+            translationFromPropertiesFile(
+                "fr", new File("target/test/properties/messages_fr.properties"), "new.key"))
+        .isEqualTo("AI Translation");
+  }
+
+  private Translations translationsFromFile(File file) {
+    return Translations.fromTranslations(
+        new JsonFileReader(configuration).readFile(file).translations());
+  }
+
+  private String translationFromPropertiesFile(String language, File file, String key) {
+    return new PropertiesFileReader(configuration)
+        .readFile(language, file).translations().stream()
+            .filter(t -> t.key().equals(key))
+            .map(t -> t.value())
+            .findFirst()
+            .orElse(null);
+  }
 }

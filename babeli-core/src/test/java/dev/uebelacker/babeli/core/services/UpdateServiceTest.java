@@ -34,68 +34,80 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class UpdateServiceTest {
 
-    static final File FILE = new File("target/test/test.json");
-    static final Set<LanguageFileConfiguration> FILES =
-            Set.of(
-                    new LanguageFileConfiguration("en", new File("target/test/properties/messages_en.properties")),
-                    new LanguageFileConfiguration("fr", new File("target/test/properties/messages_fr.properties")),
-                    new LanguageFileConfiguration("de", new File("target/test/properties/messages_de.properties")));
+  static final File FILE = new File("target/test/test.json");
+  static final Set<LanguageFileConfiguration> FILES =
+      Set.of(
+          new LanguageFileConfiguration(
+              "en", new File("target/test/properties/messages_en.properties")),
+          new LanguageFileConfiguration(
+              "fr", new File("target/test/properties/messages_fr.properties")),
+          new LanguageFileConfiguration(
+              "de", new File("target/test/properties/messages_de.properties")));
 
-    Configuration configuration;
+  Configuration configuration;
 
-    @BeforeEach
-    void setUp() throws IOException {
-        var propertiesFileWriter = new PropertiesFileWriter(new Configuration().setActions(Set.of()));
+  @BeforeEach
+  void setUp() throws IOException {
+    var propertiesFileWriter = new PropertiesFileWriter(new Configuration().setActions(Set.of()));
 
-        try (var stream = Files.list(get("target/test/properties"))) {
-            stream.filter(Files::isRegularFile).map(Path::toFile).forEach(File::delete);
-        }
-
-        propertiesFileWriter.writeFile(new SingleLanguageTranslationFile(
-                "en", new File("target/test/properties/messages_en.properties"),
-                Fixtures.singleLanguageTranslationFileEn().translations()));
-        propertiesFileWriter.writeFile(new SingleLanguageTranslationFile(
-                "fr", new File("target/test/properties/messages_fr.properties"),
-                Fixtures.singleLanguageTranslationFileFr().translations()));
-        propertiesFileWriter.writeFile(new SingleLanguageTranslationFile(
-                "de", new File("target/test/properties/messages_de.properties"),
-                Fixtures.singleLanguageTranslationFileDe().translations()));
-
-        var jsonFileWriter = new JsonFileWriter(new Configuration());
-        jsonFileWriter.writeFile(new MultiLanguageTranslationFile(FILE, Fixtures.multiLanguageTranslationFile().translations()));
-
-        configuration = new Configuration();
-        configuration.setModelProvider("test");
-
-        EnvUtils.set(BABELI_MODEL_PROVIDER, "test");
-        var chatModel = ChatModelFactory.createChatModel(configuration);
-        lenient()
-                .when(chatModel.chat(any(SystemMessage.class), any(UserMessage.class)))
-                .thenReturn(ChatResponse.builder()
-                        .aiMessage(AiMessage.builder().text("Test Translation").build())
-                        .build());
+    try (var stream = Files.list(get("target/test/properties"))) {
+      stream.filter(Files::isRegularFile).map(Path::toFile).forEach(File::delete);
     }
 
-    @AfterEach
-    void tearDown() {
-        EnvUtils.reset();
-    }
+    propertiesFileWriter.writeFile(
+        new SingleLanguageTranslationFile(
+            "en",
+            new File("target/test/properties/messages_en.properties"),
+            Fixtures.singleLanguageTranslationFileEn().translations()));
+    propertiesFileWriter.writeFile(
+        new SingleLanguageTranslationFile(
+            "fr",
+            new File("target/test/properties/messages_fr.properties"),
+            Fixtures.singleLanguageTranslationFileFr().translations()));
+    propertiesFileWriter.writeFile(
+        new SingleLanguageTranslationFile(
+            "de",
+            new File("target/test/properties/messages_de.properties"),
+            Fixtures.singleLanguageTranslationFileDe().translations()));
 
-    @Test
-    @DisplayName("should update single language translation files")
-    void shouldUpdateSingleLanguageTranslationFiles() {
-        configuration.setFiles(FILES);
-        assertThat(new ValidateService(configuration).validate()).hasSize(5);
-        new UpdateService(configuration).update();
-        assertThat(new ValidateService(configuration).validate()).isEmpty();
-    }
+    var jsonFileWriter = new JsonFileWriter(new Configuration());
+    jsonFileWriter.writeFile(
+        new MultiLanguageTranslationFile(
+            FILE, Fixtures.multiLanguageTranslationFile().translations()));
 
-    @Test
-    @DisplayName("should update multi language translation file")
-    void shouldUpdateMultiLanguageTranslationFile() {
-        configuration.setFile(FILE);
-        assertThat(new ValidateService(configuration).validate()).hasSize(3);
-        new UpdateService(configuration).update();
-        assertThat(new ValidateService(configuration).validate()).isEmpty();
-    }
+    configuration = new Configuration();
+    configuration.setModelProvider("test");
+
+    EnvUtils.set(BABELI_MODEL_PROVIDER, "test");
+    var chatModel = ChatModelFactory.createChatModel(configuration);
+    lenient()
+        .when(chatModel.chat(any(SystemMessage.class), any(UserMessage.class)))
+        .thenReturn(
+            ChatResponse.builder()
+                .aiMessage(AiMessage.builder().text("Test Translation").build())
+                .build());
+  }
+
+  @AfterEach
+  void tearDown() {
+    EnvUtils.reset();
+  }
+
+  @Test
+  @DisplayName("should update single language translation files")
+  void shouldUpdateSingleLanguageTranslationFiles() {
+    configuration.setFiles(FILES);
+    assertThat(new ValidateService(configuration).validate()).hasSize(5);
+    new UpdateService(configuration).update();
+    assertThat(new ValidateService(configuration).validate()).isEmpty();
+  }
+
+  @Test
+  @DisplayName("should update multi language translation file")
+  void shouldUpdateMultiLanguageTranslationFile() {
+    configuration.setFile(FILE);
+    assertThat(new ValidateService(configuration).validate()).hasSize(3);
+    new UpdateService(configuration).update();
+    assertThat(new ValidateService(configuration).validate()).isEmpty();
+  }
 }

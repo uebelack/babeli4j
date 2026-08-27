@@ -62,4 +62,3 @@ class BabeliTest {
             "No model provider specified. Babeli requires a model provider to function. Please specify a model provider using 'modelProvider' in the configuration or specify it as environment variable BABELI_MODEL_PROVIDER. Skipping execution.");
   }
 }
-

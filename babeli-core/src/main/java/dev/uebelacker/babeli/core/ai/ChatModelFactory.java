@@ -38,13 +38,15 @@ public class ChatModelFactory {
                         .newInstance())
                 .create(configuration);
       } catch (ClassNotFoundException e) {
-        throw new ConfigurationException("Model provider class not found: " + modelProviderClass, e);
+        throw new ConfigurationException(
+            "Model provider class not found: " + modelProviderClass, e);
       } catch (NoSuchMethodException e) {
         throw new ConfigurationException(
             "Model provider class does not have a default constructor: " + modelProviderClass, e);
       } catch (Exception e) {
         throw new ConfigurationException(
-            "Failed to instantiate model provider " + modelProviderClass + ": " + e.getMessage(), e);
+            "Failed to instantiate model provider " + modelProviderClass + ": " + e.getMessage(),
+            e);
       }
     }
 
