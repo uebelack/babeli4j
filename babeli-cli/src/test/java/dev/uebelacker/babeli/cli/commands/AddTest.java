@@ -73,6 +73,47 @@ class AddTest {
   }
 
   @Test
+  @DisplayName("should keep a leading comment on top and add the new entry below it")
+  void shouldKeepLeadingCommentOnTopWhenAddingKey() throws IOException {
+    writeCommentedBundle();
+
+    // same value for every language so the test does not depend on the language order
+    when(lineReader.readLine(anyString())).thenReturn("welcome", "Welcome", "Welcome");
+
+    assertThat(execute("-d", PROJECT.toString(), "--bundle", "messages")).isZero();
+
+    for (var language : List.of("en", "de")) {
+      var lines = bundleContent("messages", language).lines().toList();
+
+      assertThat(lines).contains("welcome=Welcome");
+      assertThat(indexOfLineStartingWith(lines, "welcome="))
+          .as("the new entry must come after the comment in messages_%s.properties", language)
+          .isGreaterThan(indexOfLineStartingWith(lines, "# Keep this header on top"));
+    }
+  }
+
+  @Test
+  @DisplayName("should keep the comment header on top when sorting is disabled")
+  void shouldKeepCommentHeaderOnTopWhenSortingIsDisabled() throws IOException {
+    writeCommentedBundle();
+
+    when(lineReader.readLine(anyString())).thenReturn("welcome", "Welcome", "Welcome");
+
+    assertThat(execute("-d", PROJECT.toString(), "--bundle", "messages", "-a", "missing")).isZero();
+
+    for (var language : List.of("en", "de")) {
+      var lines = bundleContent("messages", language).lines().toList();
+
+      assertThat(lines)
+          .as("comment header of messages_%s.properties", language)
+          .startsWith("# Application messages", "# Keep this header on top");
+      assertThat(indexOfLineStartingWith(lines, "welcome="))
+          .as("the new entry must come after the comment in messages_%s.properties", language)
+          .isGreaterThan(indexOfLineStartingWith(lines, "# Keep this header on top"));
+    }
+  }
+
+  @Test
   @DisplayName("should fail if the bundle given with --bundle does not exist")
   void shouldFailIfNamedBundleDoesNotExist() {
     assertThat(execute("-d", PROJECT.toString(), "--bundle", "nope")).isEqualTo(1);
@@ -225,6 +266,34 @@ class AddTest {
         .sorted(Comparator.comparingInt(m -> Integer.parseInt(m.group(1))))
         .map(m -> m.group(2))
         .toList();
+  }
+
+  private void writeCommentedBundle() throws IOException {
+    Files.writeString(
+        RESOURCES.resolve("messages_en.properties"),
+        """
+        # Application messages
+        # Keep this header on top
+        greeting=Hello
+        farewell=Bye
+        """);
+    Files.writeString(
+        RESOURCES.resolve("messages_de.properties"),
+        """
+        # Application messages
+        # Keep this header on top
+        greeting=Hallo
+        farewell=Tschuess
+        """);
+  }
+
+  private static int indexOfLineStartingWith(List<String> lines, String prefix) {
+    for (var i = 0; i < lines.size(); i++) {
+      if (lines.get(i).startsWith(prefix)) {
+        return i;
+      }
+    }
+    throw new AssertionError("No line starting with '%s' in %s".formatted(prefix, lines));
   }
 
   private String bundleContent(String bundle, String language) throws IOException {
