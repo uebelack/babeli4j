@@ -49,6 +49,18 @@ public class BabeliPlugin implements Plugin<Project> {
                   task.getClasspath().from(babeliConfig);
                 });
 
+    project
+        .getTasks()
+        .register(
+            "babeliAdd",
+            BabeliAddTask.class,
+            task -> {
+              task.setGroup("babeli");
+              task.setDescription("Adds a translation key to the translation files.");
+              task.getExtension().set(extension);
+              task.getClasspath().from(babeliConfig);
+            });
+
     project.afterEvaluate(
         p -> {
           p.getTasks()

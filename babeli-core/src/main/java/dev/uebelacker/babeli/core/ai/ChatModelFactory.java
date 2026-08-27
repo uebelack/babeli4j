@@ -6,7 +6,7 @@ import dev.langchain4j.model.chat.ChatModel;
 import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.exceptions.ConfigurationException;
 import dev.uebelacker.babeli.core.util.EnvUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.CaseUtils;
 
 public class ChatModelFactory {
   private static ChatModel chatModel;
@@ -16,14 +16,26 @@ public class ChatModelFactory {
   public static ChatModel createChatModel(Configuration configuration) {
     if (chatModel == null) {
       var modelProviderName = EnvUtils.get(BABELI_MODEL_PROVIDER, configuration.getModelProvider());
+      if (modelProviderName == null || modelProviderName.isBlank()) {
+        throw new ConfigurationException(
+            "No model provider configured. Set the "
+                + BABELI_MODEL_PROVIDER
+                + " environment variable or configure 'modelProvider'.");
+      }
+
       var modelProviderClass =
           modelProviderName.contains(".")
               ? modelProviderName
               : "dev.uebelacker.babeli.ai."
-                  + StringUtils.capitalize(modelProviderName)
+                  + CaseUtils.toCamelCase(modelProviderName, true, '-', '_')
                   + "ChatModelProvider";
-      try {
 
+      configuration
+          .getLoggingProvider()
+          .debug(
+              "Using model provider name: %s, resolved to class: %s"
+                  .formatted(modelProviderName, modelProviderClass));
+      try {
         chatModel =
             ((ChatModelProvider)
                     Thread.currentThread()

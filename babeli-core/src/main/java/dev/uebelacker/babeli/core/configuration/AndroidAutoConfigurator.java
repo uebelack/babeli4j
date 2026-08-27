@@ -59,6 +59,7 @@ public class AndroidAutoConfigurator implements AutoConfigurator {
       throw new ConfigurationException("Unable to read Android resource directory", e);
     }
 
+    configuration.setName("strings");
     configuration.setFiles(files);
 
     return List.of(configuration);

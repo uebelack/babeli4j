@@ -31,6 +31,7 @@
         <module>babeli-core</module>
         <module>babeli-ollama</module>
         <module>babeli-anthropic</module>
+        <module>babeli-copilot-cli</module>
         <module>babeli-cli</module>
         <module>babeli-gradle-plugin</module>
         <module>babeli-maven-plugin</module>

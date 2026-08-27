@@ -3,14 +3,16 @@ package dev.uebelacker.babeli.core;
 import static dev.uebelacker.babeli.core.Constants.EnvironmentVariables.BABELI_MODEL_PROVIDER;
 import static dev.uebelacker.babeli.core.Constants.EnvironmentVariables.BABELI_SKIP;
 
-import dev.uebelacker.babeli.core.actions.ActionRegistry;
+import dev.uebelacker.babeli.core.exceptions.MultipleResourceBundlesFoundException;
+import dev.uebelacker.babeli.core.exceptions.ResourceBundleNotFoundException;
 import dev.uebelacker.babeli.core.logging.Logger;
 import dev.uebelacker.babeli.core.model.Error;
-import dev.uebelacker.babeli.core.readers.FileReaderRegistry;
+import dev.uebelacker.babeli.core.services.AddService;
+import dev.uebelacker.babeli.core.services.UpdateService;
+import dev.uebelacker.babeli.core.services.ValidateService;
 import dev.uebelacker.babeli.core.util.EnvUtils;
-import dev.uebelacker.babeli.core.writers.FileWriterRegistry;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Babeli {
   private Babeli() {}
@@ -23,45 +25,7 @@ public class Babeli {
       return List.of();
     }
 
-    var errors = new ArrayList<Error>();
-    configuration
-        .autoConfigure()
-        .forEach(
-            subConfiguration -> {
-              subConfiguration.validate();
-
-              var fileReader = FileReaderRegistry.getFileReader(subConfiguration);
-
-              if (subConfiguration.getFile() != null) {
-                var translationFile = fileReader.readFile(subConfiguration.getFile());
-                errors.addAll(
-                    subConfiguration.getActions().stream()
-                        .map(
-                            action ->
-                                ActionRegistry.createAction(action, subConfiguration)
-                                    .validate(translationFile))
-                        .flatMap(List::stream)
-                        .toList());
-              }
-
-              if (subConfiguration.getFiles() != null) {
-                var translationFiles =
-                    subConfiguration.getFiles().stream()
-                        .map(f -> fileReader.readFile(f.getLanguage(), f.getFile()))
-                        .toList();
-
-                errors.addAll(
-                    subConfiguration.getActions().stream()
-                        .map(
-                            action ->
-                                ActionRegistry.createAction(action, subConfiguration)
-                                    .validate(translationFiles))
-                        .flatMap(List::stream)
-                        .toList());
-              }
-            });
-
-    return errors;
+    return new ValidateService(configuration).validate();
   }
 
   public static void update(Configuration configuration) {
@@ -78,38 +42,33 @@ public class Babeli {
       return;
     }
 
-    configuration
-        .autoConfigure()
-        .forEach(
-            subConfiguration -> {
-              subConfiguration.validate();
-              var fileReader = FileReaderRegistry.getFileReader(subConfiguration);
-              var fileWriter = FileWriterRegistry.getFileWriter(subConfiguration);
+    new UpdateService(configuration).update();
+  }
 
-              if (subConfiguration.getFile() != null) {
-                var translationFile = fileReader.readFile(subConfiguration.getFile());
-                for (var action : subConfiguration.getActions()) {
-                  translationFile =
-                      ActionRegistry.createAction(action, subConfiguration).update(translationFile);
-                }
-                fileWriter.writeFile(translationFile);
-              }
+  public static void add(
+      String bundleName,
+      String key,
+      Map<String, String> translations,
+      Configuration configuration) {
+    new AddService(findRelevantConfiguration(bundleName, configuration)).add(key, translations);
+  }
 
-              if (subConfiguration.getFiles() != null) {
-                var translationFiles =
-                    subConfiguration.getFiles().stream()
-                        .map(f -> fileReader.readFile(f.getLanguage(), f.getFile()))
-                        .toList();
+  private static Configuration findRelevantConfiguration(
+      String bundleName, Configuration configuration) {
+    var configurations = configuration.autoConfigure();
 
-                for (var action : subConfiguration.getActions()) {
-                  translationFiles =
-                      ActionRegistry.createAction(action, subConfiguration)
-                          .update(translationFiles);
-                }
+    if (configurations.size() == 1) {
+      return configurations.getFirst();
+    }
 
-                translationFiles.forEach(fileWriter::writeFile);
-              }
-            });
+    if (bundleName == null) {
+      throw new MultipleResourceBundlesFoundException(configurations);
+    }
+
+    return configurations.stream()
+        .filter(c -> c.getName().equals(bundleName))
+        .findFirst()
+        .orElseThrow(() -> new ResourceBundleNotFoundException(bundleName));
   }
 
   private static boolean skip(Configuration configuration) {
