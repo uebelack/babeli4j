@@ -50,6 +50,8 @@ class UpdateServiceTest {
   void setUp() throws IOException {
     var propertiesFileWriter = new PropertiesFileWriter(new Configuration().setActions(Set.of()));
 
+    Files.createDirectories(get("target/test/properties"));
+
     try (var stream = Files.list(get("target/test/properties"))) {
       stream.filter(Files::isRegularFile).map(Path::toFile).forEach(File::delete);
     }
