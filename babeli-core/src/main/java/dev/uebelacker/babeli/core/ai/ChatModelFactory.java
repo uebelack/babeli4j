@@ -16,6 +16,13 @@ public class ChatModelFactory {
   public static ChatModel createChatModel(Configuration configuration) {
     if (chatModel == null) {
       var modelProviderName = EnvUtils.get(BABELI_MODEL_PROVIDER, configuration.getModelProvider());
+      if (modelProviderName == null || modelProviderName.isBlank()) {
+        throw new ConfigurationException(
+            "No model provider configured. Set the "
+                + BABELI_MODEL_PROVIDER
+                + " environment variable or configure 'modelProvider'.");
+      }
+
       var modelProviderClass =
           modelProviderName.contains(".")
               ? modelProviderName

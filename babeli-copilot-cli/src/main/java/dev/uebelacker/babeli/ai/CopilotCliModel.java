@@ -1,10 +1,13 @@
 package dev.uebelacker.babeli.ai;
 
+import static dev.uebelacker.babeli.core.Constants.EnvironmentVariables.BABELI_COPILOT_PATH;
+
 import dev.langchain4j.data.message.*;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.uebelacker.babeli.core.Configuration;
+import dev.uebelacker.babeli.core.util.EnvUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
@@ -23,7 +26,7 @@ public class CopilotCliModel implements ChatModel {
 
     configuration.getLoggingProvider().debug("Executing copilot command with prompt:\n" + prompt);
     try {
-      var process = Runtime.getRuntime().exec(new String[] {"copilot", "-p", prompt});
+      var process = startProcess(prompt);
       var output =
           new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8).trim();
       var error =
@@ -44,6 +47,18 @@ public class CopilotCliModel implements ChatModel {
       Thread.currentThread().interrupt();
       throw new IllegalStateException("Execution of copilot command was interrupted", e);
     }
+  }
+
+  /**
+   * Starts the copilot CLI process. The executable is resolved from {@code BABELI_COPILOT_PATH},
+   * which may be set to an absolute path, and falls back to {@code copilot} on the PATH.
+   */
+  protected Process startProcess(String prompt) throws IOException {
+    return Runtime.getRuntime().exec(command(prompt));
+  }
+
+  String[] command(String prompt) {
+    return new String[] {EnvUtils.get(BABELI_COPILOT_PATH, "copilot"), "-p", prompt};
   }
 
   private String toPrompt(ChatRequest chatRequest) {

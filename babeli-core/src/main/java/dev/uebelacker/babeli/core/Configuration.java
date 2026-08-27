@@ -102,7 +102,7 @@ public class Configuration {
         .findFirst()
         .map(LanguageFileConfiguration::getFile)
         .map(File::getName)
-        .map(name -> name.substring(name.lastIndexOf('.') + 1))
+        .map(fileName -> fileName.substring(fileName.lastIndexOf('.') + 1))
         .orElseThrow();
   }
 
@@ -247,7 +247,7 @@ public class Configuration {
         && files.stream()
                 .map(LanguageFileConfiguration::getFile)
                 .map(File::getName)
-                .map(name -> name.substring(name.lastIndexOf('.') + 1))
+                .map(fileName -> fileName.substring(fileName.lastIndexOf('.') + 1))
                 .distinct()
                 .count()
             > 1) {

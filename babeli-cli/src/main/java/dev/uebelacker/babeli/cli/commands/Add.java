@@ -4,6 +4,7 @@ import dev.uebelacker.babeli.core.Babeli;
 import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.model.Translations;
 import dev.uebelacker.babeli.core.readers.FileReaderRegistry;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class Add extends AbstractCommand {
     }
   }
 
-  protected Terminal createTerminal() throws Exception {
+  protected Terminal createTerminal() throws IOException {
     return TerminalBuilder.builder().system(true).build();
   }
 

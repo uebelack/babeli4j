@@ -34,6 +34,32 @@ class ChatModelFactoryTest {
   }
 
   @Test
+  @DisplayName("should throw exception if no model provider is configured")
+  void shouldThrowExceptionIfNoModelProviderIsConfigured() {
+    EnvUtils.ignore(BABELI_MODEL_PROVIDER);
+    var configuration = new Configuration();
+    configuration.setModelProvider(null);
+
+    assertThatExceptionOfType(ConfigurationException.class)
+        .isThrownBy(() -> ChatModelFactory.createChatModel(configuration))
+        .withMessage(
+            "No model provider configured. Set the BABELI_MODEL_PROVIDER environment variable or configure 'modelProvider'.");
+  }
+
+  @Test
+  @DisplayName("should throw exception if the configured model provider is blank")
+  void shouldThrowExceptionIfModelProviderIsBlank() {
+    EnvUtils.set(BABELI_MODEL_PROVIDER, "   ");
+    var configuration = new Configuration();
+    configuration.setModelProvider("   ");
+
+    assertThatExceptionOfType(ConfigurationException.class)
+        .isThrownBy(() -> ChatModelFactory.createChatModel(configuration))
+        .withMessage(
+            "No model provider configured. Set the BABELI_MODEL_PROVIDER environment variable or configure 'modelProvider'.");
+  }
+
+  @Test
   @DisplayName("should throw exception if model provider class does not exist")
   void shouldThrowExceptionIfModelProviderClassDoesNotExist() {
     EnvUtils.set(BABELI_MODEL_PROVIDER, "nonexistent");
