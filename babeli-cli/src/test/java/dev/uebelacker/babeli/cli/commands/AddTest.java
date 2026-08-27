@@ -85,6 +85,10 @@ class AddTest {
     for (var language : List.of("en", "de")) {
       var lines = bundleContent("messages", language).lines().toList();
 
+      assertThat(lines)
+          .as("comment header of messages_%s.properties", language)
+          .startsWith("# Application messages", "# Keep this header on top");
+
       assertThat(lines).contains("welcome=Welcome");
       assertThat(indexOfLineStartingWith(lines, "welcome="))
           .as("the new entry must come after the comment in messages_%s.properties", language)
