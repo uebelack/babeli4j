@@ -1,19 +1,29 @@
 package dev.uebelacker.babeli.core;
 
+import static dev.uebelacker.babeli.core.Constants.EnvironmentVariables.BABELI_MODEL_PROVIDER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.SystemMessage;
+import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.uebelacker.babeli.core.ai.ChatModelFactory;
 import dev.uebelacker.babeli.core.exceptions.MultipleResourceBundlesFoundException;
 import dev.uebelacker.babeli.core.exceptions.ResourceBundleNotFoundException;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.Translations;
 import dev.uebelacker.babeli.core.readers.JsonFileReader;
+import dev.uebelacker.babeli.core.util.EnvUtils;
 import dev.uebelacker.babeli.core.writers.JsonFileWriter;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +42,21 @@ class BabeliAddTest {
                 FILE, Fixtures.multiLanguageTranslationFile().translations()));
 
     configuration = new Configuration().setName("messages").setFile(FILE);
+    configuration.setModelProvider("test");
+
+    EnvUtils.set(BABELI_MODEL_PROVIDER, "test");
+    var chatModel = ChatModelFactory.createChatModel(configuration);
+    lenient()
+        .when(chatModel.chat(any(SystemMessage.class), any(UserMessage.class)))
+        .thenReturn(
+            ChatResponse.builder()
+                .aiMessage(AiMessage.builder().text("AI Translation").build())
+                .build());
+  }
+
+  @AfterEach
+  void tearDown() {
+    EnvUtils.reset();
   }
 
   @Test
@@ -84,6 +109,14 @@ class BabeliAddTest {
     assertThatExceptionOfType(ResourceBundleNotFoundException.class)
         .isThrownBy(() -> Babeli.add("missing", "new.key", Map.of("en", "New"), root))
         .withMessage("Resource bundle not found: missing");
+  }
+
+  @Test
+  @DisplayName("should fill in missing translations when updating")
+  void shouldFillInMissingTranslationsWhenUpdating() {
+    Babeli.update(configuration);
+
+    assertThat(Babeli.validate(configuration)).isEmpty();
   }
 
   @Test

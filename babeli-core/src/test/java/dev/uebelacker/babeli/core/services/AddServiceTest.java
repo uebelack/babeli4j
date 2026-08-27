@@ -169,6 +169,46 @@ class AddServiceTest {
         .isEqualTo("AI Translation");
   }
 
+  @Test
+  @DisplayName(
+      "should derive missing translations from another provided language if the base language is missing")
+  void shouldDeriveMissingTranslationsFromAnotherProvidedLanguage() {
+    configuration.setFile(FILE);
+
+    new AddService(configuration).add("new.key", Map.of("fr", "Nouveau"));
+
+    var translations = translationsFromFile(FILE);
+    assertThat(translations.getTranslation("new.key", "fr")).contains("Nouveau");
+    assertThat(translations.getTranslation("new.key", "en")).contains("AI Translation");
+    assertThat(translations.getTranslation("new.key", "de")).contains("AI Translation");
+  }
+
+  @Test
+  @DisplayName("should ignore a null valued translation when choosing the source language")
+  void shouldIgnoreNullValuedTranslationWhenChoosingSourceLanguage() {
+    configuration.setFile(FILE);
+    var values = new java.util.HashMap<String, String>();
+    values.put("en", null);
+    values.put("fr", "Nouveau");
+
+    new AddService(configuration).add("new.key", values);
+
+    var translations = translationsFromFile(FILE);
+    assertThat(translations.getTranslation("new.key", "fr")).contains("Nouveau");
+    assertThat(translations.getTranslation("new.key", "en")).contains("AI Translation");
+  }
+
+  @Test
+  @DisplayName("should skip languages if no source translation is available")
+  void shouldSkipLanguagesIfNoSourceTranslationIsAvailable() {
+    configuration.setFile(FILE);
+
+    new AddService(configuration).add("new.key", Map.of());
+
+    var translations = translationsFromFile(FILE);
+    assertThat(translations.getKeys()).doesNotContain("new.key");
+  }
+
   private Translations translationsFromFile(File file) {
     return Translations.fromTranslations(
         new JsonFileReader(configuration).readFile(file).translations());
