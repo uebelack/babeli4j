@@ -91,13 +91,12 @@ public class XmlFileWriter implements FileWriter {
 
         translations
             .getTranslationsMapForKey(key)
-            .forEach(
-                (language, value) -> {
-                  var languageElement = document.createElement("language");
-                  languageElement.setAttribute("code", language);
-                  languageElement.setTextContent(escapeXmlValue(value));
-                  stringElement.appendChild(languageElement);
-                });
+            .forEach((language, value) -> {
+              var languageElement = document.createElement("language");
+              languageElement.setAttribute("code", language);
+              languageElement.setTextContent(escapeXmlValue(value));
+              stringElement.appendChild(languageElement);
+            });
 
         resources.appendChild(stringElement);
       }

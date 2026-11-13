@@ -28,25 +28,23 @@ public class PropertiesFileWriter implements FileWriter {
       var keys = new HashSet<String>();
 
       file.translations()
-          .forEach(
-              translation -> {
-                keys.add(translation.key());
-                if (properties.get(translation.key()) == null) {
-                  properties.appendEntry(
-                      new PropertyEntry("", translation.key(), "=", translation.value(), "\n"));
-                } else if (!properties.get(translation.key()).equals(translation.value())) {
-                  properties.set(translation.key(), translation.value());
-                }
-              });
+          .forEach(translation -> {
+            keys.add(translation.key());
+            if (properties.get(translation.key()) == null) {
+              properties.appendEntry(
+                  new PropertyEntry("", translation.key(), "=", translation.value(), "\n"));
+            } else if (!properties.get(translation.key()).equals(translation.value())) {
+              properties.set(translation.key(), translation.value());
+            }
+          });
 
       properties
           .keys()
-          .forEach(
-              key -> {
-                if (!keys.contains(key)) {
-                  properties.remove(key);
-                }
-              });
+          .forEach(key -> {
+            if (!keys.contains(key)) {
+              properties.remove(key);
+            }
+          });
 
       if (configuration.getActions().contains("sort")) {
         // Keep comments on their original lines, so a comment header stays at the top of the file

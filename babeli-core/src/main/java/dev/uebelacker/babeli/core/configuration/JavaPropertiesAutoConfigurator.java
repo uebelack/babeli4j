@@ -43,11 +43,10 @@ public class JavaPropertiesAutoConfigurator implements AutoConfigurator {
   @Override
   public List<Configuration> configure(Configuration configuration) {
     return bundles.keySet().stream()
-        .map(
-            prefix -> {
-              var languageFileConfigurations = bundles.get(prefix);
-              return configuration.copy().setName(prefix).setFiles(languageFileConfigurations);
-            })
+        .map(prefix -> {
+          var languageFileConfigurations = bundles.get(prefix);
+          return configuration.copy().setName(prefix).setFiles(languageFileConfigurations);
+        })
         .toList();
   }
 
@@ -55,20 +54,18 @@ public class JavaPropertiesAutoConfigurator implements AutoConfigurator {
     var propertiesFiles = findPropertiesFiles(baseDirectory);
     var tmpBundles = new LinkedHashMap<String, Set<LanguageFileConfiguration>>();
 
-    propertiesFiles.forEach(
-        p -> {
-          // split by last _
-          var fileName = p.getFileName().toString();
-          var fileNameWithoutExtension =
-              fileName.substring(0, fileName.length() - PROPERTIES_SUFFIX.length());
-          var prefix =
-              fileNameWithoutExtension.substring(0, fileNameWithoutExtension.lastIndexOf('_'));
-          var locale =
-              fileNameWithoutExtension.substring(fileNameWithoutExtension.lastIndexOf('_') + 1);
-          tmpBundles
-              .computeIfAbsent(prefix, k -> new LinkedHashSet<>())
-              .add(new LanguageFileConfiguration(locale, p.toFile()));
-        });
+    propertiesFiles.forEach(p -> {
+      // split by last _
+      var fileName = p.getFileName().toString();
+      var fileNameWithoutExtension =
+          fileName.substring(0, fileName.length() - PROPERTIES_SUFFIX.length());
+      var prefix = fileNameWithoutExtension.substring(0, fileNameWithoutExtension.lastIndexOf('_'));
+      var locale =
+          fileNameWithoutExtension.substring(fileNameWithoutExtension.lastIndexOf('_') + 1);
+      tmpBundles
+          .computeIfAbsent(prefix, k -> new LinkedHashSet<>())
+          .add(new LanguageFileConfiguration(locale, p.toFile()));
+    });
 
     return tmpBundles;
   }

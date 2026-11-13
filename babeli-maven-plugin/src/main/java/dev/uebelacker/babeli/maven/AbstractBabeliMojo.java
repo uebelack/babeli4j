@@ -56,10 +56,9 @@ public abstract class AbstractBabeliMojo extends AbstractMojo {
     if (files != null && !files.isEmpty()) {
       configuration.setFiles(
           files.entrySet().stream()
-              .map(
-                  entry ->
-                      new LanguageFileConfiguration(
-                          entry.getKey(), new File(workingDirectory, entry.getValue())))
+              .map(entry ->
+                  new LanguageFileConfiguration(
+                      entry.getKey(), new File(workingDirectory, entry.getValue())))
               .collect(Collectors.toSet()));
     }
 

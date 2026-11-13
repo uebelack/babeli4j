@@ -44,10 +44,9 @@ class PropertiesFileReaderTest {
   @SuppressWarnings("java:S5778")
   void shouldThrowExceptionWhenFileIsNotFound() {
     assertThatExceptionOfType(FileReaderException.class)
-        .isThrownBy(
-            () ->
-                propertiesFileReader.readFile(
-                    "de", new File("src/test/resources/properties/nonexistent.properties")));
+        .isThrownBy(() ->
+            propertiesFileReader.readFile(
+                "de", new File("src/test/resources/properties/nonexistent.properties")));
   }
 
   @Test
@@ -55,9 +54,8 @@ class PropertiesFileReaderTest {
   @SuppressWarnings("java:S5778")
   void shouldThrowWhenTryingToReadMultiLanguageFile() {
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(
-            () ->
-                propertiesFileReader.readFile(
-                    new File("src/test/resources/properties/nonexistent.properties")));
+        .isThrownBy(() ->
+            propertiesFileReader.readFile(
+                new File("src/test/resources/properties/nonexistent.properties")));
   }
 }

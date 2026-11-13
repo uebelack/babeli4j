@@ -61,18 +61,15 @@ public class BabeliPlugin implements Plugin<Project> {
               task.getClasspath().from(babeliConfig);
             });
 
-    project.afterEvaluate(
-        p -> {
-          p.getTasks()
-              .matching(task -> task.getName().equals("check"))
-              .configureEach(task -> task.dependsOn(validateTask));
+    project.afterEvaluate(p -> {
+      p.getTasks()
+          .matching(task -> task.getName().equals("check"))
+          .configureEach(task -> task.dependsOn(validateTask));
 
-          p.getTasks()
-              .matching(
-                  task ->
-                      task.getName().equals("processResources")
-                          || task.getName().equals("preBuild"))
-              .configureEach(task -> task.dependsOn(updateTask));
-        });
+      p.getTasks()
+          .matching(task ->
+              task.getName().equals("processResources") || task.getName().equals("preBuild"))
+          .configureEach(task -> task.dependsOn(updateTask));
+    });
   }
 }

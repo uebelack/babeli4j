@@ -45,16 +45,15 @@ public class AndroidAutoConfigurator implements AutoConfigurator {
       stream
           .filter(Files::isDirectory)
           .filter(p -> p.getFileName().toString().startsWith("values-"))
-          .forEach(
-              p -> {
-                var language = p.getFileName().toString().substring("values-".length());
-                var file = p.resolve("strings.xml").toFile();
-                if (file.exists()) {
-                  logger.debug(
-                      "Found language '%s' in file %s".formatted(language, file.getAbsolutePath()));
-                  files.add(new LanguageFileConfiguration(language, file));
-                }
-              });
+          .forEach(p -> {
+            var language = p.getFileName().toString().substring("values-".length());
+            var file = p.resolve("strings.xml").toFile();
+            if (file.exists()) {
+              logger.debug(
+                  "Found language '%s' in file %s".formatted(language, file.getAbsolutePath()));
+              files.add(new LanguageFileConfiguration(language, file));
+            }
+          });
     } catch (IOException e) {
       throw new ConfigurationException("Unable to read Android resource directory", e);
     }

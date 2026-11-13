@@ -37,10 +37,8 @@ class JsonFileReaderTest {
   @SuppressWarnings("java:S5778")
   void shouldThrowExceptionWhenFileDoesNotExist() {
     assertThatExceptionOfType(FileReaderException.class)
-        .isThrownBy(
-            () ->
-                jsonFileReader.readFile(
-                    "de", new File("src/test/resources/json/nonexistent_de.json")));
+        .isThrownBy(() ->
+            jsonFileReader.readFile("de", new File("src/test/resources/json/nonexistent_de.json")));
 
     assertThatExceptionOfType(FileReaderException.class)
         .isThrownBy(

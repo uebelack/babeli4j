@@ -71,15 +71,14 @@ public abstract class AbstractCommand implements Callable<Integer> {
     if (files != null && files.length > 1) {
       configuration.setFiles(
           Arrays.stream(files)
-              .map(
-                  f -> {
-                    var parts = f.split(":", 2);
-                    if (parts.length != 2) {
-                      throw new IllegalArgumentException(
-                          "Invalid file format: " + f + ". Expected format: language:path");
-                    }
-                    return new LanguageFileConfiguration(parts[0], new File(parts[1]));
-                  })
+              .map(f -> {
+                var parts = f.split(":", 2);
+                if (parts.length != 2) {
+                  throw new IllegalArgumentException(
+                      "Invalid file format: " + f + ". Expected format: language:path");
+                }
+                return new LanguageFileConfiguration(parts[0], new File(parts[1]));
+              })
               .collect(java.util.stream.Collectors.toSet()));
     }
 

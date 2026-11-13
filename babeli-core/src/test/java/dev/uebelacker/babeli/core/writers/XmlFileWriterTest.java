@@ -79,13 +79,12 @@ class XmlFileWriterTest {
   @SuppressWarnings("java:S5778")
   void shouldThrowExceptionWhenWritingSingleLanguageXmlFileFails() {
     assertThatExceptionOfType(FileWriterException.class)
-        .isThrownBy(
-            () ->
-                xmlFileWriter.writeFile(
-                    new SingleLanguageTranslationFile(
-                        "de",
-                        new File("/notallowed/test_de.xml"),
-                        Fixtures.singleLanguageTranslationFileDe().translations())));
+        .isThrownBy(() ->
+            xmlFileWriter.writeFile(
+                new SingleLanguageTranslationFile(
+                    "de",
+                    new File("/notallowed/test_de.xml"),
+                    Fixtures.singleLanguageTranslationFileDe().translations())));
   }
 
   @Test
@@ -93,11 +92,10 @@ class XmlFileWriterTest {
   @SuppressWarnings("java:S5778")
   void shouldThrowExceptionWhenWritingMultiLanguageXmlFileFails() {
     assertThatExceptionOfType(FileWriterException.class)
-        .isThrownBy(
-            () ->
-                xmlFileWriter.writeFile(
-                    new MultiLanguageTranslationFile(
-                        new File("/notallowed/test.xml"),
-                        Fixtures.multiLanguageTranslationFile().translations())));
+        .isThrownBy(() ->
+            xmlFileWriter.writeFile(
+                new MultiLanguageTranslationFile(
+                    new File("/notallowed/test.xml"),
+                    Fixtures.multiLanguageTranslationFile().translations())));
   }
 }

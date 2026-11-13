@@ -72,12 +72,9 @@ public class AddService {
       }
 
       translationFiles.stream()
-          .map(
-              tf ->
-                  new SingleLanguageTranslationFile(
-                      tf.language(),
-                      tf.file(),
-                      translations.getTranslationsForLanguage(tf.language())))
+          .map(tf ->
+              new SingleLanguageTranslationFile(
+                  tf.language(), tf.file(), translations.getTranslationsForLanguage(tf.language())))
           .forEach(fileWriter::writeFile);
     }
   }

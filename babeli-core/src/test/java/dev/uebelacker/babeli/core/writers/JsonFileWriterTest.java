@@ -38,13 +38,12 @@ class JsonFileWriterTest {
   @SuppressWarnings("java:S5778")
   void shouldThrowExceptionWhenWritingSingleLanguageJsonFileFails() {
     assertThatExceptionOfType(FileWriterException.class)
-        .isThrownBy(
-            () ->
-                jsonFileWriter.writeFile(
-                    new SingleLanguageTranslationFile(
-                        "de",
-                        new File("/notallowed/test_de.json"),
-                        Fixtures.singleLanguageTranslationFileDe().translations())));
+        .isThrownBy(() ->
+            jsonFileWriter.writeFile(
+                new SingleLanguageTranslationFile(
+                    "de",
+                    new File("/notallowed/test_de.json"),
+                    Fixtures.singleLanguageTranslationFileDe().translations())));
   }
 
   @Test
@@ -63,11 +62,10 @@ class JsonFileWriterTest {
   @SuppressWarnings("java:S5778")
   void shouldThrowExceptionWhenWritingMultiLanguageJsonFileFails() {
     assertThatExceptionOfType(FileWriterException.class)
-        .isThrownBy(
-            () ->
-                jsonFileWriter.writeFile(
-                    new MultiLanguageTranslationFile(
-                        new File("/notallowed/test.json"),
-                        Fixtures.multiLanguageTranslationFile().translations())));
+        .isThrownBy(() ->
+            jsonFileWriter.writeFile(
+                new MultiLanguageTranslationFile(
+                    new File("/notallowed/test.json"),
+                    Fixtures.multiLanguageTranslationFile().translations())));
   }
 }

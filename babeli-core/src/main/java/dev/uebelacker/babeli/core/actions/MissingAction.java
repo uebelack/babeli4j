@@ -32,25 +32,22 @@ public class MissingAction implements Action {
     for (SingleLanguageTranslationFile translationFile : translationFiles) {
       var missingKeys =
           keys.stream()
-              .filter(
-                  key ->
-                      translationFile.translations().stream().noneMatch(t -> t.key().equals(key)))
+              .filter(key ->
+                  translationFile.translations().stream().noneMatch(t -> t.key().equals(key)))
               .toList();
       if (!missingKeys.isEmpty()) {
         errors.addAll(
             missingKeys.stream()
-                .map(
-                    key ->
-                        new Error(
-                            NAME,
-                            translationFile.language(),
-                            key,
-                            "Missing translation for '%s' in file %s"
-                                .formatted(
-                                    key,
-                                    relativePath(
-                                        configuration.getWorkingDirectory(),
-                                        translationFile.file()))))
+                .map(key ->
+                    new Error(
+                        NAME,
+                        translationFile.language(),
+                        key,
+                        "Missing translation for '%s' in file %s"
+                            .formatted(
+                                key,
+                                relativePath(
+                                    configuration.getWorkingDirectory(), translationFile.file()))))
                 .toList());
       }
     }
@@ -67,25 +64,22 @@ public class MissingAction implements Action {
 
     keyLanguageMap
         .keySet()
-        .forEach(
-            key ->
-                languages.forEach(
-                    language -> {
-                      if (!keyLanguageMap.get(key).containsKey(language)) {
-                        errors.add(
-                            new Error(
-                                NAME,
-                                language,
+        .forEach(key ->
+            languages.forEach(language -> {
+              if (!keyLanguageMap.get(key).containsKey(language)) {
+                errors.add(
+                    new Error(
+                        NAME,
+                        language,
+                        key,
+                        "Missing translation for key '%s' and language '%s' in file '%s'"
+                            .formatted(
                                 key,
-                                "Missing translation for key '%s' and language '%s' in file '%s'"
-                                    .formatted(
-                                        key,
-                                        language,
-                                        relativePath(
-                                            configuration.getWorkingDirectory(),
-                                            translationFile.file()))));
-                      }
-                    }));
+                                language,
+                                relativePath(
+                                    configuration.getWorkingDirectory(), translationFile.file()))));
+              }
+            }));
 
     return errors;
   }
@@ -97,33 +91,28 @@ public class MissingAction implements Action {
     var logger = new Logger(configuration);
     translations
         .getLanguages()
-        .forEach(
-            language ->
-                translations.getKeys().stream()
-                    .filter(key -> translations.getTranslation(key, language).isEmpty())
-                    .forEach(
-                        key -> {
-                          logger.info(
-                              "Missing translation for key '%s' and language '%s' in file '%s'. Generating translation."
-                                  .formatted(
-                                      key,
-                                      language,
-                                      relativePath(
-                                          configuration.getWorkingDirectory(),
-                                          translationFile.file())));
-                          var translation =
-                              translate(translationService, key, language, translations);
-                          logger.info(
-                              "Generated translation for key '%s' and language '%s' in file '%s': '%s'"
-                                  .formatted(
-                                      key,
-                                      language,
-                                      relativePath(
-                                          configuration.getWorkingDirectory(),
-                                          translationFile.file()),
-                                      translation));
-                          translations.add(key, language, translation);
-                        }));
+        .forEach(language ->
+            translations.getKeys().stream()
+                .filter(key -> translations.getTranslation(key, language).isEmpty())
+                .forEach(key -> {
+                  logger.info(
+                      "Missing translation for key '%s' and language '%s' in file '%s'. Generating translation."
+                          .formatted(
+                              key,
+                              language,
+                              relativePath(
+                                  configuration.getWorkingDirectory(), translationFile.file())));
+                  var translation = translate(translationService, key, language, translations);
+                  logger.info(
+                      "Generated translation for key '%s' and language '%s' in file '%s': '%s'"
+                          .formatted(
+                              key,
+                              language,
+                              relativePath(
+                                  configuration.getWorkingDirectory(), translationFile.file()),
+                              translation));
+                  translations.add(key, language, translation);
+                }));
 
     return new MultiLanguageTranslationFile(translationFile.file(), translations.getTranslations());
   }
@@ -151,27 +140,24 @@ public class MissingAction implements Action {
       keys.stream()
           .filter(
               key -> translationFile.translations().stream().noneMatch(t -> t.key().equals(key)))
-          .forEach(
-              key -> {
-                logger.info(
-                    "Missing translation for key '%s' and language '%s' in file '%s'. Generating translation."
-                        .formatted(
-                            key,
-                            translationFile.language(),
-                            relativePath(
-                                configuration.getWorkingDirectory(), translationFile.file())));
-                var translation =
-                    translate(translationService, key, translationFile.language(), translations);
-                logger.info(
-                    "Generated translation for key '%s' and language '%s' in file '%s': '%s'"
-                        .formatted(
-                            key,
-                            translationFile.language(),
-                            relativePath(
-                                configuration.getWorkingDirectory(), translationFile.file()),
-                            translation));
-                translations.add(key, translationFile.language(), translation);
-              });
+          .forEach(key -> {
+            logger.info(
+                "Missing translation for key '%s' and language '%s' in file '%s'. Generating translation."
+                    .formatted(
+                        key,
+                        translationFile.language(),
+                        relativePath(configuration.getWorkingDirectory(), translationFile.file())));
+            var translation =
+                translate(translationService, key, translationFile.language(), translations);
+            logger.info(
+                "Generated translation for key '%s' and language '%s' in file '%s': '%s'"
+                    .formatted(
+                        key,
+                        translationFile.language(),
+                        relativePath(configuration.getWorkingDirectory(), translationFile.file()),
+                        translation));
+            translations.add(key, translationFile.language(), translation);
+          });
 
       outputTranslationFiles.add(
           new SingleLanguageTranslationFile(
@@ -206,13 +192,9 @@ public class MissingAction implements Action {
     var referenceValue =
         translations
             .getTranslation(key, referenceLanguage)
-            .orElseThrow(
-                () ->
-                    new IllegalStateException(
-                        "No translation found for key "
-                            + key
-                            + " and language "
-                            + referenceLanguage));
+            .orElseThrow(() ->
+                new IllegalStateException(
+                    "No translation found for key " + key + " and language " + referenceLanguage));
 
     return translationService.translate(referenceValue, referenceLanguage, language);
   }

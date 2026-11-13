@@ -11,10 +11,9 @@ public abstract class BabeliUpdateTask extends AbstractBabeliTask {
   public void update() {
     var configuration = createConfiguration();
 
-    withBabeliClassLoader(
-        () -> {
-          Babeli.update(configuration);
-          return null;
-        });
+    withBabeliClassLoader(() -> {
+      Babeli.update(configuration);
+      return null;
+    });
   }
 }

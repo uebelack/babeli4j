@@ -75,16 +75,15 @@ public class Add extends AbstractCommand {
       return bundles.stream()
           .filter(b -> bundle.equals(b.getName()))
           .findFirst()
-          .orElseThrow(
-              () ->
-                  new IllegalArgumentException(
-                      "Bundle '%s' not found. Available bundles: %s"
-                          .formatted(
-                              bundle,
-                              bundles.stream()
-                                  .map(Configuration::getName)
-                                  .filter(java.util.Objects::nonNull)
-                                  .collect(java.util.stream.Collectors.joining(", ")))));
+          .orElseThrow(() ->
+              new IllegalArgumentException(
+                  "Bundle '%s' not found. Available bundles: %s"
+                      .formatted(
+                          bundle,
+                          bundles.stream()
+                              .map(Configuration::getName)
+                              .filter(java.util.Objects::nonNull)
+                              .collect(java.util.stream.Collectors.joining(", ")))));
     }
 
     if (bundles.size() == 1) {

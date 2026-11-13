@@ -16,35 +16,33 @@ public class UpdateService {
   public void update() {
     configuration
         .autoConfigure()
-        .forEach(
-            subConfiguration -> {
-              subConfiguration.validate();
-              var fileReader = FileReaderRegistry.getFileReader(subConfiguration);
-              var fileWriter = FileWriterRegistry.getFileWriter(subConfiguration);
+        .forEach(subConfiguration -> {
+          subConfiguration.validate();
+          var fileReader = FileReaderRegistry.getFileReader(subConfiguration);
+          var fileWriter = FileWriterRegistry.getFileWriter(subConfiguration);
 
-              if (subConfiguration.getFile() != null) {
-                var translationFile = fileReader.readFile(subConfiguration.getFile());
-                for (var action : subConfiguration.getActions()) {
-                  translationFile =
-                      ActionRegistry.createAction(action, subConfiguration).update(translationFile);
-                }
-                fileWriter.writeFile(translationFile);
-              }
+          if (subConfiguration.getFile() != null) {
+            var translationFile = fileReader.readFile(subConfiguration.getFile());
+            for (var action : subConfiguration.getActions()) {
+              translationFile =
+                  ActionRegistry.createAction(action, subConfiguration).update(translationFile);
+            }
+            fileWriter.writeFile(translationFile);
+          }
 
-              if (subConfiguration.getFiles() != null) {
-                var translationFiles =
-                    subConfiguration.getFiles().stream()
-                        .map(f -> fileReader.readFile(f.getLanguage(), f.getFile()))
-                        .toList();
+          if (subConfiguration.getFiles() != null) {
+            var translationFiles =
+                subConfiguration.getFiles().stream()
+                    .map(f -> fileReader.readFile(f.getLanguage(), f.getFile()))
+                    .toList();
 
-                for (var action : subConfiguration.getActions()) {
-                  translationFiles =
-                      ActionRegistry.createAction(action, subConfiguration)
-                          .update(translationFiles);
-                }
+            for (var action : subConfiguration.getActions()) {
+              translationFiles =
+                  ActionRegistry.createAction(action, subConfiguration).update(translationFiles);
+            }
 
-                translationFiles.forEach(fileWriter::writeFile);
-              }
-            });
+            translationFiles.forEach(fileWriter::writeFile);
+          }
+        });
   }
 }

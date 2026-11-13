@@ -12,12 +12,11 @@ class DefaultLoggingProviderTest {
     var provider = new DefaultLoggingProvider();
 
     Assertions.assertThatNoException()
-        .isThrownBy(
-            () -> {
-              provider.debug("debug");
-              provider.info("info");
-              provider.warn("warn");
-              provider.error("error");
-            });
+        .isThrownBy(() -> {
+          provider.debug("debug");
+          provider.info("info");
+          provider.warn("warn");
+          provider.error("error");
+        });
   }
 }

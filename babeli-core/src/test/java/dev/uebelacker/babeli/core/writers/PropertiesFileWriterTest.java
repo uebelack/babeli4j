@@ -42,11 +42,10 @@ class PropertiesFileWriterTest {
   @DisplayName("should throw exception when writing multi language properties file")
   @SuppressWarnings("java:S5778")
   void shouldThrowExceptionWhenWritingMultiLanguagePropertiesFile() {
-    assertThatThrownBy(
-            () ->
-                propertiesFileWriter.writeFile(
-                    new MultiLanguageTranslationFile(
-                        new File("target/test/properties/test.properties"), List.of())))
+    assertThatThrownBy(() ->
+            propertiesFileWriter.writeFile(
+                new MultiLanguageTranslationFile(
+                    new File("target/test/properties/test.properties"), List.of())))
         .isInstanceOf(UnsupportedOperationException.class)
         .hasMessageContaining(
             "Multi-language translation files are not supported for properties files.");
@@ -55,13 +54,12 @@ class PropertiesFileWriterTest {
   @Test
   @DisplayName("should throw exception when writing properties file fails")
   void shouldThrowExceptionWhenWritingPropertiesFileFails() {
-    assertThatThrownBy(
-            () ->
-                propertiesFileWriter.writeFile(
-                    new SingleLanguageTranslationFile(
-                        "de",
-                        new File("/notallowed/test_de.properties"),
-                        List.of(new Translation("de", "key", "value")))))
+    assertThatThrownBy(() ->
+            propertiesFileWriter.writeFile(
+                new SingleLanguageTranslationFile(
+                    "de",
+                    new File("/notallowed/test_de.properties"),
+                    List.of(new Translation("de", "key", "value")))))
         .isInstanceOf(FileWriterException.class);
   }
 }

@@ -50,11 +50,10 @@ public abstract class BabeliAddTask extends AbstractBabeliTask {
     var key = getKey().get();
     var configuration = createConfiguration();
 
-    withBabeliClassLoader(
-        () -> {
-          Babeli.add(getBundle().getOrNull(), key, translations, configuration);
-          return null;
-        });
+    withBabeliClassLoader(() -> {
+      Babeli.add(getBundle().getOrNull(), key, translations, configuration);
+      return null;
+    });
 
     getLogger().lifecycle("Added translation key '{}'.", key);
   }

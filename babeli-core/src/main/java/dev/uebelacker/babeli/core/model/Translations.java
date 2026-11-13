@@ -29,13 +29,11 @@ public class Translations {
   private static List<Translation> keyLanguageMapToTranslations(
       Map<String, Map<String, String>> keyLanguageMap) {
     return keyLanguageMap.keySet().stream()
-        .map(
-            key ->
-                keyLanguageMap.get(key).keySet().stream()
-                    .map(
-                        language ->
-                            new Translation(language, key, keyLanguageMap.get(key).get(language)))
-                    .toList())
+        .map(key ->
+            keyLanguageMap.get(key).keySet().stream()
+                .map(language ->
+                    new Translation(language, key, keyLanguageMap.get(key).get(language)))
+                .toList())
         .flatMap(List::stream)
         .toList();
   }
@@ -80,10 +78,9 @@ public class Translations {
 
   public List<Translation> getTranslations() {
     var translations = new ArrayList<Translation>();
-    keyLanguageMap.forEach(
-        (key, languageMap) ->
-            languageMap.forEach(
-                (language, value) -> translations.add(new Translation(language, key, value))));
+    keyLanguageMap.forEach((key, languageMap) ->
+        languageMap.forEach(
+            (language, value) -> translations.add(new Translation(language, key, value))));
 
     return translations;
   }
