@@ -150,7 +150,7 @@ Uses the Anthropic API. Set your API key via environment variable:
 export ANTHROPIC_API_KEY=sk-...       # or BABELI_ANTHROPIC_API_KEY
 ```
 
-Default model: `claude-sonnet-4-20250514`. Override with `BABELI_MODEL`.
+Default model: `claude-sonnet-5-5`. Override with `BABELI_MODEL`.
 
 ### Ollama
 

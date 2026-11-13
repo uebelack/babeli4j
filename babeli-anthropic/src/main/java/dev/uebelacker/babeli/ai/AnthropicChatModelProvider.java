@@ -21,7 +21,7 @@ public class AnthropicChatModelProvider implements ChatModelProvider {
           "Missing required api key for anthropic chat model provider, please provide apiKey in configuration or define it as environment variable BABELI_ANTHROPIC_API_KEY or ANTHROPIC_API_KEY");
     }
 
-    var model = EnvUtils.get("BABELI_MODEL", configuration.getModel(), "claude-sonnet-4-20250514");
+    var model = EnvUtils.get("BABELI_MODEL", configuration.getModel(), "claude-sonnet-5-5");
     return AnthropicChatModel.builder().apiKey(apiKey).modelName(model).build();
   }
 }

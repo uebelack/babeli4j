@@ -182,7 +182,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
             <de>src/main/resources/messages_de.properties</de>
         </files>
         <modelProvider>anthropic</modelProvider>
-        <model>claude-sonnet-4-20250514</model>
+        <model>claude-sonnet-5-5</model>
     </configuration>
     <executions>
         <execution>
@@ -255,7 +255,7 @@ Environment variables, where applicable, override configuration values.
 | `workingDirectory` | `babeli.workingDirectory` | —                                               | `${project.basedir}`                                       | Working directory for file resolution.                                    |
 | `actions`          | —                         | —                                               | All registered actions                                     | Actions to apply (e.g., `sort`, `missing`).                               |
 | `modelProvider`    | `babeli.modelProvider`    | `BABELI_MODEL_PROVIDER`                         | —                                                          | AI model provider (`anthropic`, `ollama`). Required for `missing` action. |
-| `model`            | `babeli.model`            | `BABELI_MODEL`                                  | `claude-sonnet-4-20250514` (Anthropic), `qwen3.6` (Ollama) | Model name to use for translations.                                       |
+| `model`            | `babeli.model`            | `BABELI_MODEL`                                  | `claude-sonnet-5-5` (Anthropic), `qwen3.6` (Ollama)          | Model name to use for translations.                                       |
 | `apiKey`           | `babeli.apiKey`           | `ANTHROPIC_API_KEY`, `BABELI_ANTHROPIC_API_KEY` | —                                                          | API key for the model provider.                                           |
 | `apiUrl`           | `babeli.apiUrl`           | `BABELI_API_URL`                                | `http://localhost:11434` (Ollama)                          | API endpoint URL.                                                         |
 | `skip`             | `babeli.skip`             | —                                               | `false`                                                    | Skip plugin execution entirely.                                           |

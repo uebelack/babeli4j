@@ -191,7 +191,7 @@ babeli {
     translationFile 'en', file('messages_en.properties')
     translationFile 'de', file('messages_de.properties')
     modelProvider = 'anthropic'
-    model = 'claude-sonnet-4-20250514'
+    model = 'claude-sonnet-5-5'
 }
 ```
 
@@ -204,7 +204,7 @@ babeli {
     translationFile("en", file("messages_en.properties"))
     translationFile("de", file("messages_de.properties"))
     modelProvider = "anthropic"
-    model = "claude-sonnet-4-20250514"
+    model = "claude-sonnet-5-5"
 }
 ```
 
@@ -253,7 +253,7 @@ Environment variables, where applicable, override configuration values.
 | `baseLanguage`      | `String`       | —                                               | `en`                                                       | The base/reference language.                                                    |
 | `workingDirectory`  | `File`         | —                                               | Project directory                                          | Working directory for file resolution.                                          |
 | `modelProvider`     | `String`       | `BABELI_MODEL_PROVIDER`                         | —                                                          | AI model provider (`anthropic`, `ollama`). Required.                            |
-| `model`             | `String`       | `BABELI_MODEL`                                  | `claude-sonnet-4-20250514` (Anthropic), `qwen3.6` (Ollama) | Model name to use for translations.                                             |
+| `model`             | `String`       | `BABELI_MODEL`                                  | `claude-sonnet-5-5` (Anthropic), `qwen3.6` (Ollama)          | Model name to use for translations.                                             |
 | `apiKey`            | `String`       | `ANTHROPIC_API_KEY`, `BABELI_ANTHROPIC_API_KEY` | —                                                          | API key for the model provider.                                                 |
 | `apiUrl`            | `String`       | `BABELI_API_URL`                                | `http://localhost:11434` (Ollama)                          | API endpoint URL.                                                               |
 | `skip`              | `boolean`      | `BABELI_SKIP`                                   | `false`                                                    | When set to true babeli execution is skipped.                                   |
