@@ -5,11 +5,13 @@ on:
     tags: [ "v*" ]
 
 permissions:
-  contents: write # create the GitHub release
+  contents: read
 
 jobs:
   maven-central:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the GitHub release
 
     steps:
       - uses: actions/checkout@v7
@@ -50,7 +52,7 @@ jobs:
 
       - name: Generate release notes
         id: notes
-        uses: orhun/git-cliff-action@v4
+        uses: orhun/git-cliff-action@a9a95522b26fe6403f7bb24031f21fb573d0f5ff # v4.9.1
         with:
           config: cliff.toml
           args: --latest --strip header
