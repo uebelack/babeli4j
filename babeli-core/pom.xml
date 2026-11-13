@@ -13,6 +13,10 @@
     <name>Babeli Core</name>
     <description>Core library for reading, validating, transforming, and writing translation files.</description>
 
+    <properties>
+        <mockito.agent>-javaagent:${org.mockito:mockito-core:jar}</mockito.agent>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.google.code.gson</groupId>

@@ -54,6 +54,10 @@
         <sonar.exclusions>babeli-gradle-plugin/**</sonar.exclusions>
 
         <langchain4j.version>1.17.2</langchain4j.version>
+
+        <!-- Modules that use Mockito set this to -javaagent:${org.mockito:mockito-core:jar}, so
+             Mockito is loaded as an agent instead of attaching itself at runtime. -->
+        <mockito.agent/>
     </properties>
 
     <dependencyManagement>
@@ -146,8 +150,24 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.11.0</version>
+                <executions>
+                    <execution>
+                        <!-- sets a <groupId>:<artifactId>:<type> property with the path of every dependency -->
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.6</version>
+                <configuration>
+                    <argLine>@{argLine} ${mockito.agent}</argLine>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>

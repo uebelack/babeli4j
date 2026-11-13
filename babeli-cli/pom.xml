@@ -14,6 +14,7 @@
     <description>Command-line interface for validating and updating translation files.</description>
 
     <properties>
+        <mockito.agent>-javaagent:${org.mockito:mockito-core:jar}</mockito.agent>
         <picocli.version>4.7.7</picocli.version>
     </properties>
 

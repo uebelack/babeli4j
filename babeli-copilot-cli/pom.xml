@@ -12,6 +12,10 @@
     <name>Babeli Copilot CLI</name>
     <description>Copilot CLI model provider module for Babeli.</description>
 
+    <properties>
+        <mockito.agent>-javaagent:${org.mockito:mockito-core:jar}</mockito.agent>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>

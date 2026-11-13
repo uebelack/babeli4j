@@ -106,5 +106,6 @@
   </dependencies>
   <properties>
     <picocli.version>4.7.7</picocli.version>
+    <mockito.agent>-javaagent:${org.mockito:mockito-core:jar}</mockito.agent>
   </properties>
 </project>
