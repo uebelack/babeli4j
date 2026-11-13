@@ -1,10 +1,13 @@
 package dev.uebelacker.babeli.core.ai;
 
+import static dev.uebelacker.babeli.core.Constants.EnvironmentVariables.BABELI_MODEL_PROVIDER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.exceptions.ConfigurationException;
+import dev.uebelacker.babeli.core.util.EnvUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +17,7 @@ class ChatModelFactoryTest {
 
   @BeforeEach
   void setUp() {
+    EnvUtils.reset();
     // Reset the singleton instance before each test
     try {
       var chatModelField = ChatModelFactory.class.getDeclaredField("chatModel");
@@ -24,9 +28,41 @@ class ChatModelFactoryTest {
     }
   }
 
+  @AfterEach
+  void tearDown() {
+    EnvUtils.reset();
+  }
+
+  @Test
+  @DisplayName("should throw exception if no model provider is configured")
+  void shouldThrowExceptionIfNoModelProviderIsConfigured() {
+    EnvUtils.ignore(BABELI_MODEL_PROVIDER);
+    var configuration = new Configuration();
+    configuration.setModelProvider(null);
+
+    assertThatExceptionOfType(ConfigurationException.class)
+        .isThrownBy(() -> ChatModelFactory.createChatModel(configuration))
+        .withMessage(
+            "No model provider configured. Set the BABELI_MODEL_PROVIDER environment variable or configure 'modelProvider'.");
+  }
+
+  @Test
+  @DisplayName("should throw exception if the configured model provider is blank")
+  void shouldThrowExceptionIfModelProviderIsBlank() {
+    EnvUtils.set(BABELI_MODEL_PROVIDER, "   ");
+    var configuration = new Configuration();
+    configuration.setModelProvider("   ");
+
+    assertThatExceptionOfType(ConfigurationException.class)
+        .isThrownBy(() -> ChatModelFactory.createChatModel(configuration))
+        .withMessage(
+            "No model provider configured. Set the BABELI_MODEL_PROVIDER environment variable or configure 'modelProvider'.");
+  }
+
   @Test
   @DisplayName("should throw exception if model provider class does not exist")
   void shouldThrowExceptionIfModelProviderClassDoesNotExist() {
+    EnvUtils.set(BABELI_MODEL_PROVIDER, "nonexistent");
     var configuration = new Configuration();
     configuration.setModelProvider("nonexistent");
     assertThatExceptionOfType(ConfigurationException.class)
@@ -38,6 +74,7 @@ class ChatModelFactoryTest {
   @Test
   @DisplayName("should throw exception if model provider class does not have default constructor")
   void shouldThrowExceptionIfModelProviderClassDoesNotHaveDefaultConstructor() {
+    EnvUtils.set(BABELI_MODEL_PROVIDER, ChatModelFactoryTest.class.getName());
     var configuration = new Configuration();
     configuration.setModelProvider(ChatModelFactoryTest.class.getName());
     assertThatExceptionOfType(ConfigurationException.class)
@@ -49,11 +86,24 @@ class ChatModelFactoryTest {
   @Test
   @DisplayName("should return the same chat model instance on multiple calls")
   void shouldReturnTheSameChatModelInstanceOnMultipleCalls() {
+    EnvUtils.set(BABELI_MODEL_PROVIDER, "test");
     var configuration = new Configuration();
     configuration.setModelProvider("test");
     var chatModel1 = ChatModelFactory.createChatModel(configuration);
     var chatModel2 = ChatModelFactory.createChatModel(configuration);
 
     assertThat(chatModel1).isEqualTo(chatModel2);
+  }
+
+  @Test
+  @DisplayName("should resolve kebab-case model provider names")
+  void shouldResolveKebabCaseModelProviderNames() {
+    EnvUtils.set(BABELI_MODEL_PROVIDER, "copilot-cli");
+    var configuration = new Configuration();
+    configuration.setModelProvider("copilot-cli");
+
+    var chatModel = ChatModelFactory.createChatModel(configuration);
+
+    assertThat(chatModel).isNotNull();
   }
 }

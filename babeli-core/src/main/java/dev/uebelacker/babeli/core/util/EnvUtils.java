@@ -17,9 +17,9 @@ public class EnvUtils {
     if (IGNORED_KEYS.contains(envVarName)) {
       return null;
     }
-    return Optional.ofNullable(System.getenv(envVarName))
+    return Optional.ofNullable(ENVS.get(envVarName))
         .orElse(
-            Optional.ofNullable(ENVS.get(envVarName))
+            Optional.ofNullable(System.getenv(envVarName))
                 .orElse(defaultValue1 != null ? defaultValue1 : defaultValue2));
   }
 
@@ -27,8 +27,8 @@ public class EnvUtils {
     if (IGNORED_KEYS.contains(envVarName)) {
       return null;
     }
-    return Optional.ofNullable(System.getenv(envVarName))
-        .orElse(Optional.ofNullable(ENVS.get(envVarName)).orElse(defaultValue));
+    return Optional.ofNullable(ENVS.get(envVarName))
+        .orElse(Optional.ofNullable(System.getenv(envVarName)).orElse(defaultValue));
   }
 
   public static void set(String envVarName, String value) {

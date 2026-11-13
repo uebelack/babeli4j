@@ -1,5 +1,6 @@
 package dev.uebelacker.babeli.cli;
 
+import dev.uebelacker.babeli.cli.commands.Add;
 import dev.uebelacker.babeli.cli.commands.Update;
 import dev.uebelacker.babeli.cli.commands.Validate;
 import java.util.concurrent.Callable;
@@ -8,7 +9,7 @@ import picocli.CommandLine.Command;
 
 @Command(
     name = "babeli",
-    subcommands = {Validate.class, Update.class})
+    subcommands = {Validate.class, Update.class, Add.class})
 @SuppressWarnings("java:S106")
 public class BabeliCli implements Callable<Integer> {
   public static void main(String... args) {

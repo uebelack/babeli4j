@@ -18,6 +18,7 @@ public class Configuration {
   private static final List<AutoConfigurator> autoConfigurators =
       List.of(new AndroidAutoConfigurator(), new JavaPropertiesAutoConfigurator());
 
+  private String name;
   private File workingDirectory;
   private String baseLanguage;
   private File file;
@@ -36,6 +37,15 @@ public class Configuration {
     this.actions = ActionRegistry.getActionNames();
     this.workingDirectory = new File(EnvUtils.get("BABELI_WORKING_DIRECTORY", "."));
     this.baseLanguage = EnvUtils.get("BABELI_BASE_LANGUAGE", "en");
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public Configuration setName(String name) {
+    this.name = name;
+    return this;
   }
 
   public File getWorkingDirectory() {
@@ -92,7 +102,7 @@ public class Configuration {
         .findFirst()
         .map(LanguageFileConfiguration::getFile)
         .map(File::getName)
-        .map(name -> name.substring(name.lastIndexOf('.') + 1))
+        .map(fileName -> fileName.substring(fileName.lastIndexOf('.') + 1))
         .orElseThrow();
   }
 
@@ -237,7 +247,7 @@ public class Configuration {
         && files.stream()
                 .map(LanguageFileConfiguration::getFile)
                 .map(File::getName)
-                .map(name -> name.substring(name.lastIndexOf('.') + 1))
+                .map(fileName -> fileName.substring(fileName.lastIndexOf('.') + 1))
                 .distinct()
                 .count()
             > 1) {
@@ -248,6 +258,7 @@ public class Configuration {
 
   public Configuration copy() {
     return new Configuration()
+        .setName(name)
         .setDebug(debug)
         .setSkip(skip)
         .setLoggingProvider(loggingProvider)

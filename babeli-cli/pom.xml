@@ -30,9 +30,19 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>dev.uebelacker.babeli</groupId>
+            <artifactId>babeli-copilot-cli</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
             <version>4.7.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>3.30.6</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

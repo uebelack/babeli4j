@@ -33,6 +33,7 @@ class BabeliUpdateMojoTest {
   @BeforeEach
   void setUp() throws IOException {
     EnvUtils.reset();
+    EnvUtils.set("BABELI_MODEL_PROVIDER", "dev.uebelacker.babeli.maven.TestChatModelProvider");
     FileUtils.deleteDirectory(TEST_DIRECTORY);
     FileUtils.forceMkdir(TEST_DIRECTORY);
     FileUtils.copyFileToDirectory(
