@@ -18,7 +18,6 @@ public class BabeliPlugin implements Plugin<Project> {
                 config -> {
                   config.setDescription(
                       "Additional dependencies for the Babeli plugin (e.g., model providers).");
-                  config.setVisible(false);
                   config.setCanBeConsumed(false);
                   config.setCanBeResolved(true);
                 });

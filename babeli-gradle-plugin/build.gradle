@@ -23,8 +23,8 @@ repositories {
 
 dependencies {
     implementation 'dev.uebelacker.babeli:babeli-core:1.0.2-SNAPSHOT'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.13.0'
-    testImplementation 'org.assertj:assertj-core:3.27.6'
+    testImplementation 'org.junit.jupiter:junit-jupiter:6.1.3'
+    testImplementation 'org.assertj:assertj-core:3.27.7'
 }
 
 gradlePlugin {
@@ -39,10 +39,10 @@ gradlePlugin {
 testing {
     suites {
         functionalTest(JvmTestSuite) {
-            useJUnitJupiter('5.13.0')
+            useJUnitJupiter('6.1.3')
             dependencies {
-                implementation 'org.assertj:assertj-core:3.27.6'
-                runtimeOnly 'org.junit.platform:junit-platform-launcher:1.13.0'
+                implementation 'org.assertj:assertj-core:3.27.7'
+                runtimeOnly 'org.junit.platform:junit-platform-launcher:6.1.3'
                 implementation 'dev.uebelacker.babeli:babeli-core:1.0.2-SNAPSHOT'
             }
         }
