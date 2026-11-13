@@ -54,11 +54,11 @@ generation.
 
 ```groovy
 plugins {
-    id 'dev.uebelacker.babeli' version '1.0.0'
+    id 'dev.uebelacker.babeli' version '1.1.0'
 }
 
 dependencies {
-    babeli 'dev.uebelacker.babeli:babeli-anthropic:1.0.0'
+    babeli 'dev.uebelacker.babeli:babeli-anthropic:1.1.0'
 }
 ```
 
@@ -66,11 +66,11 @@ dependencies {
 
 ```kotlin
 plugins {
-    id("dev.uebelacker.babeli") version "1.0.0"
+    id("dev.uebelacker.babeli") version "1.1.0"
 }
 
 dependencies {
-    babeli("dev.uebelacker.babeli:babeli-anthropic:1.0.0")
+    babeli("dev.uebelacker.babeli:babeli-anthropic:1.1.0")
 }
 ```
 
@@ -83,11 +83,11 @@ variable.
 
 ```groovy
 plugins {
-    id 'dev.uebelacker.babeli' version '1.0.0'
+    id 'dev.uebelacker.babeli' version '1.1.0'
 }
 
 dependencies {
-    babeli 'dev.uebelacker.babeli:babeli-ollama:1.0.0'
+    babeli 'dev.uebelacker.babeli:babeli-ollama:1.1.0'
 }
 ```
 
@@ -95,11 +95,11 @@ dependencies {
 
 ```kotlin
 plugins {
-    id("dev.uebelacker.babeli") version "1.0.0"
+    id("dev.uebelacker.babeli") version "1.1.0"
 }
 
 dependencies {
-    babeli("dev.uebelacker.babeli:babeli-ollama:1.0.0")
+    babeli("dev.uebelacker.babeli:babeli-ollama:1.1.0")
 }
 ```
 

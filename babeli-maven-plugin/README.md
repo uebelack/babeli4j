@@ -55,7 +55,7 @@ translation generation.
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <executions>
         <execution>
             <goals>
@@ -68,7 +68,7 @@ translation generation.
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
             <artifactId>babeli-anthropic</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -84,7 +84,7 @@ variable.
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <executions>
         <execution>
             <goals>
@@ -97,7 +97,7 @@ variable.
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
             <artifactId>babeli-ollama</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -119,7 +119,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <configuration>
         <actions>
             <action>sort</action>
@@ -170,7 +170,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <configuration>
         <actions>
             <action>sort</action>
@@ -202,7 +202,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
             <artifactId>babeli-anthropic</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 </plugin>

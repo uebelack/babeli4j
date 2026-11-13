@@ -32,7 +32,7 @@ Add the plugin to your `pom.xml`:
 <plugin>
     <groupId>dev.uebelacker.babeli</groupId>
     <artifactId>babeli-maven-plugin</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
     <executions>
         <execution>
             <goals>
@@ -45,7 +45,7 @@ Add the plugin to your `pom.xml`:
         <dependency>
             <groupId>dev.uebelacker.babeli</groupId>
             <artifactId>babeli-anthropic</artifactId>
-            <version>1.0.1</version>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -65,11 +65,11 @@ mvn babeli:add -Dbabeli.key=common.button.ok -Dbabeli.translations=en=OK,de=Okay
 
 ```groovy
 plugins {
-    id 'dev.uebelacker.babeli' version '1.0.1'
+    id 'dev.uebelacker.babeli' version '1.1.0'
 }
 
 dependencies {
-    babeli 'dev.uebelacker.babeli:babeli-anthropic:1.0.1'
+    babeli 'dev.uebelacker.babeli:babeli-anthropic:1.1.0'
 }
 ```
 

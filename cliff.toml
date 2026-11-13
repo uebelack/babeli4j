@@ -31,6 +31,7 @@ commit_parsers = [
   { message = "^🔖", skip = true },
   { message = "^chore(\\(release\\))?!?: (release|v[0-9]|prepare next)", skip = true },
   { message = "^\\[maven-release-plugin\\]", skip = true },
+  { message = "^prepare (release|for next development)", skip = true },
   { message = "^Merge ", skip = true },
   { message = "^(💥|\\w+(\\([^)]*\\))?!:)", group = "<!-- 00 -->Breaking changes" },
   { message = "^(✨|feat)", group = "<!-- 01 -->Features" },
