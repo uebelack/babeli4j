@@ -160,7 +160,7 @@ Uses a local Ollama instance at `http://localhost:11434` by default.
 export BABELI_API_URL=http://my-server:11434   # optional
 ```
 
-Default model: `qwen3.6`. Override with `BABELI_MODEL`.
+Default model: `qwen3.5`. Override with `BABELI_MODEL`.
 
 ### Copilot CLI
 
