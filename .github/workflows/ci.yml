@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      # report both Java versions even if one of them fails
+      fail-fast: false
       matrix:
         # previous LTS (= maven.compiler.release) and current LTS
         java: [ 21, 25 ]
