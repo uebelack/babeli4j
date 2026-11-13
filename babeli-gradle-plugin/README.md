@@ -214,6 +214,7 @@ babeli {
 |------------------|---------------------------------------------------------------------------------------------------------------------|
 | `babeliValidate` | Validates translation files against the configured actions. Fails the build if errors are found.                    |
 | `babeliUpdate`   | Updates translation files by applying the configured actions (e.g., sorting keys, completing missing translations). |
+| `babeliAdd`      | Adds a new translation key. Languages without a given value are translated with AI.                                 |
 
 ```bash
 # Validate translation files
@@ -221,7 +222,13 @@ babeli {
 
 # Update translation files
 ./gradlew babeliUpdate
+
+# Add a new key; languages without a value are generated
+./gradlew babeliAdd --key=common.button.ok --translation=en=OK --translation=de=Okay
 ```
+
+`babeliAdd` fails if the key already exists or a translation is given for a language the bundle doesn't have.
+If the project has several resource bundles, pick one with `--bundle=<name>`.
 
 The `babeliValidate` task is automatically added to the `check` lifecycle task, and `babeliUpdate` is added to
 `processResources`/`preBuild`.

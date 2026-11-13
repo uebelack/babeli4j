@@ -85,7 +85,10 @@ export ANTHROPIC_API_KEY=sk-...
 
 If the project contains several resource bundles, pick one with `-Dbabeli.bundle=<name>`
 (Maven) or `--bundle=<name>` (Gradle). The plugins take the key and its translations as
-parameters; only the CLI `babeli add` prompts for them interactively.
+parameters; only the CLI `babeli add` prompts for them interactively. Values may contain commas
+(`-Dbabeli.translations="en=Yes, please,de=Ja, bitte"`): a comma only starts a new translation when a
+language code and `=` follow it. Adding a key that already exists, or a translation for a language the
+bundle doesn't have, fails without changing any file.
 
 ### CLI
 
@@ -159,6 +162,16 @@ export BABELI_API_URL=http://my-server:11434   # optional
 
 Default model: `qwen3.6`. Override with `BABELI_MODEL`.
 
+### Copilot CLI
+
+Uses the [GitHub Copilot CLI](https://github.com/github/copilot-cli) installed on your machine
+(`copilot -p <prompt>`), so no API key is needed. Select it with `-p copilot-cli` or
+`BABELI_MODEL_PROVIDER=copilot-cli`.
+
+```bash
+export BABELI_COPILOT_PATH=/opt/homebrew/bin/copilot   # optional, defaults to `copilot` on the PATH
+```
+
 ## Modules
 
 | Module                 | Description                                                                     |
@@ -166,21 +179,23 @@ Default model: `qwen3.6`. Override with `BABELI_MODEL`.
 | `babeli-core`          | Core library — reading, validating, transforming, and writing translation files |
 | `babeli-anthropic`     | Anthropic model provider                                                        |
 | `babeli-ollama`        | Ollama model provider                                                           |
+| `babeli-copilot-cli`   | GitHub Copilot CLI model provider                                               |
 | `babeli-cli`           | Standalone command-line tool                                                    |
 | `babeli-maven-plugin`  | Maven build plugin ([docs](babeli-maven-plugin/README.md))                      |
 | `babeli-gradle-plugin` | Gradle build plugin ([docs](babeli-gradle-plugin/README.md))                    |
 
 ## Environment Variables
 
-| Variable                   | Description                                     |
-|----------------------------|-------------------------------------------------|
-| `ANTHROPIC_API_KEY`        | Anthropic API key                               |
-| `BABELI_ANTHROPIC_API_KEY` | Anthropic API key (takes priority)              |
-| `BABELI_MODEL`             | Override model name                             |
-| `BABELI_API_URL`           | API endpoint                                    |
-| `BABELI_MODEL_PROVIDER`    | Override model provider (`anthropic`, `ollama`) |
-| `BABELI_BASE_LANGUAGE`     | Override base language (default: `en`)          |
-| `BABELI_SKIP`              | When set babeli execution is skipped            |
+| Variable                   | Description                                                    |
+|----------------------------|----------------------------------------------------------------|
+| `ANTHROPIC_API_KEY`        | Anthropic API key                                              |
+| `BABELI_ANTHROPIC_API_KEY` | Anthropic API key (takes priority)                             |
+| `BABELI_MODEL`             | Override model name                                            |
+| `BABELI_API_URL`           | API endpoint                                                   |
+| `BABELI_MODEL_PROVIDER`    | Override model provider (`anthropic`, `ollama`, `copilot-cli`) |
+| `BABELI_COPILOT_PATH`      | Path to the `copilot` executable (default: `copilot`)          |
+| `BABELI_BASE_LANGUAGE`     | Override base language (default: `en`)                         |
+| `BABELI_SKIP`              | When set babeli execution is skipped                           |
 
 ## Building from Source
 
