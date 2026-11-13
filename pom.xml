@@ -241,7 +241,14 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
-                    <autoPublish>true</autoPublish>
+                    <!-- the release workflow uploads and validates; the deployment goes live
+                         when a maintainer clicks "Publish" on central.sonatype.com -->
+                    <autoPublish>false</autoPublish>
+                    <waitUntil>validated</waitUntil>
+                    <excludeArtifacts>
+                        <!-- built by Gradle and published to the Gradle Plugin Portal -->
+                        <artifact>babeli-gradle-plugin</artifact>
+                    </excludeArtifacts>
                 </configuration>
             </plugin>
         </plugins>
@@ -256,6 +263,13 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>3.2.8</version>
+                        <configuration>
+                            <!-- non-interactive signing in CI, passphrase from MAVEN_GPG_PASSPHRASE -->
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>

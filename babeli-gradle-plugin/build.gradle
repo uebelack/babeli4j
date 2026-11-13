@@ -1,15 +1,12 @@
 plugins {
     id 'java-gradle-plugin'
     id 'maven-publish'
+    id 'com.gradle.plugin-publish' version '2.2.1'
 }
 
 group = 'dev.uebelacker.babeli'
-version = '1.0.2-SNAPSHOT'
-
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
+// same version as the Maven modules, so `mvn versions:set` is the only place to change it
+version = new groovy.xml.XmlSlurper().parse(file('pom.xml')).parent.version.text()
 
 // minimum supported Java version (previous LTS), same as maven.compiler.release in the parent pom
 tasks.withType(JavaCompile).configureEach {
@@ -22,16 +19,21 @@ repositories {
 }
 
 dependencies {
-    implementation 'dev.uebelacker.babeli:babeli-core:1.0.2-SNAPSHOT'
+    implementation "dev.uebelacker.babeli:babeli-core:${version}"
     testImplementation 'org.junit.jupiter:junit-jupiter:6.1.3'
     testImplementation 'org.assertj:assertj-core:3.27.7'
 }
 
 gradlePlugin {
+    website = 'https://github.com/uebelack/babeli4j'
+    vcsUrl = 'https://github.com/uebelack/babeli4j'
     plugins {
         babeli {
             id = 'dev.uebelacker.babeli'
             implementationClass = 'dev.uebelacker.babeli.gradle.BabeliPlugin'
+            displayName = 'Babeli'
+            description = 'AI-powered translation file management: validates, sorts and completes translation files with AI.'
+            tags.set(['i18n', 'translation', 'localization', 'ai'])
         }
     }
 }
@@ -43,7 +45,7 @@ testing {
             dependencies {
                 implementation 'org.assertj:assertj-core:3.27.7'
                 runtimeOnly 'org.junit.platform:junit-platform-launcher:6.1.3'
-                implementation 'dev.uebelacker.babeli:babeli-core:1.0.2-SNAPSHOT'
+                implementation "dev.uebelacker.babeli:babeli-core:${version}"
             }
         }
     }
