@@ -326,6 +326,41 @@ class BabeliPluginFunctionalTest {
         .contains("Invalid translation 'oops'. Expected format: <language>=<value>.");
   }
 
+  @Test
+  @DisplayName("should fail to add a translation key that already exists")
+  void shouldFailToAddExistingKey() throws IOException {
+    writePropertiesProject();
+
+    var result =
+        GradleRunner.create()
+            .withProjectDir(projectDir)
+            .withPluginClasspath()
+            .withArguments("babeliAdd", "--key=common.button.yes", "--translation=en=Sure")
+            .buildAndFail();
+
+    assertThat(result.task(":babeliAdd").getOutcome()).isEqualTo(TaskOutcome.FAILED);
+    assertThat(result.getOutput()).contains("Key 'common.button.yes' already exists.");
+    assertThat(readFile("messages_en.properties")).isEqualTo("common.button.yes=Yes\n");
+  }
+
+  @Test
+  @DisplayName("should fail to add a translation for an unknown language")
+  void shouldFailToAddTranslationForUnknownLanguage() throws IOException {
+    writePropertiesProject();
+
+    var result =
+        GradleRunner.create()
+            .withProjectDir(projectDir)
+            .withPluginClasspath()
+            .withArguments(
+                "babeliAdd", "--key=common.button.no", "--translation=en=No", "--translation=fr=Non")
+            .buildAndFail();
+
+    assertThat(result.task(":babeliAdd").getOutcome()).isEqualTo(TaskOutcome.FAILED);
+    assertThat(result.getOutput()).contains("Unknown language(s): fr.");
+    assertThat(readFile("messages_en.properties")).doesNotContain("common.button.no");
+  }
+
   private void writePropertiesProject() throws IOException {
     writeFile(new File(projectDir, "messages_en.properties"), "common.button.yes=Yes\n");
     writeFile(new File(projectDir, "messages_de.properties"), "common.button.yes=Ja\n");

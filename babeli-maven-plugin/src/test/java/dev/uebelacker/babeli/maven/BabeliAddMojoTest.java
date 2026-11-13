@@ -44,15 +44,15 @@ class BabeliAddMojoTest {
 
   @Test
   @InjectMojo(goal = "add", pom = "src/test/resources/add/plugin-pom.xml")
-  @DisplayName("should add the key with the given translations")
+  @DisplayName("should add the key with the given translations, keeping commas inside values")
   void shouldAddKeyWithGivenTranslations(BabeliAddMojo mojo) throws IOException {
     var log = mock(Log.class);
     mojo.setLog(log);
 
     assertThatNoException().isThrownBy(mojo::execute);
 
-    assertThat(translationFile("en")).contains("common.button.no=No");
-    assertThat(translationFile("de")).contains("common.button.no=Nein");
+    assertThat(translationFile("en")).contains("common.button.no=No, thanks");
+    assertThat(translationFile("de")).contains("common.button.no=Nein, danke");
     verify(log).info("Added translation key 'common.button.no'.");
   }
 
@@ -87,6 +87,33 @@ class BabeliAddMojoTest {
     assertThatExceptionOfType(MojoFailureException.class)
         .isThrownBy(mojo::execute)
         .withMessage("Invalid translation 'oops'. Expected format: <language>=<value>.");
+  }
+
+  @Test
+  @InjectMojo(goal = "add", pom = "src/test/resources/add/existing-key-pom.xml")
+  @DisplayName("should fail and leave the files untouched if the key already exists")
+  void shouldFailIfKeyAlreadyExists(BabeliAddMojo mojo) throws IOException {
+    mojo.setLog(mock(Log.class));
+
+    assertThatExceptionOfType(MojoFailureException.class)
+        .isThrownBy(mojo::execute)
+        .withMessage("Key 'common.button.yes' already exists.");
+
+    assertThat(translationFile("en")).isEqualTo("common.button.yes=Yes\n");
+    assertThat(translationFile("de")).isEqualTo("common.button.yes=Ja\n");
+  }
+
+  @Test
+  @InjectMojo(goal = "add", pom = "src/test/resources/add/unknown-language-pom.xml")
+  @DisplayName("should fail and leave the files untouched if a language is unknown")
+  void shouldFailIfLanguageIsUnknown(BabeliAddMojo mojo) throws IOException {
+    mojo.setLog(mock(Log.class));
+
+    assertThatExceptionOfType(MojoFailureException.class)
+        .isThrownBy(mojo::execute)
+        .withMessageStartingWith("Unknown language(s): fr.");
+
+    assertThat(translationFile("en")).doesNotContain("common.button.no");
   }
 
   private String translationFile(String language) throws IOException {

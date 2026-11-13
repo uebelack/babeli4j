@@ -214,6 +214,7 @@ For non-standard project layouts or advanced use cases, configure the plugin exp
 |-------------------|----------------------|---------------------------------------------------------------------------------------------------------------------|
 | `babeli:validate` | `verify`             | Validates translation files against the configured actions. Fails the build if errors are found.                    |
 | `babeli:update`   | `generate-resources` | Updates translation files by applying the configured actions (e.g., sorting keys, completing missing translations). |
+| `babeli:add`      | —                    | Adds a new translation key. Languages without a given value are translated with AI.                                 |
 
 ```bash
 # Validate translation files
@@ -221,7 +222,18 @@ mvn babeli:validate
 
 # Update translation files
 mvn babeli:update
+
+# Add a new key; languages without a value are generated
+mvn babeli:add -Dbabeli.key=common.button.ok -Dbabeli.translations="en=OK,de=Okay"
 ```
+
+`babeli:add` takes these parameters:
+
+| Property              | Description                                                                                                    |
+|-----------------------|----------------------------------------------------------------------------------------------------------------|
+| `babeli.key`          | The key to add. Fails if the key already exists.                                                               |
+| `babeli.translations` | Comma separated `language=value` pairs. A comma only separates translations when a language code and `=` follow it, so values may contain commas: `en=Yes, please,de=Ja, bitte`. |
+| `babeli.bundle`       | Name of the resource bundle to add the key to. Required when the project has several bundles.                 |
 
 ## Actions
 

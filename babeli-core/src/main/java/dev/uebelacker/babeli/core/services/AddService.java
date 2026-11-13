@@ -1,12 +1,15 @@
 package dev.uebelacker.babeli.core.services;
 
 import dev.uebelacker.babeli.core.Configuration;
+import dev.uebelacker.babeli.core.exceptions.KeyAlreadyExistsException;
+import dev.uebelacker.babeli.core.exceptions.UnknownLanguageException;
 import dev.uebelacker.babeli.core.logging.Logger;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.Translations;
 import dev.uebelacker.babeli.core.readers.FileReaderRegistry;
 import dev.uebelacker.babeli.core.writers.FileWriterRegistry;
+import java.util.List;
 import java.util.Map;
 
 public class AddService {
@@ -27,6 +30,8 @@ public class AddService {
     if (configuration.getFile() != null) {
       var translationFile = fileReader.readFile(configuration.getFile());
       var translations = Translations.fromTranslations(translationFile.translations());
+      checkKeyAndLanguages(key, translationValues, translations, translations.getLanguages());
+
       var translationService = new TranslationService(configuration, translations);
 
       for (var language : translations.getLanguages()) {
@@ -50,6 +55,12 @@ public class AddService {
           Translations.fromTranslations(
               translationFiles.stream().flatMap(tf -> tf.translations().stream()).toList());
 
+      checkKeyAndLanguages(
+          key,
+          translationValues,
+          translations,
+          translationFiles.stream().map(SingleLanguageTranslationFile::language).toList());
+
       var translationService = new TranslationService(configuration, translations);
 
       for (var translationFile : translationFiles) {
@@ -68,6 +79,22 @@ public class AddService {
                       tf.file(),
                       translations.getTranslationsForLanguage(tf.language())))
           .forEach(fileWriter::writeFile);
+    }
+  }
+
+  private void checkKeyAndLanguages(
+      String key,
+      Map<String, String> translationValues,
+      Translations translations,
+      List<String> languages) {
+    if (translations.getKeys().contains(key)) {
+      throw new KeyAlreadyExistsException(key);
+    }
+
+    var unknownLanguages =
+        translationValues.keySet().stream().filter(l -> !languages.contains(l)).sorted().toList();
+    if (!unknownLanguages.isEmpty()) {
+      throw new UnknownLanguageException(unknownLanguages, languages);
     }
   }
 

@@ -3,6 +3,7 @@ package dev.uebelacker.babeli.core.services;
 import static dev.uebelacker.babeli.core.Constants.EnvironmentVariables.BABELI_MODEL_PROVIDER;
 import static java.nio.file.Paths.get;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 
@@ -14,6 +15,8 @@ import dev.uebelacker.babeli.core.Configuration;
 import dev.uebelacker.babeli.core.Fixtures;
 import dev.uebelacker.babeli.core.ai.ChatModelFactory;
 import dev.uebelacker.babeli.core.configuration.LanguageFileConfiguration;
+import dev.uebelacker.babeli.core.exceptions.KeyAlreadyExistsException;
+import dev.uebelacker.babeli.core.exceptions.UnknownLanguageException;
 import dev.uebelacker.babeli.core.model.MultiLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.SingleLanguageTranslationFile;
 import dev.uebelacker.babeli.core.model.Translations;
@@ -208,6 +211,65 @@ class AddServiceTest {
 
     var translations = translationsFromFile(FILE);
     assertThat(translations.getKeys()).isNotEmpty().doesNotContain("new.key");
+  }
+
+  @Test
+  @DisplayName("should fail and leave the multi language file untouched if the key already exists")
+  void shouldFailIfKeyAlreadyExistsInMultiLanguageFile() throws IOException {
+    configuration.setFile(FILE);
+    var before = Files.readString(FILE.toPath());
+
+    assertThatExceptionOfType(KeyAlreadyExistsException.class)
+        .isThrownBy(
+            () -> new AddService(configuration).add("common.button.yes", Map.of("en", "Sure")))
+        .withMessage("Key 'common.button.yes' already exists.");
+
+    assertThat(Files.readString(FILE.toPath())).isEqualTo(before);
+  }
+
+  @Test
+  @DisplayName("should fail and leave the language files untouched if the key already exists")
+  void shouldFailIfKeyAlreadyExistsInSingleLanguageFiles() {
+    configuration.setFiles(FILES);
+    var service = new AddService(configuration);
+    var values = Map.of("en", "Sure");
+
+    assertThatExceptionOfType(KeyAlreadyExistsException.class)
+        .isThrownBy(() -> service.add("common.button.yes", values));
+
+    assertThat(
+            translationFromPropertiesFile(
+                "de",
+                new File("target/test/properties/messages_de.properties"),
+                "common.button.yes"))
+        .isEqualTo("Ja");
+  }
+
+  @Test
+  @DisplayName("should fail if a translation is given for a language the bundle does not contain")
+  void shouldFailIfLanguageIsUnknown() throws IOException {
+    configuration.setFile(FILE);
+    var before = Files.readString(FILE.toPath());
+    var service = new AddService(configuration);
+    var values = Map.of("en", "New", "es", "Nuevo", "it", "Nuovo");
+
+    assertThatExceptionOfType(UnknownLanguageException.class)
+        .isThrownBy(() -> service.add("new.key", values))
+        .withMessageStartingWith("Unknown language(s): es, it. Available languages: ");
+
+    assertThat(Files.readString(FILE.toPath())).isEqualTo(before);
+  }
+
+  @Test
+  @DisplayName("should fail if a translation is given for a language without a language file")
+  void shouldFailIfLanguageHasNoLanguageFile() {
+    configuration.setFiles(FILES);
+    var service = new AddService(configuration);
+    var values = Map.of("es", "Nuevo");
+
+    assertThatExceptionOfType(UnknownLanguageException.class)
+        .isThrownBy(() -> service.add("new.key", values))
+        .withMessageStartingWith("Unknown language(s): es.");
   }
 
   private Translations translationsFromFile(File file) {

@@ -3,6 +3,7 @@ package dev.uebelacker.babeli.maven;
 import dev.uebelacker.babeli.core.Babeli;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -18,12 +19,19 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "add")
 public class BabeliAddMojo extends AbstractBabeliMojo {
 
+  private static final Pattern TRANSLATION_SEPARATOR =
+      Pattern.compile(",(?=[A-Za-z]{2,3}(?:[_-][A-Za-z0-9]+)*=)");
+
   @Parameter(property = "babeli.key")
   private String key;
 
-  /** Translations as {@code language=value} pairs. */
+  /**
+   * Translations as comma separated {@code language=value} pairs. A comma only separates two
+   * translations if it is directly followed by a language code and {@code =}, so values may contain
+   * commas themselves: {@code en=Hello, world,de=Hallo, Welt}.
+   */
   @Parameter(property = "babeli.translations")
-  private String[] translations;
+  private String translations;
 
   @Parameter(property = "babeli.bundle")
   private String bundle;
@@ -58,7 +66,7 @@ public class BabeliAddMojo extends AbstractBabeliMojo {
       return translationValues;
     }
 
-    for (var translation : translations) {
+    for (var translation : TRANSLATION_SEPARATOR.split(translations)) {
       var separator = translation.indexOf('=');
       if (separator < 1) {
         throw new MojoFailureException(

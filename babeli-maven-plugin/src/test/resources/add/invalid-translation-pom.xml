@@ -11,9 +11,7 @@
                         <de>messages_de.properties</de>
                     </files>
                     <key>common.button.no</key>
-                    <translations>
-                        <translation>oops</translation>
-                    </translations>
+                    <translations>oops</translations>
                 </configuration>
             </plugin>
         </plugins>

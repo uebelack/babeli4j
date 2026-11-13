@@ -2,6 +2,8 @@ package dev.uebelacker.babeli.cli.commands;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -67,9 +69,31 @@ class AddTest {
 
     assertThat(execute("-d", PROJECT.toString(), "--bundle", "messages")).isZero();
 
-    assertThat(bundleContent("messages", "en")).contains("farewell");
-    assertThat(bundleContent("messages", "de")).contains("farewell");
+    assertThat(bundleContent("messages", "en")).contains("farewell=Bye");
+    assertThat(bundleContent("messages", "de")).contains("farewell=Bye");
     assertThat(bundleContent("errors", "en")).doesNotContain("farewell");
+  }
+
+  @Test
+  @DisplayName("should auto-translate the languages left empty")
+  void shouldAutoTranslateLanguagesLeftEmpty() throws IOException {
+    when(lineReader.readLine(startsWith("Translation key"))).thenReturn("farewell");
+    when(lineReader.readLine(contains("'en'"))).thenReturn("Bye");
+    when(lineReader.readLine(contains("'de'"))).thenReturn("");
+
+    assertThat(
+            execute(
+                "-d",
+                PROJECT.toString(),
+                "--bundle",
+                "messages",
+                "-p",
+                TestChatModelProvider.class.getName()))
+        .isZero();
+
+    assertThat(bundleContent("messages", "en")).contains("farewell=Bye");
+    assertThat(bundleContent("messages", "de"))
+        .contains("farewell=" + TestChatModelProvider.TRANSLATION);
   }
 
   @Test
