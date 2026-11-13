@@ -2,6 +2,7 @@ package dev.uebelacker.babeli.core.services;
 
 import static dev.uebelacker.babeli.core.Constants.EnvironmentVariables.BABELI_MODEL_PROVIDER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import dev.langchain4j.data.message.AiMessage;
@@ -54,5 +55,25 @@ class TranslationServiceTest {
     assertThat(systemMessageArgumentCaptor.getValue().text())
         .contains("translate text from en to de");
     assertThat(userMessageArgumentCaptor.getValue().singleText()).isEqualTo("Hello, how are you?");
+  }
+
+  @Test
+  @DisplayName("should strip surrounding whitespace from the model's answer")
+  void shouldStripWhitespaceFromTranslation() {
+    var configuration = new Configuration();
+    configuration.setModelProvider("test");
+    EnvUtils.set(BABELI_MODEL_PROVIDER, "test");
+
+    var chatModel = ChatModelFactory.createChatModel(configuration);
+    when(chatModel.chat(any(SystemMessage.class), any(UserMessage.class)))
+        .thenReturn(
+            ChatResponse.builder()
+                .aiMessage(AiMessage.builder().text(" Auf Wiedersehen\n").build())
+                .build());
+
+    var translationService =
+        new TranslationService(configuration, Translations.fromTranslations(List.of()));
+
+    assertThat(translationService.translate("Goodbye", "en", "de")).isEqualTo("Auf Wiedersehen");
   }
 }

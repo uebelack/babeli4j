@@ -100,6 +100,6 @@ Output only the translated text, nothing else.
     var chatModel = ChatModelFactory.createChatModel(configuration);
     var response = chatModel.chat(prompt.toSystemMessage(), new UserMessage(value));
 
-    return response.aiMessage().text();
+    return response.aiMessage().text().strip();
   }
 }
