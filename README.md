@@ -199,17 +199,35 @@ export BABELI_COPILOT_PATH=/opt/homebrew/bin/copilot   # optional, defaults to `
 
 ## Building from Source
 
-Requires Java 21+.
+Requires Java 21+ (releases are built with Java 25).
 
 ```bash
-mvn clean install
+./mvnw clean install
 ```
 
-## Publishing to maven central
+`install` (not just `verify`) because the reactor also builds the Gradle plugin, which resolves
+`babeli-core` from the local Maven repository.
 
-```bash
-mvn clean deploy -Prelease
-```
+## Releasing
+
+Releases are built by GitHub Actions ([`release.yml`](.github/workflows/release.yml)) when a `v*` tag
+is pushed:
+
+1. Set the version and update the changelog:
+   ```bash
+   ./mvnw versions:set -DnewVersion=1.2.3 -DprocessAllModules -DgenerateBackupPoms=false
+   git-cliff --tag v1.2.3 -o CHANGELOG.md
+   ```
+   Commit, then `git tag v1.2.3 && git push origin main v1.2.3`.
+2. The workflow checks the tag against the project version, runs all tests, uploads the signed
+   artifacts to the [Central Portal](https://central.sonatype.com) and creates the GitHub release.
+3. Check the deployment on central.sonatype.com → *Publish* → Deployments and click **Publish**.
+4. As soon as `babeli-core` is available on Maven Central, the workflow publishes the Gradle plugin
+   to the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/dev.uebelacker.babeli).
+5. Move to the next snapshot version with `./mvnw versions:set -DnewVersion=1.2.4-SNAPSHOT ...`.
+
+Required repository secrets: `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD` (Central Portal user
+token), `MAVEN_GPG_PRIVATE_KEY`, `MAVEN_GPG_PASSPHRASE`, `GRADLE_PUBLISH_KEY`, `GRADLE_PUBLISH_SECRET`.
 
 ## License
 

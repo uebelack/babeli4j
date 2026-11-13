@@ -35,3 +35,6 @@ build/
 .DS_Store
 .tossitin.config.mjs
 babeli-gradle-plugin/.gradle
+
+# written by the maven-shade-plugin on every build
+dependency-reduced-pom.xml
