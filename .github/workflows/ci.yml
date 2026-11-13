@@ -10,30 +10,41 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        # previous LTS (= maven.compiler.release) and current LTS
+        java: [ 21, 25 ]
+
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
     steps:
       - uses: actions/checkout@v7
-
-      - name: Set up JDK 25
-        uses: actions/setup-java@v5
         with:
-          java-version: '25'
+          fetch-depth: 0 # SonarCloud needs the history for blame / new code
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v6
+        with:
+          java-version: ${{ matrix.java }}
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Check formatting
-        run: mvn spotless:check
-
-      - name: Build and test
-        run: mvn clean install
-
+      # caches the Gradle wrapper and dependencies of the nested babeli-gradle-plugin build
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6.2.0
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
 
-      - name: Build and test Gradle plugin
-        working-directory: babeli-gradle-plugin
-        run: ./gradlew build
+      - name: Check formatting
+        run: ./mvnw -B spotless:check
 
+      # install, not verify: the Gradle plugin build (run by the reactor) resolves
+      # babeli-core from the local Maven repository
+      - name: Build and test
+        run: ./mvnw -B install
+
+      # Skipped on fork PRs, where the secret is not available.
       - name: Cache SonarCloud packages
+        if: matrix.java == 25 && env.SONAR_TOKEN != ''
         uses: actions/cache@v6
         with:
           path: ~/.sonar/cache
@@ -41,6 +52,5 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
 
       - name: SonarCloud Scan
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        if: matrix.java == 25 && env.SONAR_TOKEN != ''
+        run: ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
