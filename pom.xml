@@ -45,8 +45,8 @@
     </scm>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <!-- minimum supported Java version (previous LTS); built and released on the current LTS -->
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sonar.organization>uebelack</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>

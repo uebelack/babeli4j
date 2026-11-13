@@ -7,10 +7,13 @@ group = 'dev.uebelacker.babeli'
 version = '1.0.2-SNAPSHOT'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
     withJavadocJar()
     withSourcesJar()
+}
+
+// minimum supported Java version (previous LTS), same as maven.compiler.release in the parent pom
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
 }
 
 repositories {
