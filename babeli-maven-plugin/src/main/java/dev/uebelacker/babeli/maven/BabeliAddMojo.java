@@ -20,7 +20,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 public class BabeliAddMojo extends AbstractBabeliMojo {
 
   private static final Pattern TRANSLATION_SEPARATOR =
-      Pattern.compile(",(?=[A-Za-z]{2,3}(?:[_-][A-Za-z0-9]+)*=)");
+      // language tags like de, pt_BR or sr-Latn-RS: bounded, so the lookahead cannot recurse deeply
+      Pattern.compile(",(?=[A-Za-z]{2,3}(?:[_-][A-Za-z0-9]{1,8}){0,3}=)");
 
   @Parameter(property = "babeli.key")
   private String key;

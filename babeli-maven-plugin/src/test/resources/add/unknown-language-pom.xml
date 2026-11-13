@@ -11,7 +11,7 @@
                         <de>messages_de.properties</de>
                     </files>
                     <key>common.button.no</key>
-                    <translations>en=No,fr=Non</translations>
+                    <translations>en=No, thanks,pt_BR=Não, obrigado</translations>
                     <modelProvider>dev.uebelacker.babeli.maven.TestChatModelProvider</modelProvider>
                 </configuration>
             </plugin>

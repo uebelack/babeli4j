@@ -111,7 +111,7 @@ class BabeliAddMojoTest {
 
     assertThatExceptionOfType(MojoFailureException.class)
         .isThrownBy(mojo::execute)
-        .withMessageStartingWith("Unknown language(s): fr.");
+        .withMessageStartingWith("Unknown language(s): pt_BR.");
 
     assertThat(translationFile("en")).doesNotContain("common.button.no");
   }
