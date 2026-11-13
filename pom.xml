@@ -53,8 +53,6 @@
         <sonar.projectKey>uebelack_babeli4j</sonar.projectKey>
         <sonar.exclusions>babeli-gradle-plugin/**</sonar.exclusions>
 
-        <langchain4j.version>1.17.2</langchain4j.version>
-
         <!-- Modules that use Mockito set this to -javaagent:${org.mockito:mockito-core:jar}, so
              Mockito is loaded as an agent instead of attaching itself at runtime. -->
         <mockito.agent/>
@@ -64,18 +62,10 @@
         <dependencies>
             <dependency>
                 <groupId>dev.langchain4j</groupId>
-                <artifactId>langchain4j</artifactId>
-                <version>${langchain4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>dev.langchain4j</groupId>
-                <artifactId>langchain4j-anthropic</artifactId>
-                <version>${langchain4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>dev.langchain4j</groupId>
-                <artifactId>langchain4j-ollama</artifactId>
-                <version>1.16.3</version>
+                <artifactId>langchain4j-bom</artifactId>
+                <version>1.23.0</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit</groupId>
